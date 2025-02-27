@@ -1,0 +1,44 @@
+- name: tekton-pipelines
+  displayName:
+    en: Tekton Pipelines
+    zh: Tekton 流水线
+  base: /tekton-pipelines
+  version: v4.0
+  repo: https://github.com/AlaudaDevops/tektoncd-operator
+  image: devops/tektoncd-docs
+- name: connectors
+  displayName:
+    en: Connectors
+    zh: 连接器
+  base: /connectors
+  version: v1.0
+  repo: https://github.com/AlaudaDevops/connectors-operator
+- name: gitlab
+  displayName:
+    en: Gitlab
+    zh: Gitlab
+  base: /gitlab
+  version: v17.8
+  repo: https://github.com/AlaudaDevops/gitlab-ce-operator
+- name: harbor
+  displayName:
+    en: Harbor
+    zh: Harbor
+  base: /harbor
+  version: v2.12
+  repo: https://github.com/AlaudaDevops/harbor-ce-operator
+- name: nexus
+  displayName:
+    en: Nexus
+    zh: Nexus
+  base: /nexus
+  version: v3.76
+  repo: https://github.com/AlaudaDevops/nexus-ce-operator
+- name: sonarqube
+  displayName:
+    en: SonarQube
+    zh: SonarQube
+  base: /sonarqube
+  version: v2025.1
+  repo: https://github.com/AlaudaDevops/sonarqube-ce-operator
+#   image: devops/connectors-docs

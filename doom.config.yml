@@ -1,0 +1,8 @@
+title: DevOps Docs
+logoText: DevOps Docs
+lang: zh
+api:
+  crds:
+    - docs/shared/crds/*.yaml
+  openapis:
+    - docs/shared/openapis/*.json
