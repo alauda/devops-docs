@@ -1,44 +1,48 @@
-- name: tekton-pipelines
+- name: alauda-devops-pipelines
   displayName:
-    en: Tekton Pipelines
-    zh: Tekton 流水线
-  base: /tekton-pipelines
+    en: Alauda DevOps Pipelines
+    zh: Alauda DevOps Pipelines
+  base: /alauda-devops-pipelines
   version: v4.0
   repo: https://github.com/AlaudaDevops/tektoncd-operator
-  image: devops/tektoncd-docs
+  image: devops/alauda-devops-pipelines-docs
 - name: connectors
   displayName:
-    en: Connectors
-    zh: 连接器
+    en: Alauda DevOps Connectors
+    zh: Alauda DevOps Connectors
   base: /connectors
   version: v1.0
   repo: https://github.com/AlaudaDevops/connectors-operator
-- name: gitlab
+  image: devops/alauda-devops-connectors-docs
+- name: alauda-build-of-gitlab
   displayName:
-    en: Gitlab
-    zh: Gitlab
-  base: /gitlab
+    en: Alauda Build of Gitlab
+    zh: Alauda Build of Gitlab
+  base: /alauda-build-of-gitlab
   version: v17.8
   repo: https://github.com/AlaudaDevops/gitlab-ce-operator
-- name: harbor
+  image: devops/alauda-build-of-gitlab-docs
+- name: alauda-build-of-harbor
   displayName:
-    en: Harbor
-    zh: Harbor
-  base: /harbor
+    en: Alauda Build of Harbor
+    zh: Alauda Build of Harbor
+  base: /alauda-build-of-harbor
   version: v2.12
   repo: https://github.com/AlaudaDevops/harbor-ce-operator
-- name: nexus
+  image: devops/alauda-build-of-harbor-docs
+- name: alauda-build-of-nexus
   displayName:
-    en: Nexus
-    zh: Nexus
-  base: /nexus
+    en: Alauda Build of Nexus
+    zh: Alauda Build of Nexus
+  base: /alauda-build-of-nexus
   version: v3.76
   repo: https://github.com/AlaudaDevops/nexus-ce-operator
-- name: sonarqube
+  image: devops/alauda-build-of-nexus-docs
+- name: alauda-build-of-sonarqube
   displayName:
-    en: SonarQube
-    zh: SonarQube
-  base: /sonarqube
+    en: Alauda Build of SonarQube
+    zh: Alauda Build of SonarQube
+  base: /alauda-build-of-sonarqube
   version: v2025.1
   repo: https://github.com/AlaudaDevops/sonarqube-ce-operator
-#   image: devops/connectors-docs
+  image: devops/alauda-build-of-sonarqube-docs
