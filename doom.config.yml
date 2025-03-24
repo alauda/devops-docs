@@ -1,6 +1,6 @@
 title: Alauda DevOps Docs
 logoText: Alauda DevOps Docs
-lang: zh
+lang: en
 api:
   crds:
     - docs/shared/crds/*.yaml
