@@ -1,0 +1,4 @@
+project: alauda
+namespace: alauda-dev
+integration: github
+integration_class: github

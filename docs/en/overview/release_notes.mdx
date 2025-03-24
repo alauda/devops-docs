@@ -1,0 +1,77 @@
+---
+weight: 40
+i18n:
+  title:
+    en: Release Notes
+sourceSHA: 5c6c24ac29b19764d02d88d43635e98fda9465590462e895d47bfcd81703629c
+title: Release Notes
+---
+
+# Release Notes
+
+## 4.0.0
+
+### New and Optimized Features
+
+#### Alauda DevOps Pipelines v4.0
+
+Based directly on Tekton and its APIs, Alauda DevOps Pipelines provides a more user-friendly and efficient way to build and manage pipelines. With an intuitive interface and a rich set of features, users can easily create and manage pipelines, and get real-time feedback and insights.
+
+#### Alauda DevOps Connectors v1.0 (Alpha)
+
+Connectors provide a secure and efficient way to connect to external services and tools and provide an unobtrusive way to integrate with them. Platform teams can easily and securely create connectors while keeping access secrets protected.
+
+#### DevOps Toolchain
+
+Provides a easy deployable DevOps toolchain instances with a set of deployment templates to increase deployment speed and confidence while keeping full customizability. Includes:
+
+- Alauda Build of Gitlab v17.8
+- Alauda Build of Harbor v2.12
+- Alauda Build of SonarQube v2025.1
+- Alauda Build of Nexus v3.79
+
+A complete step-by-step migration guide from previous DevOps legacy toolchain is provided within the addon's documentation.
+
+
+#### Release Pipelines Template parameters
+
+Users can specify parameter values in a pipeline template design to be provided when executing the pipeline instead of having to create and assign parameters when creating a pipeline based of the template. This change empowers platform builders to create more flexible and reusable pipeline templates and improves overall speed of pipeline creation.
+
+
+### Deprecation Notice
+
+#### DevOps Legacy (3.20)
+
+After an overall rebuild of the DevOps platform, the DevOps Legacy module and its components will be deprecated in future versions. The list of components include:
+
+- Alauda DevOps v3 (previously known as `Katanomi Operator`)
+- Alauda DevOps Eventing v3 (previously known as `Knative Operator`)
+- Alauda DevOps Gitlab v3 (previously known as `Gitlab Operator`)
+- Alauda DevOps Harbor v3 (previously known as `Harbor Operator`)
+- Alauda DevOps SonarQube v3 (previously known as `SonarQube Operator`)
+- Alauda DevOps Nexus v3 (previously known as `Nexus Operator`)
+- Alauda DevOps Jenkins v3 (previously known as `Jenkins Operator`)
+- Alauda DevOps Tekton v3 (previously known as `Tekton Operator`)
+
+The list of affected features are:
+
+- DevOps (legacy) 
+- CI/CD:
+  - Builds
+  - Releases
+  - Jenkins
+- Agile Development
+- Test Management
+- Code
+- Artifacts
+
+
+### Fixed Issues
+
+
+{/* release-notes-for-bugs?template=fixed&project=DEVOPS */}
+
+
+### Known Issues
+
+{/* release-notes-for-bugs?template=unfixed&project=DEVOPS */}

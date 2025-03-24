@@ -324,7 +324,7 @@ sources:
 
 target:
   copyTo: imported-docs
-  base: docs
+  linkTo: docs
   links:
   - from: public/*.png,public/*.svg # 从下游视角，在docs目录下路径，这里使用多种文件的链接方式
     target: public/ # 在上游的docs目录下往哪里连接
