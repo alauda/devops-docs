@@ -7,42 +7,71 @@ sourceSHA: 5c6c24ac29b19764d02d88d43635e98fda9465590462e895d47bfcd81703629c
 title: Release Notes
 ---
 
-:::tip
-
-You can refer to the [release notes example](https://product-doc-guide.alauda.cn/template/release_notes/example.html) for a sample of the corresponding documentation.
-
-:::
-
 # Release Notes
 
-## \<Minor Version: e.g., 2.0.0 >
+## 4.0.0
 
 ### New and Optimized Features
 
-#### \<Feature Name>
+#### Alauda DevOps Pipelines v4.0
 
-A brief introduction to the new or optimized feature.
+Based directly on Tekton and its APIs, Alauda DevOps Pipelines provides a more user-friendly and efficient way to build and manage pipelines. With an intuitive interface and a rich set of features, users can easily create and manage pipelines, and get real-time feedback and insights.
 
-### Deprecated Features
+#### Alauda DevOps Connectors v1.0 (Alpha)
 
-#### \<Feature Name>
+Connectors provide a secure and efficient way to connect to external services and tools and provide an unobtrusive way to integrate with them. Platform teams can easily and securely create connectors while keeping access secrets protected.
 
-A brief introduction to the deprecated feature, including the reason for deprecation and suggested alternatives.
+#### DevOps Toolchain
 
-### Features Coming Soon for Deprecation
+Provides a easy deployable DevOps toolchain instances with a set of deployment templates to increase deployment speed and confidence while keeping full customizability. Includes:
 
-#### \<Feature Name>
+- Alauda Build of Gitlab v17.8
+- Alauda Build of Harbor v2.12
+- Alauda Build of SonarQube v2025.1
+- Alauda Build of Nexus v3.79
 
-A brief introduction to the features that are about to be deprecated, including the reason for deprecation and suggested alternatives.
+A complete step-by-step migration guide from previous DevOps legacy toolchain is provided within the addon's documentation.
+
+
+#### Release Pipelines Template parameters
+
+Users can specify parameter values in a pipeline template design to be provided when executing the pipeline instead of having to create and assign parameters when creating a pipeline based of the template. This change empowers platform builders to create more flexible and reusable pipeline templates and improves overall speed of pipeline creation.
+
+
+### Deprecation Notice
+
+#### DevOps Legacy (3.20)
+
+After an overall rebuild of the DevOps platform, the DevOps Legacy module and its components will be deprecated in future versions. The list of components include:
+
+- Alauda DevOps v3 (previously known as `Katanomi Operator`)
+- Alauda DevOps Eventing v3 (previously known as `Knative Operator`)
+- Alauda DevOps Gitlab v3 (previously known as `Gitlab Operator`)
+- Alauda DevOps Harbor v3 (previously known as `Harbor Operator`)
+- Alauda DevOps SonarQube v3 (previously known as `SonarQube Operator`)
+- Alauda DevOps Nexus v3 (previously known as `Nexus Operator`)
+- Alauda DevOps Jenkins v3 (previously known as `Jenkins Operator`)
+- Alauda DevOps Tekton v3 (previously known as `Tekton Operator`)
+
+The list of affected features are:
+
+- DevOps (legacy) 
+- CI/CD:
+  - Builds
+  - Releases
+  - Jenkins
+- Agile Development
+- Test Management
+- Code
+- Artifacts
+
 
 ### Fixed Issues
 
-The list of fixed issues can be automatically generated based on JIRA issues using the `release-notes-for-bugs` component provided by the documentation framework.
 
-For usage instructions, refer to the [Guide to Automatically Generate Release Issue Lists](https://product-doc-guide.alauda.cn/guide/auto_gen_releasenotes.html).
+{/* release-notes-for-bugs?template=fixed&project=DEVOPS */}
+
 
 ### Known Issues
 
-Similar to fixed issues, this can also be automatically generated based on JIRA issues using the `release-notes-for-bugs` component provided by the documentation framework.
-
-For usage instructions, refer to the [Guide to Automatically Generate Release Issue Lists](https://product-doc-guide.alauda.cn/guide/auto_gen_releasenotes.html).
+{/* release-notes-for-bugs?template=unfixed&project=DEVOPS */}
