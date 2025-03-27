@@ -3,45 +3,70 @@ weight: 40
 i18n:
   title:
     en: Release Notes
+sourceSHA: 01aaf279d544dc639652aabb2776785f30034e600477edb0ea1da9657900e2bf
+title: Release Notes
 ---
-
-:::tip
-
-可以访问[发版说明示例](https://product-doc-guide.alauda.cn/template/release_notes/example.html)查看对应文档的示例。
-
-:::
 
 # 发版说明
 
-## \<小版本号: 例如 2.0.0 \>
+## 4.0.0
 
 ### 新增及优化功能
 
-#### \<功能名称\>
-对新增或优化功能进行简单介绍。
+#### Alauda DevOps Pipelines v4.0
 
+Alauda DevOps Pipelines 基于 Tekton 及其 API，提供了一种更友好和高效的构建与管理管道的方式。通过直观的界面和丰富的功能，用户可以轻松创建和管理管道，并获得实时反馈和洞察。
 
-### 下线功能
+#### Alauda DevOps 连接器 v1.0（Alpha）
 
-#### \<功能名称\>
-对下线功能进行简单介绍，建议介绍下线原因以及替代方案。
+连接器提供了一种安全高效的方式连接外部服务和工具，并以不干扰的方式与其集成。平台团队可以轻松安全地创建连接器，同时保护访问秘钥。
 
+#### DevOps 工具链
 
-### 即将下线功能
+提供易于部署的 DevOps 工具链实例，并具备一套部署模板，以增加部署速度和信心，同时保持完全的可定制性。包括：
 
-#### \<功能名称\>
-对即将下线功能进行简单介绍，建议介绍下线原因以及替代方案。
+- Alauda Build of Gitlab v17.8
+- Alauda Build of Harbor v2.12
+- Alauda Build of SonarQube v2025.1
+- Alauda Build of Nexus v3.79
 
+提供了从之前的 DevOps 传统工具链迁移的完整逐步指南，具体内容见附加文档。
+
+#### 发布管道模板参数
+
+用户可以在管道模板设计中指定参数值，以便在执行管道时提供，而无需在基于模板创建管道时创建和分配参数。此更改使平台构建者能够创建更加灵活和可重用的管道模板，提高了管道创建的整体速度。
+
+### 下线通知
+
+#### DevOps 传统版（3.20）
+
+经过 DevOps 平台的整体重建，DevOps 传统模块及其组件将在未来版本中下线。受影响的组件包括：
+
+- Alauda DevOps v3（以前称为 `Katanomi Operator`）
+- Alauda DevOps Eventing v3（以前称为 `Knative Operator`）
+- Alauda DevOps Gitlab v3（以前称为 `Gitlab Operator`）
+- Alauda DevOps Harbor v3（以前称为 `Harbor Operator`）
+- Alauda DevOps SonarQube v3（以前称为 `SonarQube Operator`）
+- Alauda DevOps Nexus v3（以前称为 `Nexus Operator`）
+- Alauda DevOps Jenkins v3（以前称为 `Jenkins Operator`）
+- Alauda DevOps Tekton v3（以前称为 `Tekton Operator`）
+
+受影响的功能列表包括：
+
+- DevOps（传统版）
+- CI/CD：
+  - 构建
+  - 发布
+  - Jenkins
+- 敏捷开发
+- 测试管理
+- 代码
+- 构件
 
 ### 修复问题
 
-修复问题列表可以通过文档框架提供的 `release-notes-for-bugs` 组件自动根据 JIRA 问题生成。
-
-使用方式参见 [自动生成发版问题列表指南](https://product-doc-guide.alauda.cn/guide/auto_gen_releasenotes.html)。
-
+{/* release-notes-for-bugs?template=fixed&project=DEVOPS */}
 
 ### 已知问题
 
-和修复问题相同，通过文档框架提供的 `release-notes-for-bugs` 组件自动根据 JIRA 问题生成。
-
-使用方式参见 [自动生成发版问题列表指南](https://product-doc-guide.alauda.cn/guide/auto_gen_releasenotes.html)。
+{/* release-notes-for-bugs?template=unfixed&project=DEVOPS */}

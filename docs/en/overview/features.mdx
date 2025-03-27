@@ -3,32 +3,60 @@ weight: 20
 sourceSHA: 2ffcc54470ceb1699921d7a92b18563f60ee056e8ea380196d48400e5d732f6b
 ---
 
-:::tip
-
-List and briefly introduce all functional modules under the parent module to help users quickly understand all the functionalities under this module.
-
-You can access the [Feature Overview Example](https://product-doc-guide.alauda.cn/template/features_overview/example.html) to view the corresponding document example.
-
-:::
-
 # Feature Overview
 
-## Category 1
 
-- Feature 1
 
-  A brief introduction to Feature 1.
+## Pipelines
 
-- Feature 2
+- Tekton Pipelines
 
-  A brief introduction to Feature 2.
+  The foundation of Tekton that provides custom resources for defining CI/CD workflows as a series of steps, tasks, and pipelines.
 
-## Category 2
+- Tekton Triggers
 
-- Feature 1
+  Event-based system that listens for external events and automatically starts pipeline executions in response.
 
-  A brief introduction to Feature 1.
+- Tekton Chains
 
-- Feature 2
+  Supply chain security framework that automatically captures and signs provenance information for all pipeline executions.
 
-  A brief introduction to Feature 2.
+- Tekton Hub Integration
+
+  Access to a catalog of reusable Tasks and Pipelines to accelerate development.
+
+- Tekton Results
+
+  Long-term storage and querying of pipeline execution history and logs.
+
+- Webhook Integration
+
+  Automatic pipeline triggering from Git repositories and container registries.
+
+
+## Tool Integration
+
+- Connectors
+
+  Provides a unified interface for safely connecting to external tools and platforms. From standard protocols like `git` and `oci`, platform focused connectors, to custom connectors, the whole toolchain can be easily integrated in the DevOps workflow. 
+
+- Connector Class 
+  
+  Creates a standard interface for customizing and expanding connector capabilities and supported tools without changing the existing connectors.
+
+- Connector CSI Driver
+
+  An unobtrusive way to use connectors in cloud native workloads, using the tools that you already know, changing only how the workload is configured.
+
+
+## Tool Deployment and Management
+
+- Templated Deployment
+
+  Provide deployment templates for easily deploy tools including Gitlab, Harbor, SonarQube, and Nexus.
+
+- Custom YAML Deployment
+
+  Allow users to customize all parameters of tool deployment based on Helm charts' values file.
+
+
