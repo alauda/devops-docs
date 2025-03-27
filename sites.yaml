@@ -6,11 +6,11 @@
   version: v4.0
   repo: https://github.com/AlaudaDevops/tektoncd-operator
   image: devops/alauda-devops-pipelines-docs
-- name: connectors
+- name: alauda-devops-connectors
   displayName:
     en: Alauda DevOps Connectors
     zh: Alauda DevOps Connectors
-  base: /connectors
+  base: /alauda-devops-connectors
   version: v1.0
   repo: https://github.com/AlaudaDevops/connectors-operator
   image: devops/alauda-devops-connectors-docs
