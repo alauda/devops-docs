@@ -5,80 +5,132 @@ sourceSHA: b49eb75e9882f9179094b757c4f51359bcc7cafa83afb70016d43a89b5af8c52
 
 # Installing DevOps Legacy
 
-:::warning
-This section contains temporary instructions and will be updated with the official installation procedure later.
-:::
+This guide provides detailed steps for installing `Alauda DevOps Legacy`.
 
-This section describes the specific steps for installing the `global` cluster.
+## Prerequisites
 
-Before starting the installation, please ensure that prerequisite checks, package downloads and verifications, and node preprocessing have been completed.
+Ensure the following operators are installed before proceeding:
+
+- `Alauda DevOps v3` operator
+- `Alauda DevOps Eventing v3` operator
+
+## Deployment location
+
+Deploy Katanomi and KnativeEventing instances in the Global cluster. The business cluster can deploy instances as needed for CI/CD.
+
+<table>
+  <tr>
+    <th style={{ whiteSpace: 'nowrap' }}>Component</th>
+    <th style={{ whiteSpace: 'nowrap' }}>Global Cluster</th>
+    <th style={{ whiteSpace: 'nowrap' }}>Business Cluster</th>
+  </tr>
+  <tr>
+    <td>Katanomi</td>
+    <td>Installed</td>
+    <td>Optional</td>
+  </tr>
+    <tr>
+    <td>KnativeEventing</td>
+    <td>Installed</td>
+    <td>Optional</td>
+  </tr>
+</table>
 
 ## Procedure
 
 <Steps>
-  ### Upload and Extract the Installation Package
 
-  Upload the installation package to any machine in the control node of the `global` cluster and extract the package using the following command:
+  ### Create the Katanomi Instance 
 
-  ```shell
-  # Assuming that the /root/cpaas-install folder already exists on the machine
-  tar -xvf {installation_package_path}/{installation_package_name} -C /root/cpaas-install
-  cd /root/cpaas-install/installer || exit 1
-  ```
+  :::warning
+  Only one Katanomi instance is supported.
 
-  <Directive type="info" title="INFO">
-    - This machine will become the first control node once the `global` cluster installation is complete.
-    - At least **100GB** of disk space is required after extracting the installation package; please ensure sufficient storage resources.
-  </Directive>
+  - **Global cluster**: Deploy within the `cpaas-system` namespace. Set `ExternalURL` to the `Platform URL` of the `global` cluster and `Service.Type` to `Ingress`.
+  - **Business cluster**: Deployment is supported in any namespace.
+  :::
 
-  ### Start the Installer
+  - Login to the `Alauda Container Platform`  platform.
+  - Navigate to the **Clusters** tab under `Platform Management`.
+  - Select the deployed cluster and click **CLI Tools**.
+  - For the `global` cluster, execute the following to obtain the `ExternalURL`:
 
-  Execute the following installation script to start the installer. Upon successful startup, the command line terminal will output the UI access address.
-
-  After waiting for about 5 minutes, you can access the Web UI provided by the installer using a browser on your PC.
-
-  ```bash
-  bash setup.sh
-  ```
-
-  By default, the installer uses the Kube-OVN network plugin. To use the Calico network plugin, execute:
-
-  ```bash
-  bash setup.sh --network-mode calico
-  ```
-
-  <Directive type="note" title="Other Parameters">
-    - To access using an IPv6 address: add the `--ip-family ipv6` parameter.
-    - To support both IPv4 and IPv6: add the `--ip-family dual` parameter.
-  </Directive>
-
-  <Directive type="warning" title="Caution">
-    Ensure that the IP address of the node where the installer is located and the 8080 port are accessible, so that once the installer starts successfully, you can smoothly access the Web UI it provides.
-  </Directive>
-
-  ### Parameter Configuration
-
-  Complete the installation parameter configuration following the page guidance, and confirm the installation.
-
-  Detailed explanations of the key parameters are provided in [Parameter Description](#parameters); please read it carefully and configure according to your actual needs.
-
-  ### Verify Installation Success
-
-  After installation is complete, the page will display the platform access address. Clicking the **Access** button will redirect you to the platform Web UI.
-
-  In the **Platform Management** view, click **Cluster Management > Clusters** in order to find the cluster named `global`.
-
-  Select `CLI Tools` from the dropdown menu on the right side, and execute the following commands to verify the installation status:
 
   ```shell
-  # Check for any failed Charts
-  kubectl get apprelease --all-namespaces
-  # Check for any failed Pods
-  kubectl get pod --all-namespaces | awk '{if ($4 != "Running" && $4 != "Completed")print}' | awk -F'[/ ]+' '{if ($3 != $4)print}'
+  export EXTERNAL_URL=$(kubectl get prdb -n cpaas-system base -o jsonpath='{.spec.platformURL}')
+  ```
+
+  - Create the Katanomi Instance (adjust parameters as needed)
+
+  ```shell
+  cat <<EOF | kubectl apply -f -
+  apiVersion: operators.katanomi.dev/v1alpha1
+  kind: Katanomi
+  metadata:
+    name: katanomi
+    namespace: cpaas-system
+  spec:
+    externalURL: ${EXTERNAL_URL}
+    replicas: 1
+    resources:
+      limits:
+        cpu: "2"
+        memory: 4Gi
+      requests:
+        cpu: "1"
+        memory: 2Gi
+    service:
+      ingress:
+        protocol: HTTP
+      type: Ingress
+  EOF
+  ```
+
+  - Wait for the DevOps Instance to be ready
+  ```shell
+  kubectl wait --for='jsonpath={.status.conditions[?(@.type=="Running")].status}=true' katanomis/katanomi -n cpaas-system --timeout=5m
+  ```
+
+
+  ### Create the KnativeEventing Instance 
+
+  :::warning
+  Only one KnativeEventing instance is supported. Ensure the namespace in the `default-br-config` matches the KnativeEventing instance's namespace.
+  :::
+
+  - Login to the `Alauda Container Platform`  platform.
+  - In the `Platform Management` tab, click the **Clusters** tab.
+  - Select the deployed cluster and click **CLI Tools**.
+  - Create the KnativeEventing Instance
+  ```shell
+  cat <<EOF | kubectl apply -f -
+  apiVersion: operator.knative.dev/v1beta1
+  kind: KnativeEventing
+  metadata:
+    name: knative-eventing
+    namespace: knative-operator
+  spec:
+    config:
+      config-br-defaults:
+        default-br-config: |
+          # Cluster-level default broker configuration
+          clusterDefault:
+            apiVersion: v1
+            kind: ConfigMap
+            name: config-br-default-channel
+            # The namespace where the configmap is located
+            # Should be the same as the namespace of the KnativeEventing instance!!!
+            namespace: knative-operator
+  EOF
+  ```
+
+  - Wait for the KnativeEventing Instance to be ready
+
+  ```shell
+  kubectl wait --for='jsonpath={.status.conditions[?(@.type=="Ready")].status}=True' knativeeventings/knative-eventing -n knative-operator --timeout=5m
   ```
 </Steps>
 
-## Parameter Description \{#parameters}
+## Katanomi Parameter Description
 
 <table>
   <tr>
@@ -87,136 +139,100 @@ Before starting the installation, please ensure that prerequisite checks, packag
   </tr>
 
   <tr>
-    <td><b>Kubernetes Version</b></td>
+    <td><b>Name</b></td>
 
     <td>
-      All optional versions have been rigorously tested to ensure stability and compatibility. <br />
-      <b>Recommendation:</b> Choose the latest version for best features and support.
+      The name of the Katanomi instance.
     </td>
   </tr>
 
   <tr>
-    <td><b>Network Protocol of the Cluster</b></td>
+    <td><b>Namespaces</b></td>
 
     <td>
-      Supports three modes: IPv4 Single Stack, IPv6 Single Stack, and IPv4/IPv6 Dual Stack. <br />
-      <b>Note:</b> If you choose Dual Stack mode, make sure all nodes are properly configured with IPv6 addresses; once the network protocol is set, it cannot be changed later.
+      The Katanomi instance can be deployed to any namespace as long as the resources in that namespace are sufficient.
     </td>
   </tr>
 
   <tr>
-    <td><b>Cluster Address</b></td>
+    <td><b>External URL</b></td>
 
     <td>
-      <ul>
-        Input the prepared domain name. If no domain is available, input the prepared <code>global VIP</code>. <br />
-        The <code>self-built VIP</code> is disabled by default and should only be enabled if you do not provide a LoadBalancer. Once enabled, the installer will automatically deploy <code>keepalived</code> to provide soft load support. <br />
-        <b>Note:</b> When using <code>self-built VIP</code>, the following conditions must be met: <br />
-        - An available VRID already exists; <br />
-        - The host network supports the VRRP protocol; <br />
-        - All control nodes and the VIP must be in the same subnet. <br />
-      </ul>
-
-      <ul>
-        <b>Tip:</b> For a <b>single-node deployment</b> in functional experience scenarios, you can directly input the node IP. There is no need to enable <code>self-built VIP</code>, nor is it necessary to prepare network resources such as <code>global VIP</code>.
-      </ul>
+      The access address, which is the API address. Plan according to the configuration of the Service Type.<br />When the Service Type is `Node Port`, please enter `http://<IP>:<Port>`. The **Port** must be consistent with the `Node Port` of the Service, and the API port is used for service access.<br />When the Service Type is `Ingress`, please enter the corresponding access address, for example: `http://kubernetes.io`.
     </td>
   </tr>
 
   <tr>
-    <td><b>Platform Access Address</b></td>
+    <td><b>Replicas</b></td>
 
     <td>
-      <ul>
-        If you do not need to distinguish between <b>cluster address</b> and <b>platform access address</b>, input the same address as the <b>cluster address</b>. <br />
-        If you need to differentiate, for example, the global cluster is only for internal access while the platform requires external access, input the prepared domain name or <code>External IP</code>. <br />
-        The platform accesses via HTTPS by default, and HTTP is not enabled. If you need to enable HTTP access, please do so in <b>Advanced Settings</b> (not recommended). <br />
-        <b>Note:</b> In the following cases, a domain name must be entered: <br />
-        - Planning to implement a disaster recovery plan for the global cluster; <br />
-        - The platform needs to support IPv6 access. <br />
-      </ul>
-
-      <ul>
-        <b>Tip:</b> If you need to configure more platform access addresses, you can add them in the next step under <b>Other Settings > Additional Platform Access Addresses</b>. Or after installation, refer to the user manual to add them in platform management. <br />
-      </ul>
+      The number of replicas for the Deployment, default is 2. <br />
+      When the number of replicas is 1, the single-node deployment is used.
     </td>
   </tr>
 
   <tr>
-    <td><b>Certificates</b></td>
+    <td><b>Resources</b></td>
 
     <td>
-      The platform provides self-signed certificates for HTTPS access by default. <br />
-      If you need to use a custom certificate, you can upload an existing certificate.
+      - <b>requests:</b> The minimum amount of CPU and memory resources that can be consumed when running the tool.
+      - <b>limits:</b> The maximum amount of CPU and memory resources that need to be occupied when running the tool.
     </td>
   </tr>
 
   <tr>
-    <td><b>Image Repository</b></td>
+    <td><b>Service.Type	</b></td>
 
     <td>
-      By default, the <code>platform deployment</code> image repository is used, which contains images for all components. <br />
-      If you need to use an <code>external</code> image repository, please contact technical support for the image synchronization plan before configuration.
+      Required field. Provides two types: Node Port and Ingress.
+      - <b>Node Port:</b> Exposes the route through a static port, accessed via `<IP>:<port>`.
+      - <b>Ingress:</b> Exposes the route through inbound rules, accessed via a domain name.
     </td>
   </tr>
 
   <tr>
-    <td><b>Container Network</b></td>
+    <td><b>Service.Ingress</b></td>
 
     <td>
-      The default subnet of the cluster and the Service network segment must not overlap. <br />
-      When using the Kube-OVN Overlay network, ensure that the container network and the host network are not in the same segment, as this might lead to network anomalies.
+      Required if Type is set to Ingress.
+      - <b>Domain Name:</b> The domain name used to access the tool.
+      - <b>Protocol:</b> Access the tool via HTTP or HTTPS.
+      - <b>Secret Name:</b> The name of the SSL certificate used when accessing the tool via HTTPS.
     </td>
   </tr>
 
   <tr>
-    <td><b>Node Name</b></td>
+    <td><b>Service.Node Port</b></td>
 
     <td>
-      If you choose <code>Host Name as Node Name</code>, please ensure that the host names of all nodes are unique.
-    </td>
-  </tr>
-
-  <tr>
-    <td><b>Global Cluster Platform Node Isolation</b></td>
-
-    <td>
-      Enable this only if you plan to run application workloads in the `global` cluster. <br />
-      <b>When enabled:</b><br />
-      - Nodes can be set as <code>platform exclusive</code>, meaning they only run platform components, ensuring isolation between the platform and application workloads; <br />
-      - This excludes DaemonSet type workloads.
-    </td>
-  </tr>
-
-  <tr>
-    <td><b>Add Nodes</b></td>
-
-    <td>
-      <b>Control Nodes:</b>
-
-      <ul>
-        - Supports adding either 1 or 3 control nodes (3 for high availability configuration); <br />
-        - If <code>platform exclusive</code> is enabled, <code>deployable applications</code> are forcibly disabled; the control node only runs platform components; <br />
-        - If <code>platform exclusive</code> is disabled, you can choose whether to enable <code>deployable applications</code>, allowing control nodes to run application workloads. <br />
-      </ul>
-
-      <b>Compute Nodes:</b>
-
-      <ul>
-        - If <code>platform exclusive</code> is enabled, <code>deployable applications</code> are forcibly disabled; <br />
-        - If <code>platform exclusive</code> is disabled, <code>deployable applications</code> are forcibly enabled. <br />
-      </ul>
-
-      <p>When using Kube-OVN, the node network card can be specified by inputting the gateway name.</p>
-      <p>If the node availability check fails, please adjust as prompted on the page and then re-add.</p>
+      Required if <b>Type</b> is set to <b>Node Port</b>. The port number used to access the tool, the API Port and Plugin Port cannot be duplicated, and the port value range is 30000-32767.
+      - <b>API Port:</b> The port used to access the Katanomi-api component via HTTP, which is used to perform tool integration binding-related operations.
+      - <b>Plugin Port:</b> The port used to access the Katanomi-plugin component via HTTP, which is used in the platform to handle toolchain integration binding events.
     </td>
   </tr>
 </table>
 
-## Installer Cleanup
+## KnativeEventing Parameter Description
 
-Usually, the installer will automatically delete itself after completing the installation. If the installer has not been automatically deleted after more than 30 minutes post-installation, please execute the following command on the node where the installer is located to forcibly delete the installer container:
-
-```bash
-docker rm -f minialauda-control-plane
+We provide the default parameter configuration as:
+```yaml
+  apiVersion: operator.knative.dev/v1beta1
+  kind: KnativeEventing
+  metadata:
+    name: knative-eventing
+    namespace: ${KNATIVE_EVENTING_NAMESPACE}
+  spec:
+    config:
+      config-br-defaults:
+        default-br-config: |
+          # Cluster-level default broker configuration
+          clusterDefault:
+            apiVersion: v1
+            kind: ConfigMap
+            name: config-br-default-channel
+            # The namespace where the configmap is located
+            # Should be the same as the namespace of the KnativeEventing instance!!!
+            namespace: ${KNATIVE_EVENTING_NAMESPACE}
 ```
+
+Configuring Knative Eventing CRDs: https://knative.dev/docs/install/operator/configuring-eventing-cr/
