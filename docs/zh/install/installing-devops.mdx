@@ -1,28 +1,27 @@
 ---
 weight: 30
-sourceSHA: 63cc630a17896f819b5b18d40d2c6ac088461700dc02787c0a4aeaa33026860b
+sourceSHA: ff741cd627085467d235d85e449b59afadc594faf770d40d74ecc2b6970ea4d0
 ---
 
-# 安装 Alauda DevOps
+# 安装 DevOps
 
 本指南提供了安装 `Alauda DevOps` 的详细步骤。
 
 ## 先决条件
 
-在继续之前，请确保安装以下操作员：
+在继续之前，请确保已安装以下操作员：
 
-- `Alauda DevOps v3` 操作员
-- `Alauda DevOps Eventing v3` 操作员
+- `Alauda DevOps v3` operator
 
 ## 部署位置
 
-在全球集群中部署 Katanomi 和 KnativeEventing 实例。业务集群可以根据需要部署实例以进行 CI/CD。
+在 global 集群中部署 Katanomi 实例。业务集群可以根据需要部署实例以支持 CI/CD。
 
 <table>
   <tr>
     <th style={{ whiteSpace: 'nowrap' }}>组件</th>
-    <th style={{ whiteSpace: 'nowrap' }}>全球集群</th>
-    <th style={{ whiteSpace: 'nowrap' }}>业务集群</th>
+    <th style={{ whiteSpace: 'nowrap' }}>Global Cluster</th>
+    <th style={{ whiteSpace: 'nowrap' }}>Business Cluster</th>
   </tr>
 
   <tr>
@@ -30,15 +29,9 @@ sourceSHA: 63cc630a17896f819b5b18d40d2c6ac088461700dc02787c0a4aeaa33026860b
     <td>已安装</td>
     <td>可选</td>
   </tr>
-
-  <tr>
-    <td>KnativeEventing</td>
-    <td>已安装</td>
-    <td>可选</td>
-  </tr>
 </table>
 
-## 程序步骤
+## 程序
 
 <Steps>
   ### 创建 Katanomi 实例
@@ -46,18 +39,18 @@ sourceSHA: 63cc630a17896f819b5b18d40d2c6ac088461700dc02787c0a4aeaa33026860b
   :::warning
   仅支持一个 Katanomi 实例。
 
-  - **全球集群**：在 `cpaas-system` 命名空间内进行部署。将 `ExternalURL` 设置为 `global` 集群的 `Platform URL`，并将 `Service.Type` 设置为 `Ingress`。
+  - **Global cluster**：在 `cpaas-system` 命名空间内进行部署。将 `ExternalURL` 设置为 `global` 集群的 `Platform URL`，并将 `Service.Type` 设置为 `Ingress`。
 
-  - **业务集群**：可以在任何命名空间中进行部署。
+  - **Business cluster**：可在任何命名空间内支持部署。
     :::
 
-  - 登录至 `Alauda Container Platform` 平台。
+  - 登录到 `Alauda Container Platform` 平台。
 
-  - 转到 `Platform Management` 下的 **Clusters** 选项卡。
+  - 在 `Platform Management` 中导航到 **Clusters** 选项卡。
 
-  - 选择已部署的集群并点击 **CLI Tools**。
+  - 选择已部署的集群，然后点击 **CLI Tools**。
 
-  - 对于 `global` 集群，执行以下命令获取 `ExternalURL`：
+  - 对于 `global` 集群，执行以下命令以获取 `ExternalURL`：
 
   ```shell
   export EXTERNAL_URL=$(kubectl get prdb -n cpaas-system base -o jsonpath='{.spec.platformURL}')
@@ -94,53 +87,14 @@ sourceSHA: 63cc630a17896f819b5b18d40d2c6ac088461700dc02787c0a4aeaa33026860b
   ```shell
   kubectl wait --for='jsonpath={.status.conditions[?(@.type=="Running")].status}=true' katanomis/katanomi -n cpaas-system --timeout=5m
   ```
-
-  ### 创建 KnativeEventing 实例
-
-  :::warning
-  仅支持一个 KnativeEventing 实例。确保 `default-br-config` 中的命名空间与 KnativeEventing 实例的命名空间匹配。
-  :::
-
-  - 登录至 `Alauda Container Platform` 平台。
-  - 在 `Platform Management` 选项卡中，点击 **Clusters** 选项卡。
-  - 选择已部署的集群并点击 **CLI Tools**。
-  - 创建 KnativeEventing 实例
-
-  ```shell
-  cat <<EOF | kubectl apply -f -
-  apiVersion: operator.knative.dev/v1beta1
-  kind: KnativeEventing
-  metadata:
-    name: knative-eventing
-    namespace: knative-operator
-  spec:
-    config:
-      config-br-defaults:
-        default-br-config: |
-          # 集群级默认代理配置
-          clusterDefault:
-            apiVersion: v1
-            kind: ConfigMap
-            name: config-br-default-channel
-            # 配置映射所在的命名空间
-            # 应与 KnativeEventing 实例的命名空间相同!!!
-            namespace: knative-operator
-  EOF
-  ```
-
-  - 等待 KnativeEventing 实例准备就绪
-
-  ```shell
-  kubectl wait --for='jsonpath={.status.conditions[?(@.type=="Ready")].status}=True' knativeeventings/knative-eventing -n knative-operator --timeout=5m
-  ```
 </Steps>
 
-## Katanomi 参数说明
+## Katanomi 参数描述
 
 <table>
   <tr>
     <th style={{ whiteSpace: 'nowrap' }}>参数</th>
-    <th style={{ whiteSpace: 'nowrap' }}>说明</th>
+    <th style={{ whiteSpace: 'nowrap' }}>描述</th>
   </tr>
 
   <tr>
@@ -155,7 +109,7 @@ sourceSHA: 63cc630a17896f819b5b18d40d2c6ac088461700dc02787c0a4aeaa33026860b
     <td><b>命名空间</b></td>
 
     <td>
-      Katanomi 实例可以部署到任何命名空间，只要该命名空间中的资源足够。
+      对于 `business clusters`，Katanomi 实例可以部署到任何命名空间，只要有足够的资源可用。对于 `global cluster`，Katanomi 实例必须专门部署在 `cpaas-system` 命名空间中。
     </td>
   </tr>
 
@@ -163,16 +117,16 @@ sourceSHA: 63cc630a17896f819b5b18d40d2c6ac088461700dc02787c0a4aeaa33026860b
     <td><b>外部 URL</b></td>
 
     <td>
-      访问地址，即 API 地址。根据服务类型的配置进行规划。<br />当服务类型为 `Node Port` 时，请输入 `http://<IP>:<Port>`。**端口**必须与服务的 `Node Port` 一致，API 端口用于服务访问。<br />当服务类型为 `Ingress` 时，请输入相应的访问地址，例如：`http://kubernetes.io`。
+      访问地址，即 API 地址。根据 Service Type 的配置进行规划。<br />当 Service Type 为 `Node Port` 时，请输入 `http://<IP>:<Port>`。**端口**必须与 Service 的 `Node Port` 一致，API 端口用于服务访问。<br />当 Service Type 为 `Ingress` 时，请输入相应的访问地址，例如：`http://kubernetes.io`。
     </td>
   </tr>
 
   <tr>
-    <td><b>副本</b></td>
+    <td><b>副本数</b></td>
 
     <td>
-      部署的副本数量，默认为 2。 <br />
-      当副本数量为 1 时，使用单节点部署。
+      部署的副本数量，默认值为 2。<br />
+      当副本数为 1 时，使用单节点部署。
     </td>
   </tr>
 
@@ -180,19 +134,19 @@ sourceSHA: 63cc630a17896f819b5b18d40d2c6ac088461700dc02787c0a4aeaa33026860b
     <td><b>资源</b></td>
 
     <td>
-      - <b>requests:</b> 运行工具时可消耗的最低 CPU 和内存资源量。
-      - <b>limits:</b> 运行工具时所需占用的最大 CPU 和内存资源量。
+      - <b>请求：</b> 工具运行时可以消耗的最小 CPU 和内存资源。
+      - <b>限制：</b> 工具运行时需要占用的最大 CPU 和内存资源。
     </td>
   </tr>
 
   <tr>
-    <td><b>Service.Type</b></td>
+    <td><b>Service.Type	</b></td>
 
     <td>
       必填字段。提供两种类型：Node Port 和 Ingress。
 
-      - <b>Node Port:</b> 通过静态端口暴露路由，通过 `<IP>:<port>` 访问。
-      - <b>Ingress:</b> 通过入站规则暴露路由，通过域名访问。
+      - <b>Node Port：</b> 通过静态端口暴露路由，通过 `<IP>:<port>` 访问。
+      - <b>Ingress：</b> 通过入站规则暴露路由，通过域名访问。
     </td>
   </tr>
 
@@ -200,11 +154,11 @@ sourceSHA: 63cc630a17896f819b5b18d40d2c6ac088461700dc02787c0a4aeaa33026860b
     <td><b>Service.Ingress</b></td>
 
     <td>
-      如果类型设置为 Ingress，则为必填项。
+      如果 Type 设置为 Ingress，则为必填项。
 
       - <b>域名：</b> 用于访问工具的域名。
       - <b>协议：</b> 通过 HTTP 或 HTTPS 访问工具。
-      - <b>密钥名称：</b> 通过 HTTPS 访问工具时使用的 SSL 证书名称。
+      - <b>Secret 名称：</b> 通过 HTTPS 访问工具时使用的 SSL 证书的名称。
     </td>
   </tr>
 
@@ -212,36 +166,10 @@ sourceSHA: 63cc630a17896f819b5b18d40d2c6ac088461700dc02787c0a4aeaa33026860b
     <td><b>Service.Node Port</b></td>
 
     <td>
-      如果 <b>Type</b> 设置为 <b>Node Port</b>，则为必填项。用于访问工具的端口号，API 端口和插件端口不能重复，端口值范围为 30000-32767。
+      如果 <b>Type</b> 设置为 <b>Node Port</b>，则为必填项。用于访问工具的端口号，API 端口和 Plugin 端口不能重复，端口值范围为 30000-32767。
 
-      - <b>API 端口：</b> 通过 HTTP 访问 Katanomi-api 组件的端口，用于执行工具集成绑定相关操作。
-      - <b>插件端口：</b> 通过 HTTP 访问 Katanomi-plugin 组件的端口，用于在平台中处理工具链集成绑定事件。
+      - <b>API 端口：</b> 用于通过 HTTP 访问 Katanomi-api 组件的端口，用于进行工具集成绑定相关操作。
+      - <b>Plugin 端口：</b> 用于通过 HTTP 访问 Katanomi-plugin 组件的端口，用于在平台中处理工具链集成绑定事件。
     </td>
   </tr>
 </table>
-
-## KnativeEventing 参数说明
-
-我们提供默认参数配置如下：
-
-```yaml
-  apiVersion: operator.knative.dev/v1beta1
-  kind: KnativeEventing
-  metadata:
-    name: knative-eventing
-    namespace: ${KNATIVE_EVENTING_NAMESPACE}
-  spec:
-    config:
-      config-br-defaults:
-        default-br-config: |
-          # 集群级默认代理配置
-          clusterDefault:
-            apiVersion: v1
-            kind: ConfigMap
-            name: config-br-default-channel
-            # 配置映射所在的命名空间
-            # 应与 KnativeEventing 实例的命名空间相同!!!
-            namespace: ${KNATIVE_EVENTING_NAMESPACE}
-```
-
-配置 Knative Eventing CRD：[https://knative.dev/docs/install/operator/configuring-eventing-cr/](https://knative.dev/docs/install/operator/configuring-eventing-cr/)
