@@ -12,11 +12,10 @@ This guide provides detailed steps for installing `Alauda DevOps`.
 Ensure the following operators are installed before proceeding:
 
 - `Alauda DevOps v3` operator
-- `Alauda DevOps Eventing v3` operator
 
 ## Deployment location
 
-Deploy Katanomi and KnativeEventing instances in the Global cluster. The business cluster can deploy instances as needed for CI/CD.
+Deploy Katanomi instances in the Global cluster. The business cluster can deploy instances as needed for CI/CD.
 
 <table>
   <tr>
@@ -26,11 +25,6 @@ Deploy Katanomi and KnativeEventing instances in the Global cluster. The busines
   </tr>
   <tr>
     <td>Katanomi</td>
-    <td>Installed</td>
-    <td>Optional</td>
-  </tr>
-    <tr>
-    <td>KnativeEventing</td>
     <td>Installed</td>
     <td>Optional</td>
   </tr>
@@ -90,44 +84,12 @@ Deploy Katanomi and KnativeEventing instances in the Global cluster. The busines
   kubectl wait --for='jsonpath={.status.conditions[?(@.type=="Running")].status}=true' katanomis/katanomi -n cpaas-system --timeout=5m
   ```
 
+  ### Preparation CI/CD Environment
 
-  ### Create the KnativeEventing Instance 
+  Before officially using the builds and releases features of Alauda DevOps, platform administrators need to complete some preparation.
 
-  :::warning
-  Only one KnativeEventing instance is supported. Ensure the namespace in the `default-br-config` matches the KnativeEventing instance's namespace.
-  :::
-
-  - Login to the `Alauda Container Platform`  platform.
-  - In the `Platform Management` tab, click the **Clusters** tab.
-  - Select the deployed cluster and click **CLI Tools**.
-  - Create the KnativeEventing Instance
-  ```shell
-  cat <<EOF | kubectl apply -f -
-  apiVersion: operator.knative.dev/v1beta1
-  kind: KnativeEventing
-  metadata:
-    name: knative-eventing
-    namespace: knative-operator
-  spec:
-    config:
-      config-br-defaults:
-        default-br-config: |
-          # Cluster-level default broker configuration
-          clusterDefault:
-            apiVersion: v1
-            kind: ConfigMap
-            name: config-br-default-channel
-            # The namespace where the configmap is located
-            # Should be the same as the namespace of the KnativeEventing instance!!!
-            namespace: knative-operator
-  EOF
-  ```
-
-  - Wait for the KnativeEventing Instance to be ready
-
-  ```shell
-  kubectl wait --for='jsonpath={.status.conditions[?(@.type=="Ready")].status}=True' knativeeventings/knative-eventing -n knative-operator --timeout=5m
-  ```
+  Refer to the documentation: `<Platform URL>/console-devops-docs/en/devops-initialization/cicd/init/`
+  
 </Steps>
 
 ## Katanomi Parameter Description
@@ -150,7 +112,7 @@ Deploy Katanomi and KnativeEventing instances in the Global cluster. The busines
     <td><b>Namespaces</b></td>
 
     <td>
-      The Katanomi instance can be deployed to any namespace as long as the resources in that namespace are sufficient.
+      For `business clusters`, the Katanomi instance can be deployed to any namespace provided there are sufficient resources available. For `global cluster`, the Katanomi instance must be deployed exclusively in the `cpaas-system` namespace.
     </td>
   </tr>
 
@@ -211,28 +173,3 @@ Deploy Katanomi and KnativeEventing instances in the Global cluster. The busines
     </td>
   </tr>
 </table>
-
-## KnativeEventing Parameter Description
-
-We provide the default parameter configuration as:
-```yaml
-  apiVersion: operator.knative.dev/v1beta1
-  kind: KnativeEventing
-  metadata:
-    name: knative-eventing
-    namespace: ${KNATIVE_EVENTING_NAMESPACE}
-  spec:
-    config:
-      config-br-defaults:
-        default-br-config: |
-          # Cluster-level default broker configuration
-          clusterDefault:
-            apiVersion: v1
-            kind: ConfigMap
-            name: config-br-default-channel
-            # The namespace where the configmap is located
-            # Should be the same as the namespace of the KnativeEventing instance!!!
-            namespace: ${KNATIVE_EVENTING_NAMESPACE}
-```
-
-Configuring Knative Eventing CRDs: https://knative.dev/docs/install/operator/configuring-eventing-cr/
