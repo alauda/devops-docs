@@ -3,21 +3,21 @@ weight: 40
 i18n:
   title:
     en: Release Notes
-sourceSHA: 01aaf279d544dc639652aabb2776785f30034e600477edb0ea1da9657900e2bf
+sourceSHA: 118a47a8f93057fb82a93f1c4070b003ff76ac382f64ec7fc962c03fa9b1d23b
 title: Release Notes
 ---
 
 # 发版说明
 
-## 4.0.0
+## 4.0.0（Alauda DevOps next-gen）
 
 ### 新增及优化功能
 
 #### Alauda DevOps Pipelines v4.0
 
-Alauda DevOps Pipelines 基于 Tekton 及其 API，提供了一种更友好和高效的构建与管理管道的方式。通过直观的界面和丰富的功能，用户可以轻松创建和管理管道，并获得实时反馈和洞察。
+Alauda DevOps Pipelines 基于 Tekton 及其 API，提供了一种更友好和高效的构建与管理流水线的方式。通过直观的界面和丰富的功能，用户可以轻松创建和管理流水线，并获得实时反馈和洞察。
 
-#### Alauda DevOps 连接器 v1.0（Alpha）
+#### Alauda DevOps Connectors v1.0（Alpha）
 
 连接器提供了一种安全高效的方式连接外部服务和工具，并以不干扰的方式与其集成。平台团队可以轻松安全地创建连接器，同时保护访问秘钥。
 
@@ -32,36 +32,25 @@ Alauda DevOps Pipelines 基于 Tekton 及其 API，提供了一种更友好和�
 
 提供了从之前的 DevOps 传统工具链迁移的完整逐步指南，具体内容见附加文档。
 
-#### 发布管道模板参数
+#### 流水线模板参数
 
-用户可以在管道模板设计中指定参数值，以便在执行管道时提供，而无需在基于模板创建管道时创建和分配参数。此更改使平台构建者能够创建更加灵活和可重用的管道模板，提高了管道创建的整体速度。
+用户可以在流水线模板设计中指定参数值，以便在执行流水线时提供，而无需在基于模板创建流水线时创建和分配参数。此更改使平台构建者能够创建更加灵活和可重用的流水线模板，提高了流水线创建的整体速度。
 
-### 下线通知
+## 3.20.0（Alauda DevOps）
 
-#### DevOps 传统版（3.20）
+### 新增及优化功能
 
-经过 DevOps 平台的整体重建，DevOps 传统模块及其组件将在未来版本中下线。受影响的组件包括：
+#### 工具链实例管理、平台范围集成及管道模板和配置移至 Alauda DevOps
 
-- Alauda DevOps v3（以前称为 `Katanomi Operator`）
-- Alauda DevOps Eventing v3（以前称为 `Knative Operator`）
-- Alauda DevOps Gitlab v3（以前称为 `Gitlab Operator`）
-- Alauda DevOps Harbor v3（以前称为 `Harbor Operator`）
-- Alauda DevOps SonarQube v3（以前称为 `SonarQube Operator`）
-- Alauda DevOps Nexus v3（以前称为 `Nexus Operator`）
-- Alauda DevOps Jenkins v3（以前称为 `Jenkins Operator`）
-- Alauda DevOps Tekton v3（以前称为 `Tekton Operator`）
+之前的工具链实例管理、平台范围集成以及管道模板和配置属于平台管理模块。随着新版本的发布，该功能已移至 Alauda DevOps。平台管理员现在可以在 Alauda DevOps 内切换到平台管理功能。
 
-受影响的功能列表包括：
+#### 项目范围集成及流水线模板移至 Alauda DevOps
 
-- DevOps（传统版）
-- CI/CD：
-  - 构建
-  - 发布
-  - Jenkins
-- 敏捷开发
-- 测试管理
-- 代码
-- 构件
+之前的项目范围集成和流水线模板属于项目管理模块。随着新版本的发布，该功能已移至 Alauda DevOps。项目管理员现在可以在 Alauda DevOps 内切换到项目管理功能。
+
+#### 流水线模板参数
+
+用户可以在保存流水线模板时指定执行流水线时使用的参数。这一更改使平台构建者能够创建更加灵活和可重用的流水线，提高了流水线创建的整体速度。
 
 ### 修复问题
 
