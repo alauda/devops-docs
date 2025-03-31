@@ -9,7 +9,7 @@ title: Release Notes
 
 # Release Notes
 
-## 4.0.0
+## 4.0.0 (Alauda DevOps next-gen)
 
 ### New and Optimized Features
 
@@ -37,33 +37,22 @@ A complete step-by-step migration guide from previous DevOps legacy toolchain is
 
 Users can specify parameter values in a pipeline template design to be provided when executing the pipeline instead of having to create and assign parameters when creating a pipeline based of the template. This change empowers platform builders to create more flexible and reusable pipeline templates and improves overall speed of pipeline creation.
 
+## 3.20.0 (Alauda DevOps)
 
-### Deprecation Notice
+### New and Optimized Features
 
-#### DevOps Legacy (3.20)
+#### Toolchain Instance Management, Platform scoped Integrations, and Pipeline Templates and configurations moved to Alauda DevOps 
 
-After an overall rebuild of the DevOps platform, the DevOps Legacy module and its components will be deprecated in future versions. The list of components include:
+Previously the toolchain instance management, platform scoped integrations, and pipeline templates and configurations were part of the Platform Management module. With the new release, this feature has been moved to Alauda DevOps. Platform Administrators can now switch to Platform Management functionality inside of Alauda DevOps.
 
-- Alauda DevOps v3 (previously known as `Katanomi Operator`)
-- Alauda DevOps Eventing v3 (previously known as `Knative Operator`)
-- Alauda DevOps Gitlab v3 (previously known as `Gitlab Operator`)
-- Alauda DevOps Harbor v3 (previously known as `Harbor Operator`)
-- Alauda DevOps SonarQube v3 (previously known as `SonarQube Operator`)
-- Alauda DevOps Nexus v3 (previously known as `Nexus Operator`)
-- Alauda DevOps Jenkins v3 (previously known as `Jenkins Operator`)
-- Alauda DevOps Tekton v3 (previously known as `Tekton Operator`)
+#### Project scoped Integrations and Pipelines Templates moved to Alauda DevOps
 
-The list of affected features are:
+Previously the project scoped integrations and pipelines templates were part of the Project Management module. With the new release, this feature has been moved to Alauda DevOps. Project Administrators can now switch to Project Management functionality inside of Alauda DevOps.
 
-- DevOps (legacy) 
-- CI/CD:
-  - Builds
-  - Releases
-  - Jenkins
-- Agile Development
-- Test Management
-- Code
-- Artifacts
+#### Release Pipelines Template parameters
+
+Users can specify which parameters are used when executing a release pipeline when saving a pipeline template. This change empowers platform builders to create more flexible and reusable release pipelines and improves overall speed of pipeline creation.
+
 
 
 ### Fixed Issues
