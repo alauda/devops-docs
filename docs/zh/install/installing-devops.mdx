@@ -1,21 +1,21 @@
 ---
 weight: 30
-sourceSHA: ff741cd627085467d235d85e449b59afadc594faf770d40d74ecc2b6970ea4d0
+sourceSHA: ccaa1c8e4e23d844be4f03964ea4cb19f573151216a6f9770b3840657401eda7
 ---
 
 # 安装 DevOps
 
 本指南提供了安装 `Alauda DevOps` 的详细步骤。
 
-## 先决条件
+## 前提条件
 
-在继续之前，请确保已安装以下操作员：
+在继续之前，请确保已安装以下操作器：
 
-- `Alauda DevOps v3` operator
+- `Alauda DevOps v3` 操作器
 
 ## 部署位置
 
-在 global 集群中部署 Katanomi 实例。业务集群可以根据需要部署实例以支持 CI/CD。
+在 `global` 集群中部署 Katanomi 实例。业务集群可以根据需要部署实例以支持 CI/CD。
 
 <table>
   <tr>
@@ -31,74 +31,81 @@ sourceSHA: ff741cd627085467d235d85e449b59afadc594faf770d40d74ecc2b6970ea4d0
   </tr>
 </table>
 
-## 程序
+## 流程
 
 <Steps>
-  ### 创建 Katanomi 实例
+### 创建 Katanomi 实例
 
-  :::warning
-  仅支持一个 Katanomi 实例。
+:::warning
+仅支持一个 Katanomi 实例。
 
-  - **Global cluster**：在 `cpaas-system` 命名空间内进行部署。将 `ExternalURL` 设置为 `global` 集群的 `Platform URL`，并将 `Service.Type` 设置为 `Ingress`。
+- **Global Cluster**：在 `cpaas-system` 命名空间内部署。将 `ExternalURL` 设置为 `global` 集群的 `Platform URL`，并将 `Service.Type` 设置为 `Ingress`。
 
-  - **Business cluster**：可在任何命名空间内支持部署。
-    :::
+- **Business Cluster**：支持在任何命名空间内进行部署。
+  :::
 
-  - 登录到 `Alauda Container Platform` 平台。
+- 登录到 `Alauda Container Platform` 平台。
 
-  - 在 `Platform Management` 中导航到 **Clusters** 选项卡。
+- 转到 `Platform Management` 下的 **Clusters** 标签。
 
-  - 选择已部署的集群，然后点击 **CLI Tools**。
+- 选择已部署的集群并单击 **CLI Tools**。
 
-  - 对于 `global` 集群，执行以下命令以获取 `ExternalURL`：
+- 对于 `global` 集群，执行以下命令以获取 `ExternalURL`：
 
-  ```shell
-  export EXTERNAL_URL=$(kubectl get prdb -n cpaas-system base -o jsonpath='{.spec.platformURL}')
-  ```
+```shell
+export EXTERNAL_URL=$(kubectl get prdb -n cpaas-system base -o jsonpath='{.spec.platformURL}')
+```
 
-  - 创建 Katanomi 实例（根据需要调整参数）
+- 创建 Katanomi 实例（根据需要调整参数）
 
-  ```shell
-  cat <<EOF | kubectl apply -f -
-  apiVersion: operators.katanomi.dev/v1alpha1
-  kind: Katanomi
-  metadata:
-    name: katanomi
-    namespace: cpaas-system
-  spec:
-    externalURL: ${EXTERNAL_URL}
-    replicas: 1
-    resources:
-      limits:
-        cpu: "2"
-        memory: 4Gi
-      requests:
-        cpu: "1"
-        memory: 2Gi
-    service:
-      ingress:
-        protocol: HTTP
-      type: Ingress
-  EOF
-  ```
+```shell
+cat <<EOF | kubectl apply -f -
+apiVersion: operators.katanomi.dev/v1alpha1
+kind: Katanomi
+metadata:
+  name: katanomi
+  namespace: cpaas-system
+spec:
+  externalURL: ${EXTERNAL_URL}
+  replicas: 1
+  resources:
+    limits:
+      cpu: "2"
+      memory: 4Gi
+    requests:
+      cpu: "1"
+      memory: 2Gi
+  service:
+    ingress:
+      protocol: HTTP
+    type: Ingress
+EOF
+```
 
-  - 等待 DevOps 实例准备就绪
+- 等待 DevOps 实例准备就绪
 
-  ```shell
-  kubectl wait --for='jsonpath={.status.conditions[?(@.type=="Running")].status}=true' katanomis/katanomi -n cpaas-system --timeout=5m
-  ```
+```shell
+kubectl wait --for='jsonpath={.status.conditions[?(@.type=="Running")].status}=true' katanomis/katanomi -n cpaas-system --timeout=5m
+```
+
+### 准备 CI/CD 环境
+
+在正式使用 DevOps 的构建和发布功能之前，平台管理员需要完成一些准备工作。
+
+参考文档：`<Platform URL>/console-devops-docs/zh/devops-initialization/cicd/init/`
+
 </Steps>
 
-## Katanomi 参数描述
+## Katanomi 参数说明
 
 <table>
   <tr>
     <th style={{ whiteSpace: 'nowrap' }}>参数</th>
-    <th style={{ whiteSpace: 'nowrap' }}>描述</th>
+    <th style={{ whiteSpace: 'nowrap' }}>说明</th>
   </tr>
 
   <tr>
-    <td><b>名称</b></td>
+    <td><b>Name</b></td>
 
     <td>
       Katanomi 实例的名称。
@@ -106,47 +113,47 @@ sourceSHA: ff741cd627085467d235d85e449b59afadc594faf770d40d74ecc2b6970ea4d0
   </tr>
 
   <tr>
-    <td><b>命名空间</b></td>
+    <td><b>Namespace</b></td>
 
     <td>
-      对于 `business clusters`，Katanomi 实例可以部署到任何命名空间，只要有足够的资源可用。对于 `global cluster`，Katanomi 实例必须专门部署在 `cpaas-system` 命名空间中。
+      对于 `Business Cluster`，Katanomi 实例可以部署到提供有足够资源的任何命名空间。对于 `Global Cluster`，Katanomi 实例必须仅部署在 `cpaas-system` 命名空间。
     </td>
   </tr>
 
   <tr>
-    <td><b>外部 URL</b></td>
+    <td><b>External URL</b></td>
 
     <td>
-      访问地址，即 API 地址。根据 Service Type 的配置进行规划。<br />当 Service Type 为 `Node Port` 时，请输入 `http://<IP>:<Port>`。**端口**必须与 Service 的 `Node Port` 一致，API 端口用于服务访问。<br />当 Service Type 为 `Ingress` 时，请输入相应的访问地址，例如：`http://kubernetes.io`。
+      访问地址，即 API 地址。请根据 Service Type 的配置进行规划。<br />当 Service Type 为 `Node Port` 时，请输入 `http://<IP>:<Port>`。**Port** 需与 Service 的 `Node Port` 保持一致，API 端口用于服务访问。<br />当 Service Type 为 `Ingress` 时，请输入相应的访问地址，例如：`http://kubernetes.io`。
     </td>
   </tr>
 
   <tr>
-    <td><b>副本数</b></td>
+    <td><b>Replicas</b></td>
 
     <td>
-      部署的副本数量，默认值为 2。<br />
+      部署的副本数量，默认为 2。<br />
       当副本数为 1 时，使用单节点部署。
     </td>
   </tr>
 
   <tr>
-    <td><b>资源</b></td>
+    <td><b>Resources</b></td>
 
     <td>
-      - <b>请求：</b> 工具运行时可以消耗的最小 CPU 和内存资源。
-      - <b>限制：</b> 工具运行时需要占用的最大 CPU 和内存资源。
+      - <b>Requests：</b>运行工具时可以消耗的最小 CPU 和内存资源。
+      - <b>Limits：</b>运行工具时需要占用的最大 CPU 和内存资源。
     </td>
   </tr>
 
   <tr>
-    <td><b>Service.Type	</b></td>
+    <td><b>Service.Type</b></td>
 
     <td>
       必填字段。提供两种类型：Node Port 和 Ingress。
 
-      - <b>Node Port：</b> 通过静态端口暴露路由，通过 `<IP>:<port>` 访问。
-      - <b>Ingress：</b> 通过入站规则暴露路由，通过域名访问。
+      - <b>Node Port：</b>通过静态端口暴露路由，通过 `<IP>:<port>` 访问。
+      - <b>Ingress：</b>通过入站规则暴露路由，通过域名访问。
     </td>
   </tr>
 
@@ -154,11 +161,11 @@ sourceSHA: ff741cd627085467d235d85e449b59afadc594faf770d40d74ecc2b6970ea4d0
     <td><b>Service.Ingress</b></td>
 
     <td>
-      如果 Type 设置为 Ingress，则为必填项。
+      如果 Type 设置为 Ingress，则必需。
 
-      - <b>域名：</b> 用于访问工具的域名。
-      - <b>协议：</b> 通过 HTTP 或 HTTPS 访问工具。
-      - <b>Secret 名称：</b> 通过 HTTPS 访问工具时使用的 SSL 证书的名称。
+      - <b>Domain：</b>用于访问该工具的域名。
+      - <b>Protocol：</b>通过 HTTP 或 HTTPS 访问工具。
+      - <b>Secret Name：</b>用于通过 HTTPS 访问工具时所使用的 SSL 证书的名称。
     </td>
   </tr>
 
@@ -166,10 +173,10 @@ sourceSHA: ff741cd627085467d235d85e449b59afadc594faf770d40d74ecc2b6970ea4d0
     <td><b>Service.Node Port</b></td>
 
     <td>
-      如果 <b>Type</b> 设置为 <b>Node Port</b>，则为必填项。用于访问工具的端口号，API 端口和 Plugin 端口不能重复，端口值范围为 30000-32767。
+      如果 <b>Type</b> 设置为 <b>Node Port</b>，则必需。用于访问工具的端口号，API Port 和 Plugin Port 不能重复，端口值范围为 30000-32767。
 
-      - <b>API 端口：</b> 用于通过 HTTP 访问 Katanomi-api 组件的端口，用于进行工具集成绑定相关操作。
-      - <b>Plugin 端口：</b> 用于通过 HTTP 访问 Katanomi-plugin 组件的端口，用于在平台中处理工具链集成绑定事件。
+      - <b>API Port：</b>通过 HTTP 访问 Katanomi-api 组件的端口，用于执行工具集成绑定相关操作。
+      - <b>Plugin Port：</b>通过 HTTP 访问 Katanomi-plugin 组件的端口，用于平台处理工具链集成绑定事件。
     </td>
   </tr>
 </table>

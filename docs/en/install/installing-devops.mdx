@@ -84,6 +84,12 @@ Deploy Katanomi instances in the Global cluster. The business cluster can deploy
   kubectl wait --for='jsonpath={.status.conditions[?(@.type=="Running")].status}=true' katanomis/katanomi -n cpaas-system --timeout=5m
   ```
 
+  ### Preparation CI/CD Environment
+
+  Before officially using the builds and releases features of DevOps, platform administrators need to complete some preparation.
+
+  Refer to the documentation: `<Platform URL>/console-devops-docs/en/devops-initialization/cicd/init/`
+  
 </Steps>
 
 ## Katanomi Parameter Description
