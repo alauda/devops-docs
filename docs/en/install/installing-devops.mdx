@@ -84,11 +84,11 @@ Deploy Katanomi instances in the Global cluster. The business cluster can deploy
   kubectl wait --for='jsonpath={.status.conditions[?(@.type=="Running")].status}=true' katanomis/katanomi -n cpaas-system --timeout=5m
   ```
 
-  ### Preparation CI/CD Environment
+  ### Preparation for CI/CD functionality
 
-  Before officially using the builds and releases features of Alauda DevOps, platform administrators need to complete some preparation.
+  Before starting using build and release pipelines features of Alauda DevOps, platform administrators need to complete some preparation.
 
-  Refer to the documentation: `<Platform URL>/console-devops-docs/en/devops-initialization/cicd/init/`
+  Refer to the documentation inside the platform after deploying Alauda DevOps v3: `<Platform URL>/console-devops-docs/en/devops-initialization/cicd/init/`
   
 </Steps>
 
