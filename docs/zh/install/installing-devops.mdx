@@ -1,6 +1,6 @@
 ---
 weight: 30
-sourceSHA: ccaa1c8e4e23d844be4f03964ea4cb19f573151216a6f9770b3840657401eda7
+sourceSHA: c63537a0aa9caecf243ed2299d83e682c6080e337b4457359e94328581c7d33b
 ---
 
 # 安装 Alauda DevOps
@@ -88,9 +88,9 @@ EOF
 kubectl wait --for='jsonpath={.status.conditions[?(@.type=="Running")].status}=true' katanomis/katanomi -n cpaas-system --timeout=5m
 ```
 
-### 准备 CI/CD 环境
+### 准备 CI/CD 功能
 
-在正式使用 DevOps 的构建和发布功能之前，平台管理员需要完成一些准备工作。
+在开始使用 Alauda DevOps 的构建和发布功能之前，平台管理员需要完成一些准备工作。
 
 参考文档：`<Platform URL>/console-devops-docs/zh/devops-initialization/cicd/init/`
 
@@ -113,7 +113,7 @@ kubectl wait --for='jsonpath={.status.conditions[?(@.type=="Running")].status}=t
   </tr>
 
   <tr>
-    <td><b>Namespace</b></td>
+    <td><b>Namespaces</b></td>
 
     <td>
       对于 `Business Cluster`，Katanomi 实例可以部署到提供有足够资源的任何命名空间。对于 `Global Cluster`，Katanomi 实例必须仅部署在 `cpaas-system` 命名空间。
@@ -152,8 +152,8 @@ kubectl wait --for='jsonpath={.status.conditions[?(@.type=="Running")].status}=t
     <td>
       必填字段。提供两种类型：Node Port 和 Ingress。
 
-      - <b>Node Port：</b>通过静态端口暴露路由，通过 `<IP>:<port>` 访问。
-      - <b>Ingress：</b>通过入站规则暴露路由，通过域名访问。
+      - <b>Node Port:</b>通过静态端口暴露路由，通过 `<IP>:<port>` 访问。
+      - <b>Ingress:</b>通过入站规则暴露路由，通过域名访问。
     </td>
   </tr>
 
@@ -163,9 +163,9 @@ kubectl wait --for='jsonpath={.status.conditions[?(@.type=="Running")].status}=t
     <td>
       如果 Type 设置为 Ingress，则必需。
 
-      - <b>Domain：</b>用于访问该工具的域名。
-      - <b>Protocol：</b>通过 HTTP 或 HTTPS 访问工具。
-      - <b>Secret Name：</b>用于通过 HTTPS 访问工具时所使用的 SSL 证书的名称。
+      - <b>Domain:</b>用于访问该工具的域名。
+      - <b>Protocol:</b>通过 HTTP 或 HTTPS 访问工具。
+      - <b>Secret Name:</b>用于通过 HTTPS 访问工具时所使用的 SSL 证书的名称。
     </td>
   </tr>
 
@@ -175,8 +175,44 @@ kubectl wait --for='jsonpath={.status.conditions[?(@.type=="Running")].status}=t
     <td>
       如果 <b>Type</b> 设置为 <b>Node Port</b>，则必需。用于访问工具的端口号，API Port 和 Plugin Port 不能重复，端口值范围为 30000-32767。
 
-      - <b>API Port：</b>通过 HTTP 访问 Katanomi-api 组件的端口，用于执行工具集成绑定相关操作。
-      - <b>Plugin Port：</b>通过 HTTP 访问 Katanomi-plugin 组件的端口，用于平台处理工具链集成绑定事件。
+      - <b>API Port:</b>通过 HTTP 访问 Katanomi-api 组件的端口，用于执行工具集成绑定相关操作。
+      - <b>Plugin Port:</b>通过 HTTP 访问 Katanomi-plugin 组件的端口，用于平台处理工具链集成绑定事件。
     </td>
   </tr>
 </table>
+
+## FAQ
+
+#### Katanomi Pod 启动失败，原因是只读根文件系统：/cpaas 目录不可写
+
+Katanomi 需要对主机系统上的 /cpaas 目录具有写权限，以存储审计日志。如果 pod 无法向该目录写入，则会启动失败。
+
+为解决此问题，可以配置替代的审计日志存储路径。例如：
+
+```yaml
+spec:
+  helmValues:
+    api:
+      auditHostPath: /tmp/audit
+    devopsApiServer:
+      auditHostPath: /tmp/audit
+    devopsApi:
+      auditHostPath: /tmp/audit
+```
+
+此配置指示 Katanomi 组件使用 /tmp/audit 作为审计日志存储路径，以确保与强制只读根文件系统的环境兼容。根据需要调整路径，以满足您的安全性和操作需求。
+
+#### 如何在部署 Katanomi 时配置自定义 ImagePullSecret
+
+要为您的 Katanomi 实例指定自定义 ImagePullSecret，请添加以下配置：
+
+```yaml
+spec:
+  helmValues:
+    global:
+      registry:
+        imagePullSecret:
+          name: <imagePullSecretName>
+```
+
+此配置确保 Katanomi 使用指定的 ImagePullSecret 从私有注册表拉取容器镜像。将 `imagePullSecretName` 替换为您预先创建的包含所需注册凭证的 Kubernetes 秘密名称。
