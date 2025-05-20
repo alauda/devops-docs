@@ -1,6 +1,6 @@
 ---
 weight: 30
-sourceSHA: fef3d229b476ad774bed3ada6ed41139b1446f42721e307618e142e5e3d2fdd0
+sourceSHA: fbe3f01abd323ec04a9a3f1840e748e0b388d1f32b526119ffd57e1720cdd4af
 ---
 
 # Установка Alauda DevOps
@@ -9,13 +9,19 @@ sourceSHA: fef3d229b476ad774bed3ada6ed41139b1446f42721e307618e142e5e3d2fdd0
 
 ## Предварительные условия
 
-Убедитесь, что следующие операторы установлены перед продолжением:
+Убедитесь, что оператор `Alauda DevOps v3` загружен перед продолжением.
 
-- Оператор `Alauda DevOps v3`
+Для получения дополнительной информации о загрузке оператора, пожалуйста, обратитесь к <ExternalSiteLink name="container_platform" href="ui/cli_tools/index.html#uploading-operators" children="Загрузка операторов" />
+
+## Установка оператора
+
+Перейдите на страницу `Администратор` -> `Marketplace` -> `OperatorHub`, найдите `Alauda DevOps v3` и затем нажмите на карточку оператора, чтобы войти на страницу деталей оператора.
+
+Нажмите `Установить`, чтобы установить оператор.
 
 ## Место развертывания
 
-Развертывайте экземпляры Katanomi в глобальном кластере. Бизнес-кластер может развертывать экземпляры по мере необходимости для CI/CD.
+Развертывайте экземпляры Katanomi в Глобальном кластере. Бизнес-кластер может развертывать экземпляры по мере необходимости для CI/CD.
 
 <table>
   <tr>
@@ -37,14 +43,12 @@ sourceSHA: fef3d229b476ad774bed3ada6ed41139b1446f42721e307618e142e5e3d2fdd0
 ### Создание экземпляра Katanomi
 
 :::warning
-
 Поддерживается только один экземпляр Katanomi.
 
-- **Глобальный кластер**: Развернуть в пространстве имен `cpaas-system`. Установите `ExternalURL` в `Platform URL` глобального кластера и `Service.Type` на `Ingress`.
+- **Глобальный кластер**: Развернуть в пространстве имен `cpaas-system`. Установите `ExternalURL` на `Platform URL` глобального кластера и `Service.Type` на `Ingress`.
 
-- **Бизнес-кластер**: Развертывание поддерживается в любом пространстве имен.
-
-:::
+- **Бизнес кластер**: Может быть развернут в любом пространстве имен, кроме `cpaas-system`.
+  :::
 
 - Войдите на платформу `Alauda Container Platform`.
 
@@ -52,21 +56,19 @@ sourceSHA: fef3d229b476ad774bed3ada6ed41139b1446f42721e307618e142e5e3d2fdd0
 
 - Выберите развернутый кластер и нажмите **CLI Tools**.
 
-- Для глобального кластера выполните следующее, чтобы получить `ExternalURL`:
-
-```shell
-export EXTERNAL_URL=$(kubectl get prdb -n cpaas-system base -o jsonpath='{.spec.platformURL}')
-```
-
 - Создайте экземпляр Katanomi (при необходимости отрегулируйте параметры)
 
+Глобальный кластер
+
 ```shell
+export NAMESPACE=cpaas-system
+export EXTERNAL_URL=$(kubectl get prdb -n cpaas-system base -o jsonpath='{.spec.platformURL}')
 cat <<EOF | kubectl apply -f -
 apiVersion: operators.katanomi.dev/v1alpha1
 kind: Katanomi
 metadata:
   name: katanomi
-  namespace: cpaas-system
+  namespace: ${NAMESPACE}
 spec:
   externalURL: ${EXTERNAL_URL}
   replicas: 1
@@ -84,6 +86,38 @@ spec:
 EOF
 ```
 
+Бизнес кластер
+
+```shell
+export NAMESPACE=katanomi-operator
+export NODE_IP=$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}' | awk -F" " '{print $1}')
+export EXTERNAL_URL=http://${NODE_IP}:32001
+cat <<EOF | kubectl apply -f -
+apiVersion: operators.katanomi.dev/v1alpha1
+kind: Katanomi
+metadata:
+  name: katanomi
+  namespace: ${NAMESPACE}
+spec:
+  externalURL: ${EXTERNAL_URL}
+  replicas: 1
+  resources:
+    limits:
+      cpu: "2"
+      memory: 4Gi
+    requests:
+      cpu: "1"
+      memory: 2Gi
+  service:
+    nodePort:
+      apiPort:
+        httpPort: 32000
+      pluginPort:
+        httpPort: 32001
+    type: NodePort
+EOF
+```
+
 - Дождитесь, пока экземпляр DevOps будет готов
 
 ```shell
@@ -92,9 +126,9 @@ kubectl wait --for='jsonpath={.status.conditions[?(@.type=="Running")].status}=t
 
 ### Подготовка к функциональности CI/CD
 
-Перед началом использования функций конвейеров сборки и выпуска Alauda DevOps администраторы платформы должны завершить некоторые подготовки.
+Перед началом использования возможностей сборки и выпуска Alauda DevOps администраторам платформы необходимо завершить некоторые подготовительные работы.
 
-См. документацию внутри платформы после развертывания Alauda DevOps v3: `<Platform URL>/console-devops-docs/en/devops-initialization/cicd/init/`
+Обратитесь к документации в платформе после развертывания Alauda DevOps v3: `<Platform URL>/console-devops-docs/en/devops-initialization/cicd/init/`
 
 </Steps>
 
@@ -118,7 +152,7 @@ kubectl wait --for='jsonpath={.status.conditions[?(@.type=="Running")].status}=t
     <td><b>Пространства имен</b></td>
 
     <td>
-      Для `бизнес кластеров` экземпляр Katanomi может быть развернут в любом пространстве имен, при условии, что есть достаточные ресурсы. Для `глобального кластера` экземпляр Katanomi должен быть развернут исключительно в пространстве имен `cpaas-system`.
+      Для `бизнес кластеров`, экземпляр Katanomi может быть развернут в любом пространстве имен при наличии достаточных ресурсов. Для `глобального кластера` экземпляр Katanomi должен быть развернут исключительно в пространстве имен `cpaas-system`.
     </td>
   </tr>
 
@@ -143,7 +177,7 @@ kubectl wait --for='jsonpath={.status.conditions[?(@.type=="Running")].status}=t
     <td><b>Ресурсы</b></td>
 
     <td>
-      - <b>requests:</b> Минимальное количество ресурсов CPU и памяти, которые могут быть потреблены при запуске инструмента.
+      - <b>requests:</b> Минимальное количество ресурсов CPU и памяти, которые могут быть использованы при запуске инструмента.
       - <b>limits:</b> Максимальное количество ресурсов CPU и памяти, которые необходимо занять при запуске инструмента.
     </td>
   </tr>
@@ -167,7 +201,7 @@ kubectl wait --for='jsonpath={.status.conditions[?(@.type=="Running")].status}=t
 
       - <b>Доменное имя:</b> Доменное имя, используемое для доступа к инструменту.
       - <b>Протокол:</b> Доступ к инструменту через HTTP или HTTPS.
-      - <b>Имя секрета:</b> Имя SSL-сертификата, используемое при доступе к инструменту через HTTPS.
+      - <b>Имя секрета:</b> Имя SSL-сертификата, используется при доступе к инструменту через HTTPS.
     </td>
   </tr>
 
@@ -175,10 +209,46 @@ kubectl wait --for='jsonpath={.status.conditions[?(@.type=="Running")].status}=t
     <td><b>Service.Node Port</b></td>
 
     <td>
-      Требуется, если <b>Type</b> установлен в <b>Node Port</b>. Номер порта, используемый для доступа к инструменту, API-порт и порт плагина не могут дублироваться, а диапазон значений порта составляет 30000-32767.
+      Требуется, если <b>Type</b> установлен в <b>Node Port</b>. Номер порта, используемый для доступа к инструменту; API-порт и порт плагина не могут дублироваться, и диапазон значений порта составляет 30000-32767.
 
       - <b>API Port:</b> Порт, используемый для доступа к компоненту Katanomi-api через HTTP, который используется для выполнения операций, связанных с интеграцией инструментов.
       - <b>Plugin Port:</b> Порт, используемый для доступа к компоненту Katanomi-plugin через HTTP, который используется на платформе для обработки событий интеграции инструментов.
     </td>
   </tr>
 </table>
+
+## Часто задаваемые вопросы
+
+#### Кластер Katanomi не может быть запущен из-за только для чтения корневой файловой системы: директория /cpaas не доступна для записи
+
+Katanomi требует права на запись в директорию /cpaas на хост-системе для хранения журналов аудита. Если под не может записывать в эту директорию, он не сможет запуститься.
+
+Чтобы решить эту проблему, вы можете настроить альтернативный путь хранения журналов аудита. Например:
+
+```yaml
+spec:
+  helmValues:
+    api:
+      auditHostPath: /tmp/audit
+    devopsApiServer:
+      auditHostPath: /tmp/audit
+    devopsApi:
+      auditHostPath: /tmp/audit
+```
+
+Эта конфигурация направляет компоненты Katanomi использовать /tmp/audit в качестве пути хранения журналов аудита, обеспечивая совместимость с окружениями, которые требуют только для чтения корневую файловую систему. Настройте путь по мере необходимости в соответствии с вашими требованиями безопасности и эксплуатации.
+
+#### Как настроить пользовательский ImagePullSecret при развертывании Katanomi
+
+Чтобы указать пользовательский ImagePullSecret для вашего экземпляра Katanomi, добавьте следующую конфигурацию:
+
+```yaml
+spec:
+  helmValues:
+    global:
+      registry:
+        imagePullSecret:
+          name: <imagePullSecretName>
+```
+
+Эта конфигурация гарантирует, что Katanomi использует указанный ImagePullSecret для получения контейнерных образов из частных реестров. Замените `imagePullSecretName` на имя вашего ранее созданного секрета Kubernetes, содержащего необходимые учетные данные реестра.

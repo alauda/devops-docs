@@ -9,9 +9,15 @@ This guide provides detailed steps for installing `Alauda DevOps`.
 
 ## Prerequisites
 
-Ensure the following operators are installed before proceeding:
+Ensure the `Alauda DevOps v3` operator is uploaded before proceeding.
 
-- `Alauda DevOps v3` operator
+For more information on uploading the operator, please refer to <ExternalSiteLink name="container_platform" href="ui/cli_tools/index.html#uploading-operators" children="Uploading Operators" />
+
+## Install Operator
+
+Go to the platform's `Administrator` -> `Marketplace` -> `OperatorHub` page, search for the `Alauda DevOps v3`, and then click on the operator card to enter the operator details page.
+
+Click `Install` to install the operator.
 
 ## Deployment location
 
@@ -34,62 +40,89 @@ Deploy Katanomi instances in the Global cluster. The business cluster can deploy
 
 <Steps>
 
-  ### Create the Katanomi Instance 
+### Create the Katanomi Instance 
 
-  :::warning
-  Only one Katanomi instance is supported.
+:::warning
+Only one Katanomi instance is supported.
 
-  - **Global cluster**: Deploy within the `cpaas-system` namespace. Set `ExternalURL` to the `Platform URL` of the `global` cluster and `Service.Type` to `Ingress`.
-  - **Business cluster**: Deployment is supported in any namespace.
-  :::
+- **Global cluster**: Deploy within the `cpaas-system` namespace. Set `ExternalURL` to the `Platform URL` of the `global` cluster and `Service.Type` to `Ingress`.
+- **Business cluster**: Can be deployed in any namespace other than `cpaas-system`.
+:::
 
-  - Login to the `Alauda Container Platform`  platform.
-  - Navigate to the **Clusters** tab under `Platform Management`.
-  - Select the deployed cluster and click **CLI Tools**.
-  - For the `global` cluster, execute the following to obtain the `ExternalURL`:
+- Login to the `Alauda Container Platform`  platform.
+- Navigate to the **Clusters** tab under `Platform Management`.
+- Select the deployed cluster and click **CLI Tools**.
+- Create the Katanomi Instance (adjust parameters as needed)
 
+global cluster
+```shell
+export NAMESPACE=cpaas-system
+export EXTERNAL_URL=$(kubectl get prdb -n cpaas-system base -o jsonpath='{.spec.platformURL}')
+cat <<EOF | kubectl apply -f -
+apiVersion: operators.katanomi.dev/v1alpha1
+kind: Katanomi
+metadata:
+  name: katanomi
+  namespace: ${NAMESPACE}
+spec:
+  externalURL: ${EXTERNAL_URL}
+  replicas: 1
+  resources:
+    limits:
+      cpu: "2"
+      memory: 4Gi
+    requests:
+      cpu: "1"
+      memory: 2Gi
+  service:
+    ingress:
+      protocol: HTTP
+    type: Ingress
+EOF
+```
 
-  ```shell
-  export EXTERNAL_URL=$(kubectl get prdb -n cpaas-system base -o jsonpath='{.spec.platformURL}')
-  ```
+business cluster
+```shell
+export NAMESPACE=katanomi-operator
+export NODE_IP=$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}' | awk -F" " '{print $1}')
+export EXTERNAL_URL=http://${NODE_IP}:32001
+cat <<EOF | kubectl apply -f -
+apiVersion: operators.katanomi.dev/v1alpha1
+kind: Katanomi
+metadata:
+  name: katanomi
+  namespace: ${NAMESPACE}
+spec:
+  externalURL: ${EXTERNAL_URL}
+  replicas: 1
+  resources:
+    limits:
+      cpu: "2"
+      memory: 4Gi
+    requests:
+      cpu: "1"
+      memory: 2Gi
+  service:
+    nodePort:
+      apiPort:
+        httpPort: 32000
+      pluginPort:
+        httpPort: 32001
+    type: NodePort
+EOF
+```
 
-  - Create the Katanomi Instance (adjust parameters as needed)
+- Wait for the DevOps Instance to be ready
+```shell
+kubectl wait --for='jsonpath={.status.conditions[?(@.type=="Running")].status}=true' katanomis/katanomi -n cpaas-system --timeout=5m
+```
 
-  ```shell
-  cat <<EOF | kubectl apply -f -
-  apiVersion: operators.katanomi.dev/v1alpha1
-  kind: Katanomi
-  metadata:
-    name: katanomi
-    namespace: cpaas-system
-  spec:
-    externalURL: ${EXTERNAL_URL}
-    replicas: 1
-    resources:
-      limits:
-        cpu: "2"
-        memory: 4Gi
-      requests:
-        cpu: "1"
-        memory: 2Gi
-    service:
-      ingress:
-        protocol: HTTP
-      type: Ingress
-  EOF
-  ```
+### Preparation for CI/CD functionality
 
-  - Wait for the DevOps Instance to be ready
-  ```shell
-  kubectl wait --for='jsonpath={.status.conditions[?(@.type=="Running")].status}=true' katanomis/katanomi -n cpaas-system --timeout=5m
-  ```
+Before starting using build and release pipelines features of Alauda DevOps, platform administrators need to complete some preparation.
 
-  ### Preparation for CI/CD functionality
+Refer to the documentation inside the platform after deploying Alauda DevOps v3: `<Platform URL>/console-devops-docs/en/devops-initialization/cicd/init/`
 
-  Before starting using build and release pipelines features of Alauda DevOps, platform administrators need to complete some preparation.
-
-  Refer to the documentation inside the platform after deploying Alauda DevOps v3: `<Platform URL>/console-devops-docs/en/devops-initialization/cicd/init/`
-  
 </Steps>
 
 ## Katanomi Parameter Description

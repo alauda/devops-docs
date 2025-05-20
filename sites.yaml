@@ -46,3 +46,6 @@
   version: v2025.1
   repo: https://github.com/AlaudaDevops/sonarqube-ce-operator
   image: devops/alauda-build-of-sonarqube-docs
+- name: container_platform
+  base: /container_platform
+  version: v4.0
