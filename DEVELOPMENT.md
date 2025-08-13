@@ -1,7 +1,5 @@
 # Development
 
-
-
 ## 文档依赖
 
 * 确保本地已安装 [Node.js](https://nodejs.org/en/) 和 [npm](https://www.npmjs.com/)
