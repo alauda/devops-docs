@@ -40,7 +40,7 @@ Deploy Katanomi instances in the Global cluster. The business cluster can deploy
 
 <Steps>
 
-### Create the Katanomi Instance 
+### Create the Katanomi Instance
 
 :::warning
 Only one Katanomi instance is supported.
@@ -113,9 +113,9 @@ EOF
 ```
 
 - Wait for the DevOps Instance to be ready
-```shell
-kubectl wait --for='jsonpath={.status.conditions[?(@.type=="Running")].status}=true' katanomis/katanomi -n cpaas-system --timeout=5m
-```
+  ```shell
+  kubectl wait --for='jsonpath={.status.conditions[?(@.type=="Running")].status}=true' katanomis/katanomi -n cpaas-system --timeout=5m
+  ```
 
 ### Preparation for CI/CD functionality
 
@@ -209,7 +209,7 @@ Refer to the documentation inside the platform after deploying Alauda DevOps v3:
 
 ## FAQ
 
-#### Katanomi Pod Fails to Start Due to Read-Only Root Filesystem: /cpaas Directory Not Writable
+### Katanomi Pod Fails to Start Due to Read-Only Root Filesystem: /cpaas Directory Not Writable
 
 Katanomi requires write access to the /cpaas directory on the host system to store audit logs. If the pod is unable to write to this directory, it will fail to start.
 
@@ -228,7 +228,7 @@ spec:
 
 This configuration directs Katanomi components to use /tmp/audit as the audit log storage path, ensuring compatibility with environments that enforce a read-only root filesystem. Adjust the path as needed to meet your security and operational requirements.
 
-#### How to Configure a Custom ImagePullSecret When Deploying Katanomi
+### How to Configure a Custom ImagePullSecret When Deploying Katanomi
 
 To specify a custom ImagePullSecret for your Katanomi instance, add the following configuration:
 
