@@ -1,0 +1,61 @@
+---
+weight: 30
+sourceSHA: 03b11615a739095db87029e6b3ad9b9986a42c6033f4d265744147def3832b5a
+---
+
+# Upgrading `Alauda DevOps v3` to `Alauda DevOps v4`
+
+This guide details the upgrade strategy and procedures for `Alauda DevOps v3` to `Alauda DevOps v4`  when upgrading from `Alauda Container Platform v3.18`  to ` v4.0`  or  `v4.1`.
+
+## Version Compatibility Matrix
+
+The following table shows the version requirements for `Alauda DevOps Operators` when upgrading from `ACP v3` to `v4`.
+
+| Alauda DevOps Operator    | Version   |
+| ------------------------- | --------- |
+| Katanomi                  | v3.20.z   |
+| Knative                   | v3.20.z   |
+| Alauda DevOps Jenkins v3  | v3.20.z   |
+| Alauda DevOps Pipelines   | v4.0.z    |
+| Alauda Build of Gitlab    | v17.8.z   |
+| Alauda Build of Harbor    | v2.12.z   |
+| Alauda Build of SonarQube | v2025.1.z |
+| Alauda Build of Nexus     | v3.76.z   |
+
+:::info
+The `.z` in version numbers indicates the latest available patch version for that minor release. During upgrade, you should always use the latest patch version to benefit from the most recent security updates and bug fixes.
+:::
+
+## Prerequisites
+
+You have two options for preparing the upgrade package:
+
+1. **Combined Package**: Merge the `ACP` core package with the `DevOps` extension package. To obtain the extension package, you can download `Alauda DevOps Operators` in bulk or as needed through the **Customer Portal**. For detailed instructions on obtaining the installation package, refer to <ExternalSiteLink name="container_platform" href="install/prepare/download.html" children="Downloading Operators" />.
+2. **Separate Packages**: If you choose not to combine the packages, prepare `Alauda DevOps Operators` separately and manually upload them after completing the `ACP` platform upgrade. For specific instructions, refer to <ExternalSiteLink name="container_platform" href="ui/cli_tools/#downloading-the-tool" children="Uploading Operators" />.
+
+**Upgrading ACP**
+
+Upgrade the `ACP` platform to version `v4`. For detailed instructions, refer to <ExternalSiteLink name="container_platform" href="upgrade/overview.html" children="Upgrading Container Platform" />.
+
+## Upgrading Alauda DevOps
+
+### Upgrade Operators via Migration {#Migration}
+
+After completing the `ACP` upgrade, upgrade the following Operators as documented:
+
+- [Migrating Alauda DevOps Pipelines](https://docs.alauda.io/devops/4.0/upgrade/migrating-tekton-v3-to-v4.md.html)
+- [Migrating Alauda Build of Gitlab](https://docs.alauda.io/alauda-build-of-gitlab/17.8/upgrade/02_14_upgrade_to_17.html)
+- [Migrating Alauda Build of Harbor](https://docs.alauda.io/alauda-build-of-harbor/2.12/upgrade/01_upgrade_2.6.4_to_2.12.html)
+- [Migrating Alauda Build of SonarQube](https://docs.alauda.io/alauda-build-of-sonarqube/2025.1/upgrade/05_upgrade_to_2025.1.0.html)
+- [Migrating Alauda Build of Nexus](https://docs.alauda.io/alauda-build-of-nexus/3.76/upgrade/migrate_to_3.76.0.html)
+
+### Upgrading Operators via UI {#UI}
+
+For `Katanomi`, `Knative`, and `Alauda DevOps Jenkins v3` Operators, complete the upgrade through the UI after the `ACP` upgrade:
+
+Navigate to `Administrator` -> `Marketplace` -> `Operator Hub`, switch to the target cluster and enter the corresponding Operator details page. Click the instance name you want to upgrade to enter the instance details page, then follow the instructions to complete the upgrade.
+
+## Next Steps
+
+You have now completed the upgrade of `Alauda DevOps Operators` in the `ACP v3` to `v4` upgrade scenario. However, the Operators upgraded via [Upgrade via Migration](#Migration) may not be the latest available versions. You can contact technical support to obtain the latest Operators and continue upgrading to the latest version using the [Upgrading Instances via UI](#UI) method.
+
