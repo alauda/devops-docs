@@ -20,10 +20,10 @@ releaseNotes:
   queryTemplates:
     ## TODO: change the versionMatch for the next releases
     unfixed: |
-      project = <%= project %> AND affectedVersion in ("katanomi-operator-<%= version %>") AND type = Bug AND status in (Cancelled) AND ReleaseNotesStatus = Publish
+      project = <%= project %> AND affectedVersion in ("<%= operator %>-<%= version %>") AND type = Bug AND status in (Cancelled) AND ReleaseNotesStatus = Publish
 
     fixed: |
-      project = <%= project %> AND fixVersion in ("katanomi-operator-<%= version %>") AND type = Bug AND status in (Done, Resolved) AND ReleaseNotesStatus = Publish
+      project = <%= project %> AND fixVersion in ("<%= operator %>-<%= version %>") AND type = Bug AND status in (Done, Resolved) AND ReleaseNotesStatus = Publish
 translate:
   # 系统提示语，ejs 模板，传入的参数有 `sourceLang`, `targetLang`, `additionalPrompts`
   # 其中 `sourceLang` 和 `targetLang` 是 `中文` 和 `英文` 两个字符串，
