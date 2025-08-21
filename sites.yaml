@@ -1,51 +1,6 @@
-- name: alauda-devops-pipelines
-  displayName:
-    en: Alauda DevOps Pipelines
-    zh: Alauda DevOps Pipelines
-  base: /alauda-devops-pipelines
+- name: alauda-devops-docs
+  base: /devops
   version: v4.0
-  repo: https://github.com/AlaudaDevops/tektoncd-operator
-  image: devops/alauda-devops-pipelines-docs
-- name: alauda-devops-connectors
-  displayName:
-    en: Alauda DevOps Connectors
-    zh: Alauda DevOps Connectors
-  base: /alauda-devops-connectors
-  version: v1.0
-  repo: https://github.com/AlaudaDevops/connectors-operator
-  image: devops/alauda-devops-connectors-docs
-- name: alauda-build-of-gitlab
-  displayName:
-    en: Alauda Build of Gitlab
-    zh: Alauda Build of Gitlab
-  base: /alauda-build-of-gitlab
-  version: v17.8
-  repo: https://github.com/AlaudaDevops/gitlab-ce-operator
-  image: devops/alauda-build-of-gitlab-docs
-- name: alauda-build-of-harbor
-  displayName:
-    en: Alauda Build of Harbor
-    zh: Alauda Build of Harbor
-  base: /alauda-build-of-harbor
-  version: v2.12
-  repo: https://github.com/AlaudaDevops/harbor-ce-operator
-  image: devops/alauda-build-of-harbor-docs
-- name: alauda-build-of-nexus
-  displayName:
-    en: Alauda Build of Nexus
-    zh: Alauda Build of Nexus
-  base: /alauda-build-of-nexus
-  version: v3.76
-  repo: https://github.com/AlaudaDevops/nexus-ce-operator
-  image: devops/alauda-build-of-nexus-docs
-- name: alauda-build-of-sonarqube
-  displayName:
-    en: Alauda Build of SonarQube
-    zh: Alauda Build of SonarQube
-  base: /alauda-build-of-sonarqube
-  version: v2025.1
-  repo: https://github.com/AlaudaDevops/sonarqube-ce-operator
-  image: devops/alauda-build-of-sonarqube-docs
 - name: container_platform
   base: /container_platform
   version: v4.0

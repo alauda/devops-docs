@@ -1,5 +1,5 @@
 ---
-weight: 40
+weight: 20
 i18n:
   title:
     en: Release Notes
@@ -9,88 +9,46 @@ title: Release Notes
 
 # Release Notes
 
-## Alauda DevOps (Next-Gen) - 4.0
+## 3.20 - Alauda DevOps
 
 ### New and Optimized Features
 
-#### Alauda DevOps Pipelines v4.0
+Alauda DevOps v3 plugins have released new versions containing security updates and some optimized features
 
-Based directly on Tekton and its APIs, Alauda DevOps Pipelines provides a more user-friendly and efficient way to build and manage pipelines. With an intuitive interface and a rich set of features, users can easily create and manage pipelines, and get real-time feedback and insights.
+- Users can integrate Alauda DevOps Jenkins v3 & Alauda DevOps v3 with the newest DevOps Toolchain.
 
-#### Alauda DevOps Connectors v1.0 (Alpha)
+Other changes:
 
-Connectors provide a secure and efficient way to connect to external services and tools and provide an unobtrusive way to integrate with them. Platform teams can easily and securely create connectors while keeping access secrets protected.
+- Fixed vulnerabilities in Jenkins, katanomi and Knative Eventing.
 
-#### DevOps Toolchain
+The version of plugins are as follows:
 
-Provides a easy deployable DevOps toolchain instances with a set of deployment templates to increase deployment speed and confidence while keeping full customizability. Includes:
+| Plugin Name | Plugin Version |
+| - | - |
+| Alauda DevOps v3 | 3.20.31 |
+| Alauda DevOps Jenkins v3 | 3.20.15 |
+| Alauda DevOps Eventing v3 | 3.20.6 |
 
-- Alauda Build of Gitlab v17.8
-- Alauda Build of Harbor v2.12
-- Alauda Build of SonarQube v2025.1
-- Alauda Build of Nexus v3.79
+### Fixed Issues
 
-A complete step-by-step migration guide from previous DevOps legacy toolchain is provided within the addon's documentation.
+{/* release-notes-for-bugs?template=fixed&project=DEVOPS&version=katanomi-operator-v3.20.31,knative-operator-v3.20.6,jenkins-operator-v3.20.15 */}
 
-## Alauda DevOps v3 - 3.20
+### Known Issues
 
-### Compatibility and support matrix
-
-The following table shows the compatibility and support matrix between the Alauda Build of `Alauda DevOps v3` operator and ACP versions.
-
-| Alauda DevOps v3 Operator Version |  ACP Version |
-| --------------------------------- | --------------- |
-| v3.20.28                        | v4.0 |
-| v3.20.23                        | v4.0 |
-| v3.20.13                        | v4.0 |
+{/* release-notes-for-bugs?template=unfixed&project=DEVOPS&version=katanomi-operator-v3.20.31,knative-operator-v3.20.6,jenkins-operator-v3.20.15 */}
 
 
-### v3.20.28
+### Deprecated and removed features
 
-#### New and Optimized Features
+#### Removed features
 
-#### Fixed Issues
+##### Deployment of DevOps Toolchain removed
 
-{/* release-notes-for-bugs?template=fixed&project=DEVOPS&version=v3.20.28 */}
+Deployment of DevOps Toolchain is disabled in Alauda DevOps UI for the following plugins:
 
-#### Known Issues
-
-{/* release-notes-for-bugs?template=unfixed&project=DEVOPS&version=v3.20.28 */}
-
-### v3.20.23
-
-#### New and Optimized Features
-
-#### Fixed Issues
-
-{/* release-notes-for-bugs?template=fixed&project=DEVOPS&version=v3.20.23 */}
-
-#### Known Issues
-
-{/* release-notes-for-bugs?template=unfixed&project=DEVOPS&version=v3.20.23 */}
-
-
-### v3.20.13
-
-#### New and Optimized Features
-
-
-##### Toolchain Instance Management, Platform scoped Integrations, and Pipeline Templates and configurations moved to Alauda DevOps
-
-Previously the toolchain instance management, platform scoped integrations, and pipeline templates and configurations were part of the Platform Management module. With the new release, this feature has been moved to Alauda DevOps. Platform Administrators can now switch to Platform Management functionality inside of Alauda DevOps.
-
-##### Project scoped Integrations and Pipelines Templates moved to Alauda DevOps
-
-Previously the project scoped integrations and pipelines templates were part of the Project Management module. With the new release, this feature has been moved to Alauda DevOps. Project Administrators can now switch to Project Management functionality inside of Alauda DevOps.
-
-##### Release Pipelines Template parameters
-
-Users can specify which parameters are used when executing a release pipeline when saving a pipeline template. This change empowers platform builders to create more flexible and reusable release pipelines and improves overall speed of pipeline creation.
-
-#### Fixed Issues
-
-{/* release-notes-for-bugs?template=fixed&project=DEVOPS&version=v3.20.13 */}
-
-#### Known Issues
-
-{/* release-notes-for-bugs?template=unfixed&project=DEVOPS&version=v3.20.13 */}
+| Plugin Name | Plugin Status |
+| - | - |
+| Alauda DevOps Gitlab v3 | Deprecated |
+| Alauda DevOps Harbor v3 | Deprecated |
+| Alauda DevOps SonarQube v3 | Deprecated |
+| Alauda DevOps Nexus v3 | Deprecated |
