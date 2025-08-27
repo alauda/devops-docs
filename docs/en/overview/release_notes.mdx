@@ -9,29 +9,61 @@ title: Release Notes
 
 # Release Notes
 
-## Alauda DevOps (Next-Gen) - 4.0
+:::info
+The release notes include aggregated content for multiple versions of each `Operator` in the `Alauda DevOps v4.1` compatibility matrix. More detailed release notes for each `Operator` can be further viewed in the corresponding `Operator` documentation center.
+:::
+
+## Alauda DevOps (Next-Gen) - 4.1
+
+### Compatibility and Support Matrix
+
+The table below shows the version matrix of the `Operators` included in `Alauda DevOps v4.1`.
+
+| Alauda DevOps Version | Alauda DevOps Pipeline Version | Alauda DevOps Connectors Version | Toolchain Version                                            |
+| --------------------- | ------------------------------ | -------------------------------- | ------------------------------------------------------------ |
+| v4.1                  | v4.1, v4.2                     | v1.1, v1.2                       | Alauda Build of Gitlab: v17.11<br /> Alauda Build of Harbor: v2.12<br />Alauda Build of SonarQube: v2025.1<br />Alauda Build of Nexus: v3.81 |
+
+
 
 ### New and Optimized Features
 
-#### Alauda DevOps Pipelines v4.0
+#### Alauda DevOps Pipeline
 
-Based directly on Tekton and its APIs, Alauda DevOps Pipelines provides a more user-friendly and efficient way to build and manage pipelines. With an intuitive interface and a rich set of features, users can easily create and manage pipelines, and get real-time feedback and insights.
+- Task Functionality Enhancement: New task types added, including `kubectl`, `git`, `Python`, and `Pytest`; standardized pipeline templates for `Java` and `Python` provided.
+- Security Capabilities Upgrade: Integrated `syft`, `cosign`, and `trivy` tasks to enable image SBOM generation, signature verification, and vulnerability scanning.
+- Configuration Enhancement: Supports pipeline trigger templates; `EventListener` now supports custom `securityContext` and `imagePullSecrets` configurations.
+- User Experience Optimization: End-to-end experience optimization for pipeline orchestration.
+- Tekton Community Upstream Issues Optimized.
 
-#### Alauda DevOps Connectors v1.0 (Alpha)
+#### Alauda DevOps Connectors
 
-Connectors provide a secure and efficient way to connect to external services and tools and provide an unobtrusive way to integrate with them. Platform teams can easily and securely create connectors while keeping access secrets protected.
+- Supports using the `OCI Connector` when pulling images in `Kubernetes`.
+- Adds a new `Kubernetes Connector` to integrate with `Kubernetes` clusters and use it in workloads/pipelines.
 
-#### DevOps Toolchain
+#### DevOps Toolchain 
 
-Provides a easy deployable DevOps toolchain instances with a set of deployment templates to increase deployment speed and confidence while keeping full customizability. Includes:
+This update enhances the overall security and stability of the toolchain, which includes the following:
 
-- Alauda Build of Gitlab v17.8
-- Alauda Build of Harbor v2.12
-- Alauda Build of SonarQube v2025.1
-- Alauda Build of Nexus v3.76
+- Alauda Build of Gitlab
 
-A complete step-by-step migration guide from previous DevOps legacy toolchain is provided within the addon's documentation.
+-  Alauda Build of Harbor
 
-#### Release Pipelines Template parameters
+- Alauda Build of SonarQube
 
-Users can specify parameter values in a pipeline template design to be provided when executing the pipeline instead of having to create and assign parameters when creating a pipeline based of the template. This change empowers platform builders to create more flexible and reusable pipeline templates and improves overall speed of pipeline creation.
+- Alauda Build of Nexus
+
+### Breaking Changes
+
+- Support for the `ClusterTask` object has been removed in this version of `Alauda DevOps Pipeline`.
+- The `OCI ConnectorClass` resolver-type format has changed in `Alauda DevOps Pipeline`, which may affect scenarios using the `OCI connector`.
+- In `Alauda DevOps Connectors`, after upgrading to `v1.1.0`, connectors  created in `v1.0.8` may encounter errors. For more details, please refer  to [Release Notes](https://docs.alauda.io/alauda-devops-connectors/1.1/overview/release_notes.html#services-c-xxx-already-exist).
+
+### Fixed Issues
+
+- Fixed an issue in `Alauda DevOps Pipeline` where the `ConfigMap` key  displayed in the UI did not match the actual execution.
+- Fixed several issues in `Alauda DevOps Pipeline`, including failure to delete `Tekton` components, trigger resources not being automatically  imported, and the creation of zombie processes by tekton-hub-api.
+- Fixed several stability-related issues in `Alauda DevOps Pipeline`.
+
+### Known Issues
+
+No issues in this release.
