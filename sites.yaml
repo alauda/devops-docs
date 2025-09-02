@@ -49,3 +49,6 @@
 - name: container_platform
   base: /container_platform
   version: v4.0
+- name: alauda-devops
+  base: /devops
+  version: v3.20
