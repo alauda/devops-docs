@@ -230,6 +230,21 @@ spec:
     options: {}
 ```
 
+:::warning[Important: Ensuring Both Legacy and New Pipelines Work]
+The configuration above sets `runAsUser: 0` in the global `default-pod-template` to ensure backward compatibility with your existing Pipelines and container images.
+
+**However, this configuration will cause new Pipelines using Tasks from the Tekton catalog to fail**, because these catalog Tasks require `runAsUser: 65532` and `fsGroup: 65532` for security and proper file permissions.
+
+**Solution**: To ensure both legacy Pipelines and new Pipelines (using official Tasks) work correctly, you need to override the Pod template configuration at the PipelineRun level for Pipelines using official Tasks.
+
+For detailed guidance on how to configure Pod templates for different scenarios, including:
+- How to override Pod template for specific PipelineRuns
+- Using TaskRunSpecs for fine-grained control when mixing official and custom Tasks
+- Security best practices and configuration examples (see Example 5: Using Official Tasks with Legacy Global Configuration)
+
+Please refer to the <ExternalSiteLink name="alauda-devops-pipelines" href="/configure/pod_template_guide" children="Pod Template Configuration Guide" />.
+:::
+
 ### 5. (Optional) Monitor and Verify Migration Progress
 
 After the `Alauda DevOps Pipelines` operator is deployed (step 2), it automatically begins migrating existing Tekton resources. You can monitor the migration progress and verify completion at any time during or after the configuration process.
