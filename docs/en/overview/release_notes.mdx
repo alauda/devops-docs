@@ -21,13 +21,13 @@ The table below shows the version matrix of the `Operators` included in `Alauda 
 
 | Alauda DevOps Version | Alauda DevOps Pipeline Version | Alauda DevOps Connectors Version | Toolchain Version                                            |
 | --------------------- | ------------------------------ | -------------------------------- | ------------------------------------------------------------ |
-| v4.1                  | v4.1, v4.2, v4.3               | v1.1, v1.2                       | Alauda Build of Gitlab: v17.11<br /> Alauda Build of Harbor: v2.12<br />Alauda Build of SonarQube: v2025.1<br />Alauda Build of Nexus: v3.81 |
+| v4.1                  | v4.1, v4.2, v4.3, v4.4                     | v1.1, v1.2, v1.4                       | Alauda Build of Gitlab: v17.11<br /> Alauda Build of Harbor: v2.12<br />Alauda Build of SonarQube: v2025.1<br />Alauda Build of Nexus: v3.81 |
 
 
 
 ### New and Optimized Features
 
-#### Alauda DevOps Pipeline
+#### Alauda DevOps Pipelines
 
 - Task Functionality Enhancement: New task types added, including `kubectl`, `git`, `Python`, and `Pytest`; standardized pipeline templates for `Java` , `Helm` and `Python` provided.
 - Allow registration of custom `Pipeline` or `Task` in the `Hub`.
@@ -35,11 +35,14 @@ The table below shows the version matrix of the `Operators` included in `Alauda 
 - Configuration Enhancement: Supports pipeline trigger templates; `EventListener` now supports custom `securityContext` and `imagePullSecrets` configurations.
 - User Experience Optimization: End-to-end experience optimization for pipeline orchestration.
 - Tekton Community Upstream Issues Optimized.
+- More detailed release notes for different versions can be found in the `Alauda DevOps Pipelines` documentation center.
 
 #### Alauda DevOps Connectors
 
 - Supports using the `OCI Connector` when pulling images in `Kubernetes`.
 - Adds a new `Kubernetes Connector` to integrate with `Kubernetes` clusters and use it in workloads/pipelines.
+- Support integration with Maven and PyPI Registries by using Maven Connector and PyPI Connector. 
+- More detailed release notes for different versions can be found in the `Alauda DevOps Connectors` documentation center.
 
 #### DevOps Toolchain
 
@@ -61,11 +64,11 @@ This update enhances the overall security and stability of the toolchain, which 
 
 ### Fixed Issues
 
-{/* release-notes-for-bugs?template=fixedIssues&project=DEVOPS&version=(fixVersion ~ "connectors-operator-v1.2.*" OR fixVersion ~ "connectors-operator-v1.1.*" OR fixVersion ~ "tektoncd-operator-v4.2.*" OR fixVersion ~ "tektoncd-operator-v4.3.*" OR fixVersion ~ "tektoncd-operator-v4.1.*" OR fixVersion ~ "gitlab-ce-operator-v17.11.*" OR fixVersion ~ "nexus-ce-operator-v3.81.*") */}
+{/* release-notes-for-bugs?template=fixedIssues&project=DEVOPS&version=(fixVersion ~ "connectors-operator-v1.4.*" OR fixVersion ~ "connectors-operator-v1.2.*" OR fixVersion ~ "connectors-operator-v1.1.*" OR fixVersion ~ "tektoncd-operator-v4.2.*" OR fixVersion ~ "tektoncd-operator-v4.3.*" OR fixVersion ~ "tektoncd-operator-v4.4.*" OR fixVersion ~ "tektoncd-operator-v4.1.*" OR fixVersion ~ "gitlab-ce-operator-v17.11.*" OR fixVersion ~ "nexus-ce-operator-v3.81.*") */}
 
 ### Known Issues
 
-{/* release-notes-for-bugs?template=unfixedIssues&project=DEVOPS&version=(affectedVersion ~ "connectors-operator-v1.2.*" OR affectedVersion ~ "connectors-operator-v1.1.*" OR affectedVersion ~ "tektoncd-operator-v4.2.*" OR fixVersion ~ "tektoncd-operator-v4.3.*" OR affectedVersion ~ "tektoncd-operator-v4.1.*" OR affectedVersion ~ "gitlab-ce-operator-v17.11.*" OR affectedVersion ~ "nexus-ce-operator-v3.81.*") */}
+{/* release-notes-for-bugs?template=unfixedIssues&project=DEVOPS&version=(fixVersion ~ "connectors-operator-v1.4.*" OR affectedVersion ~ "connectors-operator-v1.2.*" OR affectedVersion ~ "connectors-operator-v1.1.*" OR affectedVersion ~ "tektoncd-operator-v4.2.*" OR fixVersion ~ "tektoncd-operator-v4.3.*" OR fixVersion ~ "tektoncd-operator-v4.4.*" OR affectedVersion ~ "tektoncd-operator-v4.1.*" OR affectedVersion ~ "gitlab-ce-operator-v17.11.*" OR affectedVersion ~ "nexus-ce-operator-v3.81.*") */}
 
 
 
