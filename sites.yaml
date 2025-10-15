@@ -3,7 +3,7 @@
     en: Alauda DevOps Pipelines
     zh: Alauda DevOps Pipelines
   base: /alauda-devops-pipelines
-  version: v4.3
+  version: v4.4
   repo: https://github.com/AlaudaDevops/tektoncd-operator
   image: devops/alauda-devops-pipelines-docs
 - name: alauda-devops-connectors
@@ -11,7 +11,7 @@
     en: Alauda DevOps Connectors
     zh: Alauda DevOps Connectors
   base: /alauda-devops-connectors
-  version: v1.2
+  version: v1.4
   repo: https://github.com/AlaudaDevops/connectors-operator
   image: devops/alauda-devops-connectors-docs
 - name: alauda-build-of-gitlab
