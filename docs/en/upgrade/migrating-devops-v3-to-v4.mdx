@@ -5,17 +5,17 @@ sourceSHA: 03b11615a739095db87029e6b3ad9b9986a42c6033f4d265744147def3832b5a
 
 # Migrating Alauda DevOps to Alauda DevOps (Next-Gen)
 
-This guide details the upgrade strategy and procedures for `Alauda DevOps` to `Alauda DevOps (Next-Gen)` when migrating from `Alauda Container Platform`  `v3.16` or `v3.18` to `v4.0`.
+This guide details the upgrade strategy and procedures for `Alauda DevOps` to `Alauda DevOps (Next-Gen)` when migrating from `Alauda Container Platform`  `v3.18` or `v4.0` to `v4.1`.
 
 ## Prerequisites
 
 ### Upgrade ACP Platform
 
-First, upgrade the `ACP` platform to version `v4.0`. For detailed instructions, refer to  <ExternalSiteLink name="container_platform"  href="upgrade/overview.html" children="Upgrading Container Platform"  />.
+First, upgrade the `ACP` platform to version `v4.1`. For detailed instructions, refer to  <ExternalSiteLink name="container_platform"  href="upgrade/overview.html" children="Upgrading Container Platform"  />.
 
 ### Upgrade Alauda DevOps to v3.20
 
-After upgrading `ACP` to `v4.0` version, you must first upgrade `Alauda DevOps` to `v3.20` version in order to complete the migration from `Alauda DevOps` to `Alauda DevOps (Next-Gen)`. Please refer to [Upgrading Alauda DevOps to v3.20](./upgrading-devops-v3.mdx)
+Before migration, ensure that `Alauda DevOps` is upgraded to version `v3.20`. This step is required for compatibility and successful migration to `Alauda DevOps (Next-Gen)`. Please refer to [Upgrading Alauda DevOps to v3.20](./upgrading-devops-v3.mdx)
 
 
 
@@ -56,9 +56,3 @@ Please refer to the following documents for migrating each operator:
 ## Next Steps
 
 You have now completed the migration from `Alauda DevOps` to `Alauda DevOps (Next Generation)`. In `Alauda DevOps (Next Gen)`, if you want to use the updated version for each Operator, you can further learn how to upgrade to the updated version in each operator's documentation.
-
-:::info
-
-Special note: If you need to continue using the **Build** and **Release** pipeline feature in `Alauda DevOps`, `Alauda DevOps Pipelines` only supports version `v4.0`.
-
-:::

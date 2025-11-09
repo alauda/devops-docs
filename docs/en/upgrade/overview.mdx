@@ -9,42 +9,56 @@ title: Overview
 
 # Overview
 
-When upgrading `Alauda Container Platform (ACP)` from `v3.16` or `v3.18` to `v4.0`, the upgrade of `Alauda DevOps` involves two major steps:
+When upgrading `Alauda Container Platform (ACP)` to `v4.1`, the upgrade strategy for `Alauda DevOps` depends on your current platform version. In all scenarios, migration to `Alauda DevOps (Next-Gen)` is **mandatory** to ensure platform **security**, **maintainability**, and compatibility with `ACP v4.1`.
 
-1. **Upgrading `Alauda DevOps` to v3.20**  
-2. **Migrating `Alauda DevOps` to Alauda DevOps (Next-Gen)**
+# Upgrade Scenarios
 
-These two steps together form the complete upgrade and migration path for `Alauda DevOps`.
+<Tabs>
+<Tab label="Upgrading from ACP v3.18">
 
+If your current ACP version is `v3.18` , the `Alauda DevOps` upgrade path includes **two required steps**:
 
-# Recommended Upgrade Path
+1. **Upgrade `Alauda DevOps` to v3.20**  
+   This version ensures compatibility with `ACP v4.1` and serves as the foundation for migration.
 
-Before migration, it is mandatory to upgrade `Alauda DevOps` to **v3.20**. This version ensures full compatibility with `ACP v4.0` and provides the necessary foundation for migration to the `Alauda DevOps (Next-Gen)`.
+2. **Migrate `Alauda DevOps` to Alauda DevOps (Next-Gen)**  
+   Migration to the next-generation architecture is required to maintain platform security and long-term support.
 
-After upgrading to `v3.20`, you may choose whether to proceed with the migration:
+</Tab>
 
-- **Migration is optional**, and existing `Alauda DevOps v3.20` can continue running on `ACP v4.0` without issues.  
+<Tab label="Upgrading from ACP v4.0">
 
-- However, it is strongly recommended to migrate to `Alauda DevOps (Next-Gen)` for the following reasons:  
+If your current ACP version is `v4.0`, verify that `Alauda DevOps` has already been upgraded to **v3.20** before proceeding.  
+After confirming the version, you must **migrate to `Alauda DevOps (Next-Gen)`** to align with `ACP v4.1` requirements.
 
-  - `Alauda DevOps (Next-Gen)` provides enhanced **security**, improved **maintainability**, and overall platform robustness.  
-  - Starting from **ACP v4.1**, the following `Alauda DevOps v3` Operators will **no longer be maintained**:
+</Tab>
+</Tabs>
 
-  | Operator                   | Status      |
-  | -------------------------- | ----------- |
-  | Alauda DevOps Tekton v3    | End-of-life |
-  | Alauda DevOps GitLab v3    | End-of-life |
-  | Alauda DevOps Harbor v3    | End-of-life |
-  | Alauda DevOps SonarQube v3 | End-of-life |
-  | Alauda DevOps Nexus v3     | End-of-life |
+# Why Migration Is Mandatory
+
+Migration to `Alauda DevOps (Next-Gen)` is required for the following reasons:
+
+1. Enhanced **security**, improved **maintainability**, and overall platform robustness.  
+2. Starting from **ACP v4.1**, the following `Alauda DevOps v3` Operators will reach **end-of-life** and will **no longer be maintained or deployable**:
+
+| Operator Name              | Status      |
+| -------------------------- | ----------- |
+| Alauda DevOps Tekton v3    | End-of-life |
+| Alauda DevOps GitLab v3    | End-of-life |
+| Alauda DevOps Harbor v3    | End-of-life |
+| Alauda DevOps SonarQube v3 | End-of-life |
+| Alauda DevOps Nexus v3     | End-of-life |
 
 # Summary
 
-| Step | Description | Required |
-|------|--------------|-----------|
-| Upgrade to v3.20 | Upgrade `Alauda DevOps` to version `v3.20` to ensure compatibility with `ACP v4.0` |  Yes |
-| Migrate to Next-Gen | Migration to `Alauda DevOps (Next-Gen)` to Improve Security Capability and Maintainability |  Optional (Recommended) |
+| Step                | Description                                                  | Required |
+| ------------------- | ------------------------------------------------------------ | -------- |
+| Upgrade to v3.20    | Upgrade `Alauda DevOps` to version 3.20 to ensure compatibility with `ACP v4.1`. | ✅ Yes    |
+| Migrate to Next-Gen | Migrate to `Alauda DevOps (Next-Gen)` to enhance security and maintainability, and to meet ACP v4.1 requirements. | ✅ Yes    |
 
-For detailed procedures, refer to:  
+# References
+
+For detailed upgrade and migration procedures, refer to:  
+
 - [Upgrading Alauda DevOps to v3.20](./upgrading-devops-v3.mdx)  
 - [Migrating Alauda DevOps to Alauda DevOps (Next-Gen)](./migrating-devops-v3-to-v4.mdx)
