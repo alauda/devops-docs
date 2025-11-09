@@ -1,0 +1,64 @@
+---
+weight: 30
+sourceSHA: 03b11615a739095db87029e6b3ad9b9986a42c6033f4d265744147def3832b5a
+---
+
+# Migrating Alauda DevOps to Alauda DevOps (Next-Gen)
+
+This guide details the upgrade strategy and procedures for `Alauda DevOps` to `Alauda DevOps (Next-Gen)` when migrating from `Alauda Container Platform`  `v3.16` or `v3.18` to `v4.0`.
+
+## Prerequisites
+
+### Upgrade ACP Platform
+
+First, upgrade the `ACP` platform to version `v4.0`. For detailed instructions, refer to  <ExternalSiteLink name="container_platform"  href="upgrade/overview.html" children="Upgrading Container Platform"  />.
+
+### Upgrade Alauda DevOps to v3.20
+
+After upgrading `ACP` to `v4.0` version, you must first upgrade `Alauda DevOps` to `v3.20` version in order to complete the migration from `Alauda DevOps` to `Alauda DevOps (Next-Gen)`. Please refer to [Upgrading Alauda DevOps to v3.20](./upgrading-devops-v3.mdx)
+
+
+
+## Migrating Alauda DevOps
+
+### Download the Operator
+
+1.Download the following versions of the Operators separately or in bulk based on templates from the **Alauda customer portal**.
+
+| Alauda DevOps Operator    | Version   |
+| ------------------------- | --------- |
+| Alauda DevOps Pipelines   | v4.0.z    |
+| Alauda Build of Gitlab    | v17.8.z   |
+| Alauda Build of Harbor    | v2.12.z   |
+| Alauda Build of SonarQube | v2025.1.z |
+| Alauda Build of Nexus     | v3.76.z   |
+
+:::info
+
+The `.z` in version numbers indicates the latest available patch version for that minor release. During upgrade, you should always use the latest patch version to benefit from the most recent security updates and bug fixes.
+
+:::
+
+2.Navigate to the **CLI Tools** section in the **Alauda Customer Portal** and download the `violet` tool to upload Operators to`ACP`, For specific operation steps, refer to  <ExternalSiteLink name="container_platform"  href="ui/cli_tools/#downloading-the-tool" children="Uploading Operators" />.
+
+### Migrating Alauda DevOps
+
+Please refer to the following documents for migrating each operator:
+
+- [Migrating Alauda DevOps Pipelines](./migrating-tekton-v3-to-v4.mdx)
+- [Migrating Alauda Build of Gitlab](https://docs.alauda.io/alauda-build-of-gitlab/17.8/upgrade/02_14_upgrade_to_17.html)
+- [Migrating Alauda Build of Harbor](https://docs.alauda.io/alauda-build-of-harbor/2.12/upgrade/01_upgrade_2.6.4_to_2.12.html)
+- [Migrating Alauda Build of SonarQube](https://docs.alauda.io/alauda-build-of-sonarqube/2025.1/upgrade/05_upgrade_to_2025.1.0.html)
+- [Migrating Alauda Build of Nexus](https://docs.alauda.io/alauda-build-of-nexus/3.76/upgrade/migrate_to_3.76.0.html)
+
+
+
+## Next Steps
+
+You have now completed the migration from `Alauda DevOps` to `Alauda DevOps (Next Generation)`. In `Alauda DevOps (Next Gen)`, if you want to use the updated version for each Operator, you can further learn how to upgrade to the updated version in each operator's documentation.
+
+:::info
+
+Special note: If you need to continue using the **Build** and **Release** pipeline feature in `Alauda DevOps`, `Alauda DevOps Pipelines` only supports version `v4.0`.
+
+:::
