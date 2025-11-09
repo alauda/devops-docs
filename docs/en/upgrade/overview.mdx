@@ -1,0 +1,50 @@
+---
+weight: 27
+i18n:
+  title:
+    en: Overview
+sourceSHA: 6c0bcb20051eb2d76dd94cec26b8ea0fba611c8a6e290c0b1f822e8001b7b5ca
+title: Overview
+---
+
+# Overview
+
+When upgrading `Alauda Container Platform (ACP)` from `v3.16` or `v3.18` to `v4.0`, the upgrade of `Alauda DevOps` involves two major steps:
+
+1. **Upgrading `Alauda DevOps` to v3.20**  
+2. **Migrating `Alauda DevOps` to Alauda DevOps (Next-Gen)**
+
+These two steps together form the complete upgrade and migration path for `Alauda DevOps`.
+
+
+# Recommended Upgrade Path
+
+Before migration, it is mandatory to upgrade `Alauda DevOps` to **v3.20**. This version ensures full compatibility with `ACP v4.0` and provides the necessary foundation for migration to the `Alauda DevOps (Next-Gen)`.
+
+After upgrading to `v3.20`, you may choose whether to proceed with the migration:
+
+- **Migration is optional**, and existing `Alauda DevOps v3.20` can continue running on `ACP v4.0` without issues.  
+
+- However, it is strongly recommended to migrate to `Alauda DevOps (Next-Gen)` for the following reasons:  
+
+  - `Alauda DevOps (Next-Gen)` provides enhanced **security**, improved **maintainability**, and overall platform robustness.  
+  - Starting from **ACP v4.1**, the following `Alauda DevOps v3` Operators will **no longer be maintained**:
+
+  | Operator                   |
+  | -------------------------- |
+  | Alauda DevOps Tekton v3    |
+  | Alauda DevOps GitLab v3    |
+  | Alauda DevOps Harbor v3    |
+  | Alauda DevOps SonarQube v3 |
+  | Alauda DevOps Nexus v3     |
+
+# Summary
+
+| Step | Description | Required |
+|------|--------------|-----------|
+| Upgrade to v3.20 | Upgrade `Alauda DevOps` to version `v3.20` to ensure compatibility with `ACP v4.0` |  Yes |
+| Migrate to Next-Gen | Migration to `Alauda DevOps (Next-Gen)` to Improve Security Capability and Maintainability |  Optional (Recommended) |
+
+For detailed procedures, refer to:  
+- [Upgrading Alauda DevOps to v3.20](./upgrading-devops-v3.mdx)  
+- [Migrating Alauda DevOps to Alauda DevOps (Next-Gen)](./migrating-devops-v3-to-v4.mdx)
