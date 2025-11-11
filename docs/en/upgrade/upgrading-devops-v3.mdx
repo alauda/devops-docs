@@ -1,0 +1,68 @@
+---
+weight: 29
+sourceSHA: 03b11615a739095db87029e6b3ad9b9986a42c6033f4d265744147def3832b5a
+---
+
+# Upgrading Alauda DevOps to v3.20
+
+This guide provides a detailed explanation of the strategy and steps for upgrading `Alauda DevOps` to `v3.20` when upgrading from `Alauda Container Platform`  `v3.18` or `4.0` to `v4.1`.
+
+
+
+## Prerequisites
+
+### Upgrade ACP Platform
+
+First, Upgrade `Alauda Container Platform` platform from `v3.18` or `v4.0` to `v4.1`. For detailed instructions, refer to  <ExternalSiteLink name="container_platform"  href="upgrade/overview.html" children="Upgrading Container Platform"  />.
+
+
+
+## Upgrading Alauda DevOps
+:::tip Upgrade Duration
+
+Each Operator upgrade takes no more than 20 minutes.
+
+:::
+:::note
+- After upgrading `ACP` to `v4.1`, if you have deployed the `Alauda DevOps Operator` listed in the table below, and it is lower than the version listed, please follow the steps to upgrade to the following version.
+- **To upgrade `Alauda DevOps` to the `v3.20` scenario, it is necessary to deploy or upgrade `DevOps Tool Operator`, `Alauda DevOps v3`, `Alaida DevOps Eventing v3`, and `Alauda DevOps Jenkins v3` to the following versions.**
+:::
+
+`Alauda DevOp v3.20` Version Matrix.
+
+| Alauda DevOps Operator     | Operator Version   | Tool Instance Version   |
+| -------------------------- | ------------------ | ------------------ |
+| Alauda DevOps GitLab v3    | v3.20.z            | v14.0.z            |
+| Alauda DevOps Nexus v3     | v3.20.z            | v3.69.z            |
+| Alauda DevOps SonarQube v3 | v3.20.z            | v9.9.z             |
+| Alauda DevOps Harbor v3    | v3.20.z            | v2.6.z             |
+| Alauda DevOps Tekton v3    | v3.20.z            | -                  |
+| Devops Tool Operator (Required)     | v3.20.z            | -                  |
+| Alauda DevOps v3 (Required) | v3.20.z | v0.11.z |
+| Alauda DevOps Eventing v3 (Required) | v3.20.z | v1.10.z |
+| Alauda DevOps Jenkins v3 (Required) | v3.20.z | v2.516.z |
+
+### Download the Operator
+
+1. From the **Alauda Customer Portal**, Download the table above to list the `Alauda DevOp v3.20` Operators.
+2. Navigate to the **CLI Tools** section in the **Alauda Customer Portal** and download the `violet` tool to upload Operators to`ACP`, For specific operation steps, refer to  <ExternalSiteLink name="container_platform"  href="ui/cli_tools/#downloading-the-tool" children="Uploading Operators" />.
+
+### Upgrade Operator
+
+1. Then go to `Administrator` → `Marketplace` → `Operator Hub`, switch to the target cluster, open the details page of the corresponding Operator, and click the Upgrade button to perform the upgrade.
+
+:::note
+
+- **For `DevOps Tool Operator`, `Alauda DevOps v3`, `Alaida DevOps Eventing v3`, and `Alauda DevOps Jenkins v3` , if it doesn't exist, please deploy it directly.**
+  :::
+
+### Upgrade Instance
+
+1. After the Operator upgrade is completed, you can view the version of the tool instance in `Alauda DevOps` -> ` Switch to Administrator` -> `DevOps Toolchain` -> `Instances`, click the instance upgrade button, and ensure that the instance version is consistent with the **Alauda DevOp v3.20 Version Matrix**.
+
+
+
+## Next Steps
+
+You have now completed the upgrade of `Alauda DevOps` `v3.20`. You need to continue migrating  `Alauda DevOps` to `Alauda DevOps (Next-Gen)`. Please refer to [Migrating Alauda DevOps to Alauda DevOps (Next-Gen)](./migrating-devops-v3-to-v4.mdx)
+
