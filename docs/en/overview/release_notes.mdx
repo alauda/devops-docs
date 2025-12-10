@@ -33,7 +33,7 @@ The newest version of plugins are as follows:
 
 ### Breaking Changes
 
-- With the update of `Alauda DevOps Jenkins v3` `v3.20.17`, the **s2i** tool has been removed from the **base2 node**  image. This change does not affect built-in Tasks, but any **Custom Task** that depends on `s2i` will no longer run on the base2 node.If you still need to use `s2i`, you may choose one of the following options:
+- With the update of `Alauda DevOps Jenkins v3` `v3.20.17`, the **s2i** tool has been removed from the **base2 node** ( the `devops/builder-tools` image ). This change does not affect built-in Tasks, but any **Custom Task** that depends on `s2i` will no longer run on the base2 node. If you still need to use `s2i`, you may choose one of the following options:
   - Use the **legacy base node** (if your environment was upgraded from a version earlier than v3.20); the legacy base node still includes the `s2i` tool.
   - Build your own custom image that contains the `s2i` tool.
 
@@ -41,13 +41,9 @@ The newest version of plugins are as follows:
 
 {/* release-notes-for-bugs?template=fixedIssues&project=DEVOPS&version=(fixVersion ~ "katanomi-operator-v3.20.*" OR fixVersion ~ "knative-operator-v3.20.*" OR fixVersion ~ "jenkins-operator-v3.20.*") */}
 
-
-
 ### Known Issues
 
 {/* release-notes-for-bugs?template=unfixedIssues&project=DEVOPS&version=(affectedVersion ~ "katanomi-operator-v3.20.*" OR affectedVersion ~ "knative-operator-v3.20.*" OR affectedVersion ~ "jenkins-operator-v3.20.*") */}
-
-
 
 ### Deprecated and removed features
 
