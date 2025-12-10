@@ -27,9 +27,15 @@ The newest version of plugins are as follows:
 
 | Plugin Name | Latest Plugin Version |
 | - | - |
-| Alauda DevOps v3 | 3.20.34 |
-| Alauda DevOps Jenkins v3 | 3.20.16 |
-| Alauda DevOps Eventing v3 | 3.20.7 |
+| Alauda DevOps v3 | 3.20.35 |
+| Alauda DevOps Jenkins v3 | 3.20.17 |
+| Alauda DevOps Eventing v3 | 3.20.8 |
+
+### Breaking Changes
+
+- With the update of `Alauda DevOps Jenkins v3` `v3.20.17`, the **s2i** tool has been removed from the **base2 node**  image. This change does not affect built-in Tasks, but any **Custom Task** that depends on `s2i` will no longer run on the base2 node.If you still need to use `s2i`, you may choose one of the following options:
+  - Use the **legacy base node** (if your environment was upgraded from a version earlier than v3.20); the legacy base node still includes the `s2i` tool.
+  - Build your own custom image that contains the `s2i` tool.
 
 ### Fixed Issues
 
