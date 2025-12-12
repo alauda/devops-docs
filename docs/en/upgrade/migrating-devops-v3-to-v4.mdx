@@ -5,23 +5,21 @@ sourceSHA: 03b11615a739095db87029e6b3ad9b9986a42c6033f4d265744147def3832b5a
 
 # Migrating Alauda DevOps to Alauda DevOps (Next-Gen)
 
-This guide details the upgrade strategy and procedures for `Alauda DevOps` to `Alauda DevOps (Next-Gen)` when migrating from `Alauda Container Platform`  `v3.18` or `v4.0` to `v4.1`.
+This guide details the upgrade strategy and procedures for `Alauda DevOps` to `Alauda DevOps (Next-Gen)` when migrating from `Alauda Container Platform`  `v4.0` or `v4.1` to `v4.2`.
 
 ## Prerequisites
-
-### Upgrade ACP Platform
-
-First, upgrade the `ACP` platform to version `v4.1`. For detailed instructions, refer to  <ExternalSiteLink name="container_platform"  href="upgrade/overview.html" children="Upgrading Container Platform"  />.
 
 ### Upgrade Alauda DevOps to v3.20
 
 Before migration, ensure that `Alauda DevOps` is upgraded to version `v3.20`. This step is required for compatibility and successful migration to `Alauda DevOps (Next-Gen)`. Please refer to [Upgrading Alauda DevOps to v3.20](./upgrading-devops-v3.mdx)
 
+### Upgrade ACP Platform
 
+Upgrade the `ACP` platform to version `v4.2`. For detailed instructions, refer to  <ExternalSiteLink name="container_platform"  href="upgrade/overview.html" children="Upgrading Container Platform"  />
 
 ## Migrating Alauda DevOps
 
-Starting from **ACP v4.1**, the following **Alauda DevOps v3** operators will no longer be maintained, so completing the migration on **ACP v4.1** is necessary.
+Starting from **ACP v4.1**, the following **Alauda DevOps v3** operators will no longer be maintained. Therefore, migrating these operators is required.
 
 | Operator                   | Status      |
 | -------------------------- | ----------- |
@@ -49,7 +47,7 @@ The `.z` in version numbers indicates the latest available patch version for tha
 
 :::
 
-2. Navigate to the **CLI Tools** section in the **Alauda Customer Portal** and download the `violet` tool to upload Operators to`ACP`, For specific operation steps, refer to  <ExternalSiteLink name="container_platform"  href="ui/cli_tools/#downloading-the-tool" children="Uploading Operators" />.
+2. Navigate to the **CLI Tools** section in the **Alauda Customer Portal** and download the `violet` tool to upload Operators to`ACP`, For specific operation steps, refer to  <ExternalSiteLink name="container_platform"  href="ui/cli_tools/#downloading-the-tool" children="Uploading Operators" />
 
 ### Migrating Alauda DevOps
 
@@ -65,4 +63,17 @@ Please refer to the following documents for migrating each operator:
 
 ## Next Steps
 
-You have now completed the migration from `Alauda DevOps` to `Alauda DevOps (Next Generation)`. In `Alauda DevOps (Next Gen)`, if you want to use the updated version for each Operator, you can further learn how to upgrade to the updated version in each operator's documentation.
+You have now completed the migration from `Alauda DevOps` to `Alauda DevOps (Next-Gen)`. In `Alauda DevOps (Next-Gen)`, if you want to use the updated version for each Operator, you can further learn how to upgrade to the updated version in each operator's documentation.
+
+::: warning
+
+**Important Restriction**
+
+If you need to continue using the **Build** and **Release** features from **Alauda DevOps v3**, you must maintain `Alauda DevOps Pipelines` at version `v4.0.z`.
+
+**Prohibited Actions**
+
+**Do NOT upgrade** `Alauda DevOps Pipelines` beyond `v4.0.z` under any circumstances. Upgrading to versions above `v4.0.z` will cause irreversible compatibility issues with `katanomi`, potentially breaking existing **Build** and **Release** pipelines.
+
+:::
+
