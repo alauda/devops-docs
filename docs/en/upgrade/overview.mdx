@@ -9,11 +9,58 @@ title: Overview
 
 # Overview
 
-This guide provides a detailed introduction to the upgrade/migration strategy of `Alauda DevOps` in the scenario of upgrading from `Alauda Container Platform(ACP)` `v 4.0` or `4.1` to `4.2`.
+This guide provides a detailed introduction to the upgrade/migration strategy of `Alauda DevOps` in the scenario of upgrading from `Alauda Container Platform(ACP)` `v4.0` or `v4.1` to `v4.2`.
 
 # Upgrade Scenarios
 
-## 1.Ensure that Alauda DevOps has been migrated to Alauda DevOps (Next-Gen)
+# Upgrade Scenarios
+
+<Tabs>
+<Tab label="Upgrading from ACP v4.0">
+
+If your current `ACP` version is `v4.0`, the upgrade path for `Alauda DevOps` is as follows:
+
+1. **Migrate to Alauda DevOps (Next-Gen)**
+
+   Before upgrading ACP, verify your current DevOps operator versions:
+
+   - If your operators do not match the [Alauda DevOps (Next-Gen) Version Matrix](#next-gen), you must perform migration by following [Migrating Alauda DevOps to Alauda DevOps (Next-Gen)](./migrating-devops-v3-to-v4.mdx).
+   - If you have already completed migration on `ACP` `v4.0` and your operators match the [Alauda DevOps (Next-Gen) Version Matrix](#next-gen), you may skip this step and proceed directly to ACP platform upgrade.
+
+2. **Upgrade ACP Platform**
+
+   Upgrade the `ACP` platform to version `v4.2`. For detailed instructions, refer to <ExternalSiteLink name="container_platform"  href="upgrade/overview.html" children="Upgrading Container Platform"  />.
+
+3. **Upgrade each operator to a newer version (optional)**
+
+   if you want to use the updated version for each Operator, you can further learn how to upgrade to the updated version in each operator's documentation, please refer to [Upgrade each operator to a newer version](#upgrade)
+
+</Tab>
+
+<Tab label="Upgrading from ACP v4.1">
+
+1. **Upgrade ACP Platform**
+
+   Before starting the upgrade of `ACP`, in `ACP` `v4.1`, the Migration `Alauda DevOps` to `Alauda DevOps (Next Gen)` should have been completed. Please confirm that the DevOps related operator versions are consistent: [Alauda DevOp (Next-Gen) Version Matrix](#next-gen). 
+
+   Upgrade the `ACP` platform to version `v4.2`. For detailed instructions, refer to  <ExternalSiteLink name="container_platform"  href="upgrade/overview.html" children="Upgrading Container Platform"  />
+
+2. **Upgrade each operator to a newer version (optional)**
+
+   if you want to use the updated version for each Operator, you can further learn how to upgrade to the updated version in each operator's documentation, please refer to [Upgrade each operator to a newer version](#upgrade).
+
+</Tab>
+</Tabs>
+
+
+
+
+
+
+
+
+
+## Ensure that Alauda DevOps has been migrated to Alauda DevOps (Next-Gen)
 
 On `ACP` `v4.0` or `v4.1`, ensure that `Alauda DevOps` has already been migrated to `Alauda DevOps (Next-Gen)`. If your Alauda DevOps–related operators are at the versions listed below, you must perform the migration first. Please refer to [Migrating Alauda DevOps to Alauda DevOps (Next-Gen)](./migrating-devops-v3-to-v4.mdx)
 
@@ -27,7 +74,7 @@ On `ACP` `v4.0` or `v4.1`, ensure that `Alauda DevOps` has already been migrated
 | Alauda DevOps Harbor v3    | v3.20.z          | v2.6.z                |
 | Alauda DevOps Tekton v3    | v3.20.z          | -                     |
 
-### After migration： `Alauda DevOp (Next-Gen)` Version Matrix
+### After migration： `Alauda DevOp (Next-Gen)` Version Matrix{#next-gen}
 
 | Alauda DevOps Operator                                       | Version   |
 | ------------------------------------------------------------ | --------- |
@@ -53,7 +100,7 @@ Migration to `Alauda DevOps (Next-Gen)` is required for the following reasons:
 | Alauda DevOps SonarQube v3 | End-of-life |
 | Alauda DevOps Nexus v3     | End-of-life |
 
-## 2.Upgrade each operator to a newer version (optional)
+## Upgrade each operator to a newer version (optional){#upgrade}
 
 You have now completed the migration from `Alauda DevOps` to `Alauda DevOps (Next-Gen)`. In `Alauda DevOps (Next-Gen)`, if you want to use the updated version for each Operator, you can further learn how to upgrade to the updated version in each operator's documentation.
 
