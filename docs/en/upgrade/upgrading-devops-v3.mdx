@@ -1,19 +1,21 @@
 ---
-weight: 29
+weight: 31
 sourceSHA: 03b11615a739095db87029e6b3ad9b9986a42c6033f4d265744147def3832b5a
 ---
 
 # Upgrading Alauda DevOps to v3.20
 
-This guide provides a detailed explanation of the strategy and steps for upgrading `Alauda DevOps` to `v3.20` when upgrading from `Alauda Container Platform`  `v3.18` or `4.0` to `v4.1`.
+This guide provides a detailed explanation of the strategy and steps for upgrading `Alauda DevOps` to `v3.20`, Suitable for `ACP` upgrade scenarios:
 
-
+- `v3.18` --> `v4.0`
+- `v3.18` --> `v4.1`
+- `v4.0` --> `v4.1`
 
 ## Prerequisites
 
 ### Upgrade ACP Platform
 
-First, Upgrade `Alauda Container Platform` platform from `v3.18` or `v4.0` to `v4.1`. For detailed instructions, refer to  <ExternalSiteLink name="container_platform"  href="upgrade/overview.html" children="Upgrading Container Platform"  />.
+Upgrade the `ACP` platform to version `v4.0` or `v4.1`. For detailed instructions, refer to  <ExternalSiteLink name="container_platform"  href="upgrade/overview.html" children="Upgrading Container Platform"  />, Select the ACP document version you need to upgrade to.
 
 
 
@@ -37,7 +39,7 @@ Each Operator upgrade takes no more than 20 minutes.
 | Alauda DevOps SonarQube v3 | v3.20.z            | v9.9.z             |
 | Alauda DevOps Harbor v3    | v3.20.z            | v2.6.z             |
 | Alauda DevOps Tekton v3    | v3.20.z            | -                  |
-| Devops Tool Operator (Required)     | v3.20.z            | -                  |
+| Devops Tool (Required)    | v3.20.z            | -                  |
 | Alauda DevOps v3 (Required) | v3.20.z | v0.11.z |
 | Alauda DevOps Eventing v3 (Required) | v3.20.z | v1.10.z |
 | Alauda DevOps Jenkins v3 (Required) | v3.20.z | v2.516.z |
@@ -53,7 +55,7 @@ Each Operator upgrade takes no more than 20 minutes.
 
 :::note
 
-- **For `DevOps Tool Operator`, `Alauda DevOps v3`, `Alaida DevOps Eventing v3`, and `Alauda DevOps Jenkins v3` , if it doesn't exist, please deploy it directly.**
+- **For `DevOps Tool`, `Alauda DevOps v3`, `Alaida DevOps Eventing v3`, and `Alauda DevOps Jenkins v3` , if it doesn't exist, please deploy it directly.**
   :::
 
 ### Upgrade Instance
