@@ -13,6 +13,22 @@ Ensure the `Alauda DevOps v3` operator is uploaded before proceeding.
 
 For more information on uploading the operator, please refer to <ExternalSiteLink name="container_platform" href="ui/cli_tools/index.html#uploading-operators" children="Uploading Operators" />
 
+### Namespace Security Policy Requirements
+
+* Katanomi only supports creating one instance. The instance can be deployed to any namespace, but the following conditions must be met:
+    - Sufficient namespace resources
+    - Namespace configured with privileged security policy
+
+* Katanomi Operator requires the namespace to use privileged security policy configuration to function correctly. This requirement is based on the component's dependency on privileged containers and hostPath volume mounts.
+
+    **Root Cause**: Katanomi Operator components require privileged container access and hostPath volume mounts (the audit log directory) for proper operation:
+
+    - **Privileged Containers**: Multiple Katanomi Operator deployments utilize `privileged: true` security context:
+      - `apiserver deployment` - The API server deployment requires `privileged: true` for executing `chown` to the audit log directory
+      - `api deployment` - The API deployment uses `privileged: true` for executing `chown` to the audit log directory
+      - `devops-api deployment` - The DevOps API deployment requires `privileged: true` for executing `chown` to the audit log directory
+      - `build-image-buildkit-v1` tasks - Build tasks explicitly use `privileged: true` for container image building capabilities
+
 ## Install Operator
 
 Go to the platform's `Administrator` -> `Marketplace` -> `OperatorHub` page, search for the `Alauda DevOps v3`, and then click on the operator card to enter the operator details page.
