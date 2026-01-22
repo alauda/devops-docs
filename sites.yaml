@@ -3,7 +3,7 @@
     en: Alauda DevOps Pipelines
     zh: Alauda DevOps Pipelines
   base: /alauda-devops-pipelines
-  version: v4.6
+  version: v4.7
   repo: https://github.com/AlaudaDevops/tektoncd-operator
   image: devops/alauda-devops-pipelines-docs
 - name: alauda-devops-connectors
@@ -11,7 +11,7 @@
     en: Alauda DevOps Connectors
     zh: Alauda DevOps Connectors
   base: /alauda-devops-connectors
-  version: v1.6
+  version: v1.7
   repo: https://github.com/AlaudaDevops/connectors-operator
   image: devops/alauda-devops-connectors-docs
 - name: alauda-build-of-gitlab
@@ -19,7 +19,7 @@
     en: Alauda Build of Gitlab
     zh: Alauda Build of Gitlab
   base: /alauda-build-of-gitlab
-  version: v18.2
+  version: v18.5
   repo: https://github.com/AlaudaDevops/gitlab-ce-operator
   image: devops/alauda-build-of-gitlab-docs
 - name: alauda-build-of-harbor
@@ -27,7 +27,7 @@
     en: Alauda Build of Harbor
     zh: Alauda Build of Harbor
   base: /alauda-build-of-harbor
-  version: v2.12
+  version: v2.14
   repo: https://github.com/AlaudaDevops/harbor-ce-operator
   image: devops/alauda-build-of-harbor-docs
 - name: alauda-build-of-nexus

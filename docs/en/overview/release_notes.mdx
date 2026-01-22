@@ -17,13 +17,11 @@ The release notes include aggregated content for multiple versions of each `Oper
 
 ### Compatibility and Support Matrix
 
-The table below shows the version matrix of the `Operators` included in `Alauda DevOps v4.2`.
+The table below shows the latest version matrix of the `Operators` included in `Alauda DevOps v4.2`.
 
-| Alauda DevOps Version | Alauda DevOps Pipeline Version | Alauda DevOps Connectors Version | Latest Toolchain Version                                     |
+| Alauda DevOps Version | Alauda DevOps Pipelines Version | Alauda DevOps Connectors Version | Latest Toolchain Version                                     |
 | --------------------- | ------------------------------ | -------------------------------- | ------------------------------------------------------------ |
-| v4.2                 | v4.6                    | v1.6                      | Alauda Build of Gitlab: v18.2<br /> Alauda Build of Harbor: v2.12<br />Alauda Build of SonarQube: v2025.1<br />Alauda Build of Nexus: v3.76 |
-
-
+| v4.2                 | v4.7                   | v1.7                     | Alauda Build of Gitlab: v18.5<br /> Alauda Build of Harbor: v2.14<br />Alauda Build of SonarQube: v2025.1<br />Alauda Build of Nexus: v3.76 |
 
 ### New and Optimized Features
 
@@ -32,38 +30,42 @@ The table below shows the version matrix of the `Operators` included in `Alauda 
 - Pipeline Capabilities Continuous Enhancement: Continuously enhanced  core capabilities around `Pipeline` and `Task`, supporting manual approval,  custom execution output, and dynamic form configuration to meet pipeline orchestration needs in complex delivery scenarios.
 - Automated Trigger Enhancement: Supports scheduled tasks, pipeline  triggering via image push, and `Pipelines-as-Code` GitLab integration to  enable multi-scenario automated orchestration.
 - Template and Reusability Enhancement: Provides general-purpose  Pipeline templates and an extensible `Hub Catalog`, supporting the reuse  of custom `Pipelines` and `Tasks` to reduce the cost of pipeline creation  and maintenance.
-- More detailed release notes for different versions can be found in the `Alauda DevOps Pipelines` documentation center.
+- More detailed release notes for different versions can be found in the <ExternalSiteLink name="alauda-devops-pipelines" children="Alauda DevOps Pipelines" /> documentation center.
 
 #### Alauda DevOps Connectors
 
 - Comprehensive Toolchain Integration Coverage: Added six major  ecosystem Connectors including `GitLab`, `Harbor`, `NPM`, `Maven`, `PyPI`, and  `Kubernetes`, enabling unified integration of code repositories, artifact  repositories, and container platforms.
 - `Pipelines` and `Connectors` Integration: Provides standardized resource  definitions for **GitCodeRepository**, **OCIArtifact**, and **MavenArtifact**,  seamlessly integrating tools into Pipelines via a unified UI interface.
 - Flexible API Access Modes: The Connector API supports dual modes of  native tool API pass-through (Proxy Service) and custom APIs, with the  OCI Connector enhancing forward proxy capabilities.
-- More detailed release notes for different versions can be found in the `Alauda DevOps Connectors` documentation center.
+- Support integration with SonarQube and SonarCloud by using SonarQube Connector.
+- Support to deploy the Connectors system in a high availability (HA) configuration to ensure service continuity and fault tolerance.
+- More detailed release notes for different versions can be found in the <ExternalSiteLink name="alauda-devops-connectors" children="Alauda DevOps Connectors" /> documentation center.
 
 #### DevOps Toolchain
 
-This update enhances the overall security and stability of the toolchain, which includes the following:
+This update enhances the overall security and stability of the toolchain, which includes the following tools:
 
-- Alauda Build of Gitlab
-
--  Alauda Build of Harbor
-
-- Alauda Build of SonarQube
-
-- Alauda Build of Nexus
+- <ExternalSiteLink name="alauda-build-of-gitlab" children="Alauda Build of Gitlab" />
+- <ExternalSiteLink name="alauda-build-of-harbor" children="Alauda Build of Harbor" />
+- <ExternalSiteLink name="alauda-build-of-nexus" children="Alauda Build of Nexus" />
+- <ExternalSiteLink name="alauda-build-of-sonarqube" children="Alauda Build of SonarQube" />
 
 ### Breaking Changes
 
 - For `Alauda DevOps Connectors` `v1.6`, Remove the `input.xxx` variable from `spec.auth.types[].generator.rego`. Use `input.data.xxx` instead.
+- For `Alauda DevOps Pipelines` `v4.7`,  `Chains` v0.26.0 upgrades to `Cosign` v2.6.0, which no longer supports `HS256` JWT tokens for keyless signing; users with private OIDC providers using `HS256` must switch to `RS256` before upgrading. For more information, please refer to [Chains](https://github.com/tektoncd/chains/releases/tag/v0.26.0).
 
 ### Fixed Issues
 
-{/* release-notes-for-bugs?template=fixedIssues&project=DEVOPS&version=(fixVersion ~ "connectors-operator-v1.6.*" OR fixVersion ~ "tektoncd-operator-v4.6.*" OR fixVersion ~ "gitlab-ce-operator-v18.2.*" OR fixVersion ~ "nexus-ce-operator-v3.76.*" OR fixVersion ~ "sonarqube-ce-operator-v2025.1.*" OR fixVersion ~ "harbor-ce-operator-v2.12.*") */}
+The following provides a summary of **Fixed Issues** for the latest version of each `Operator` in the current DevOps release. For historical versions, see the respective `Operator` documentation.
+
+{/* release-notes-for-bugs?template=fixedIssues&project=DEVOPS&version=(fixVersion ~ "connectors-operator-v1.7.*" OR fixVersion ~ "tektoncd-operator-v4.7.*" OR fixVersion ~ "gitlab-ce-operator-v18.5.*" OR fixVersion ~ "nexus-ce-operator-v3.76.*" OR fixVersion ~ "sonarqube-ce-operator-v2025.1.*" OR fixVersion ~ "harbor-ce-operator-v2.14.*") */}
 
 ### Known Issues
 
-{/* release-notes-for-bugs?template=unfixedIssues&project=DEVOPS&version=(affectedVersion ~ "connectors-operator-v1.6.*" OR affectedVersion ~ "tektoncd-operator-v4.6.*" OR affectedVersion ~ "gitlab-ce-operator-v18.2.*" OR affectedVersion ~ "nexus-ce-operator-v3.76.*" OR affectedVersion ~ "sonarqube-ce-operator-v2025.1.*" OR affectedVersion ~ "harbor-ce-operator-v2.12.*") */}
+The following provides a summary of **Known Issues** for the latest version of each `Operator` in the current DevOps release. For historical versions, see the respective `Operator` documentation.
+
+{/* release-notes-for-bugs?template=unfixedIssues&project=DEVOPS&version=(affectedVersion ~ "connectors-operator-v1.7.*" OR affectedVersion ~ "tektoncd-operator-v4.7.*" OR affectedVersion ~ "gitlab-ce-operator-v18.5.*" OR affectedVersion ~ "nexus-ce-operator-v3.76.*" OR affectedVersion ~ "sonarqube-ce-operator-v2025.1.*" OR affectedVersion ~ "harbor-ce-operator-v2.14.*") */}
 
 
 
