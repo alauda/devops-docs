@@ -19,7 +19,7 @@
     en: Alauda Build of Gitlab
     zh: Alauda Build of Gitlab
   base: /alauda-build-of-gitlab
-  version: v18.2
+  version: v18.5
   repo: https://github.com/AlaudaDevops/gitlab-ce-operator
   image: devops/alauda-build-of-gitlab-docs
 - name: alauda-build-of-harbor
