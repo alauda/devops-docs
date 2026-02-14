@@ -11,7 +11,7 @@
     en: Alauda DevOps Connectors
     zh: Alauda DevOps Connectors
   base: /alauda-devops-connectors
-  version: v1.7
+  version: v1.8
   repo: https://github.com/AlaudaDevops/connectors-operator
   image: devops/alauda-devops-connectors-docs
 - name: alauda-build-of-gitlab
