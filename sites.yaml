@@ -11,7 +11,7 @@
     en: Alauda DevOps Connectors
     zh: Alauda DevOps Connectors
   base: /alauda-devops-connectors
-  version: v1.8
+  version: v1.9
   repo: https://github.com/AlaudaDevops/connectors-operator
   image: devops/alauda-devops-connectors-docs
 - name: alauda-build-of-gitlab
@@ -43,7 +43,7 @@
     en: Alauda Build of SonarQube
     zh: Alauda Build of SonarQube
   base: /alauda-build-of-sonarqube
-  version: v2025.1
+  version: v2026.1
   repo: https://github.com/AlaudaDevops/sonarqube-ce-operator
   image: devops/alauda-build-of-sonarqube-docs
 - name: container_platform
