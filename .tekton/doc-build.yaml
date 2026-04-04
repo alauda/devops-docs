@@ -10,8 +10,7 @@ metadata:
       (
         event == "push" && (
           source_branch.matches("^(main|master|release-.*)$") ||
-          target_branch.matches("^(main|master|release-.*)$") ||
-          target_branch.startsWith("refs/tags/")
+          target_branch.matches("^(main|master|release-.*)$")
         )
       )
 spec:
@@ -57,10 +56,10 @@ spec:
             - ReadWriteOnce
           resources:
             requests:
-              storage: 10Gi
+              storage: 1Gi
     - name: cache
       persistentVolumeClaim:
-        claimName: build-cache
+        claimName: doc-build-cache
       subPath: yarn_cache
 
     # This secret will be replaced by the pac controller
