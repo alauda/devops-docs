@@ -3,13 +3,16 @@ weight: 27
 i18n:
   title:
     en: Overview
-sourceSHA: 6c0bcb20051eb2d76dd94cec26b8ea0fba611c8a6e290c0b1f822e8001b7b5ca
 title: Overview
 ---
 
 # Overview
 
-This guide provides a detailed introduction to the upgrade/migration strategy of `Alauda DevOps` in the scenario of upgrading from `Alauda Container Platform (ACP)` `v4.0` or `v4.1` to `v4.2`.
+This guide provides a detailed introduction to the upgrade and migration strategy of `Alauda DevOps` in the following scenarios:
+
+- Upgrading `Alauda Container Platform (ACP)` from `v4.0` to `v4.3`
+- Upgrading `ACP` from `v4.1` to `v4.3`
+- Upgrading `ACP` from `v4.2` to `v4.3`
 
 # Upgrade Scenarios
 
@@ -27,11 +30,11 @@ If your current `ACP` version is `v4.0`, the upgrade path for `Alauda DevOps` is
 
 2. **Upgrade ACP Platform**
 
-   Upgrade the `ACP` platform to version `v4.2`. For detailed instructions, refer to <ExternalSiteLink name="container_platform"  href="upgrade/overview.html" children="Upgrading Container Platform"  />.
+   Upgrade the `ACP` platform to version `v4.3`. For detailed instructions, refer to <ExternalSiteLink name="container_platform" href="upgrade/overview.html" children="Upgrading Container Platform" />.
 
-3. **Upgrade each operator to a newer version (optional)**
+3. **Upgrade each operator to a newer version**
 
-   if you want to use the updated version for each Operator, you can further learn how to upgrade to the updated version in each operator's documentation, please refer to [Upgrade each operator to a newer version](#upgrade)
+   If you want to use the updated version for each Operator, you can further learn how to upgrade to the updated version in each operator's documentation. Please refer to [Upgrade each operator to a newer version](#upgrade).
 
 </Tab>
 
@@ -39,22 +42,34 @@ If your current `ACP` version is `v4.0`, the upgrade path for `Alauda DevOps` is
 
 1. **Upgrade ACP Platform**
 
-   Before starting the upgrade of `ACP`, in `ACP` `v4.1`, the Migration `Alauda DevOps` to `Alauda DevOps (Next Gen)` should have been completed. Please confirm that the DevOps-related operator versions are consistent: [Alauda DevOps (Next-Gen) Version Matrix](#next-gen). If your operators do not match the **Version Matrix**, you must perform migration by following [Migrating Alauda DevOps to Alauda DevOps (Next-Gen)](./migrating-devops-v3-to-v4.mdx).
+   Before starting the upgrade of `ACP`, in `ACP` `v4.1`, the migration from `Alauda DevOps` to `Alauda DevOps (Next-Gen)` should have been completed. Please confirm that the DevOps-related operator versions are consistent with the [Alauda DevOps (Next-Gen) Version Matrix](#next-gen). If your operators do not match the version matrix, you must perform migration by following [Migrating Alauda DevOps to Alauda DevOps (Next-Gen)](./migrating-devops-v3-to-v4.mdx).
 
-   Upgrade the `ACP` platform to version `v4.2`. For detailed instructions, refer to  <ExternalSiteLink name="container_platform"  href="upgrade/overview.html" children="Upgrading Container Platform"  />
+   Upgrade the `ACP` platform to version `v4.3`. For detailed instructions, refer to <ExternalSiteLink name="container_platform" href="upgrade/overview.html" children="Upgrading Container Platform" />.
 
 2. **Upgrade each operator to a newer version (optional)**
 
-   if you want to use the updated version for each Operator, you can further learn how to upgrade to the updated version in each operator's documentation, please refer to [Upgrade each operator to a newer version](#upgrade).
+   If you want to use the updated version for each Operator, you can further learn how to upgrade to the updated version in each operator's documentation. Please refer to [Upgrade each operator to a newer version](#upgrade).
+
+</Tab>
+
+<Tab label="Upgrading from ACP v4.2">
+
+If your current `ACP` version is `v4.2`, the recommended upgrade path for `Alauda DevOps (Next-Gen)` is as follows:
+
+1. **Upgrade ACP Platform**
+
+   Upgrade the `ACP` platform to version `v4.3`. For detailed instructions, refer to <ExternalSiteLink name="container_platform" href="upgrade/overview.html" children="Upgrading Container Platform" />.
+
+2. **Upgrade each operator to a newer version (optional)**
+
+   In `ACP` `v4.2`, `Alauda DevOps (Next-Gen)` components are already independently managed. If you want to use the updated version for each installed Operator, you can further learn how to upgrade to the updated version in each operator's documentation. Please refer to [Upgrade each operator to a newer version](#upgrade).
 
 </Tab>
 </Tabs>
 
-
-
 ## Ensure that Alauda DevOps has been migrated to Alauda DevOps (Next-Gen)
 
-On `ACP` `v4.0` or `v4.1`, ensure that `Alauda DevOps` has already been migrated to `Alauda DevOps (Next-Gen)`. If your Alauda DevOps-related operators are at the versions listed below, you must perform the migration first. Please refer to [Migrating Alauda DevOps to Alauda DevOps (Next-Gen)](./migrating-devops-v3-to-v4.mdx)
+This section applies to the historical upgrade paths for `ACP` `v4.0` and `v4.1`. On `ACP` `v4.0` or `v4.1`, ensure that `Alauda DevOps` has already been migrated to `Alauda DevOps (Next-Gen)`. If your Alauda DevOps-related operators are at the versions listed below, you must perform the migration first. Please refer to [Migrating Alauda DevOps to Alauda DevOps (Next-Gen)](./migrating-devops-v3-to-v4.mdx).
 
 ### Alauda DevOps v3.20 version matrix before migration
 
@@ -76,9 +91,18 @@ On `ACP` `v4.0` or `v4.1`, ensure that `Alauda DevOps` has already been migrated
 | Alauda Build of SonarQube                                    | v2025.1.z |
 | Alauda Build of Nexus                                        | v3.76.z   |
 
-## Upgrade each operator to a newer version (optional) \{#upgrade}
+## Upgrade each operator to a newer version \{#upgrade}
 
-You have now completed the migration from `Alauda DevOps` to `Alauda DevOps (Next-Gen)`. In `Alauda DevOps (Next-Gen)`, if you want to use the updated version for each Operator, you can further learn how to upgrade to the updated version in each operator's documentation.
+After the `ACP` platform upgrade is completed, you can optionally upgrade the installed `Alauda DevOps` or `Alauda DevOps (Next-Gen)` Operators according to the scenario of your environment.
+
+
+If you want to use the updated version for each installed Operator, refer to the corresponding documentation center and follow the approved channel and version for your target release.
+
+:::tip Important
+
+Each Operator must be upgraded to a version that is compatible with the current `ACP` version. Before upgrading an Operator, always confirm the supported version and compatibility requirements in the corresponding documentation.
+
+:::
 
 ::: warning
 
@@ -92,9 +116,26 @@ If you need to continue using the **Build** and **Release** features from **Alau
 
 :::
 
-# References
 
-For detailed upgrade and migration procedures, refer to:  
+1. Go to `Administrator` -> `Marketplace` -> `Operator Hub`.
+2. Switch to the target cluster.
+3. Open the details page of the corresponding Operator.
+4. Select the approved channel and version for the target release.
+5. Perform the upgrade and wait until the Operator status is healthy.
 
-- [Upgrading Alauda DevOps to v3.20](./upgrading-devops-v3.mdx)  
+
+Upgrade only the installed components in your environment. Refer to the corresponding documentation center for the detailed procedure of each component:
+
+- <ExternalSiteLink name="alauda-devops-pipelines" children="Alauda DevOps Pipelines" />
+- <ExternalSiteLink name="alauda-devops-connectors" children="Alauda DevOps Connectors" />
+- <ExternalSiteLink name="alauda-build-of-gitlab" children="Alauda Build of GitLab" />
+- <ExternalSiteLink name="alauda-build-of-harbor" children="Alauda Build of Harbor" />
+- <ExternalSiteLink name="alauda-build-of-sonarqube" children="Alauda Build of SonarQube" />
+- <ExternalSiteLink name="alauda-build-of-nexus" children="Alauda Build of Nexus" />
+
+## References
+
+For detailed upgrade and migration procedures, refer to:
+
+- [Upgrading Alauda DevOps to v3.20](./upgrading-devops-v3.mdx)
 - [Migrating Alauda DevOps to Alauda DevOps (Next-Gen)](./migrating-devops-v3-to-v4.mdx)
