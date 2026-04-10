@@ -48,7 +48,7 @@
   image: devops/alauda-build-of-sonarqube-docs
 - name: container_platform
   base: /container_platform
-  version: v4.2
+  version: v4.3
 - name: alauda-devops
   base: /devops
   version: v3.20
