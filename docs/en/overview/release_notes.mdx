@@ -10,47 +10,68 @@ title: Release Notes
 # Release Notes
 
 :::info
-The release notes include aggregated content for multiple versions of each `Operator` in the `Alauda DevOps v4.2` compatibility matrix. More detailed release notes for each `Operator` can be further viewed in the corresponding `Operator` documentation center.
+The release notes include aggregated content for multiple versions of each `Operator` in the `Alauda DevOps v4.3` compatibility matrix. More detailed release notes for each `Operator` can be further viewed in the corresponding `Operator` documentation center.
 :::
 
-## Alauda DevOps (Next-Gen) - 4.2
+:::tip
+Some `Operators` are currently being adapted for `ACP 4.3` and will be released soon.
+:::
+
+## Alauda DevOps (Next-Gen) - 4.3
 
 ### Compatibility and Support Matrix
 
-The table below shows the version matrix of the `Operators` included in `Alauda DevOps v4.2`.
+The table below shows the version matrix of the `Operators` included in `Alauda DevOps v4.3`.
 
 | Operator                  | Version    |
 | ------------------------- | ---------- |
-| Alauda DevOps Pipelines   | v4.6(LTS), v4.7, v4.8 |
-| Alauda DevOps Connectors  | v1.6(LTS), v1.7, v1.8, v1.9 |
-| Alauda Build of Gitlab    | v18.5(LTS)      |
-| Alauda Build of Harbor    | v2.14(LTS)      |
-| Alauda Build of SonarQube | v2025.1(LTS), v2026.1(LTS) |
-| Alauda Build of Nexus     | v3.76(LTS)      |
+| Alauda DevOps Pipelines   | v4.10(LTS) |
+| Alauda DevOps Connectors  |            |
+| Alauda Build of Gitlab    |            |
+| Alauda Build of Harbor    |            |
+| Alauda Build of SonarQube |            |
+| Alauda Build of Nexus     |            |
 
 ### New and Optimized Features
 
 #### Alauda DevOps Pipelines
 
-- Pipeline Capabilities Continuous Enhancement: Continuously enhanced  core capabilities around `Pipeline` and `Task`, supporting manual approval,  custom execution output, and dynamic form configuration to meet pipeline orchestration needs in complex delivery scenarios.
-- Automated Trigger Enhancement: Supports scheduled tasks, pipeline  triggering via image push, and `Pipelines-as-Code` GitLab integration to  enable multi-scenario automated orchestration.
-- Template and Reusability Enhancement: Provides general-purpose  Pipeline templates and an extensible `Hub Catalog`, supporting the reuse  of custom `Pipelines` and `Tasks` to reduce the cost of pipeline creation  and maintenance.
-- For `Alauda DevOps Pipelines` `v4.8`, pipeline management introduces the **GitOps Repo Update** pipeline template. This pipeline updates files in a GitOps repository, commits and pushes changes using `git-cli`, and optionally creates a Merge Request(Merge Request creation currently supports GitLab only).
-- For `Alauda DevOps Pipelines` `v4.8`, a new **Helm Chart Build Push** `Task` is added. You can package a Helm chart from a specified directory and push it to an OCI registry using Helm or ORAS.
-- For `Alauda DevOps Pipelines` `v4.8`, supports collecting and displaying `Tekton` component metrics.
+- This update upgrades the catalog versions of existing `Tasks` and `Pipeline` templates, and introduces several new `Tasks`. In the updated versions, default tool images are pinned to fixed tags and some deprecated parameters are removed. Legacy versions are still available, but users are strongly recommended to migrate to the new versions as early as possible. For detailed behavior changes, see the README of each Task and Pipeline template.
+
+  Task update summary:
+
+  | Task                  | Change Type | Version Path   |
+  | --------------------- | ----------- | -------------- |
+  | Helm Upgrade          | New         | -              |
+  | Golang                | New         | -              |
+  | Node.js               | New         | -              |
+  | Dotnet                | New         | -              |
+  | Workload Apply        | New         | -              |
+  | Send Mail             | New         | -              |
+  | Buildah               | Upgraded    | v0.9 -> v0.10  |
+  | Helm Chart Build Push | Upgraded    | v0.1 -> v0.2   |
+  | Cosign                | Upgraded    | v0.1 -> v0.2   |
+  | Git CLI               | Upgraded    | v0.4 -> v0.5   |
+  | Git Clone             | Upgraded    | v0.9 -> v0.10  |
+  | Pytest                | Upgraded    | v0.2 -> v0.3   |
+  | Python                | Upgraded    | v0.1 -> v0.2   |
+  | Syft                  | Upgraded    | v0.1 -> v0.2   |
+  | Trivy Scanner         | Upgraded    | v0.4 -> v0.5   |
+  | Maven                 | Upgraded    | v0.5 -> v0.6   |
+  | SonarQube Scanner     | Upgraded    | v0.5 -> v0.6   |
+
+  Pipeline template update summary:
+
+  | Pipeline Template               | Change Type | Version Path  |
+  | ------------------------------- | ----------- | ------------- |
+  | Java Image Build Scan Deploy    | Upgraded    | v0.1 -> v0.2  |
+  | Python Image Build Scan Deploy  | Upgraded    | v0.1 -> v0.2  |
+
 - More detailed release notes for different versions can be found in the <ExternalSiteLink name="alauda-devops-pipelines" children="Alauda DevOps Pipelines" /> documentation center.
 
 #### Alauda DevOps Connectors
 
-- Support Multiple Connectors in Connectors CSI Driver.
-- Support permission control for Connectors Proxy capabilities via AccessPolicy.
-- For `Alauda DevOps Connectors` `v1.8`, Connectors Core Capabilities and existing connectors (Git, OCI, Maven, PyPI, NPM, Kubernetes) have been promoted to Beta maturity level.
-- Comprehensive Toolchain Integration Coverage: Added six major  ecosystem Connectors including `GitLab`, `Harbor`, `NPM`, `Maven`, `PyPI`, and  `Kubernetes`, enabling unified integration of code repositories, artifact  repositories, and container platforms.
-- `Pipelines` and `Connectors` Integration: Provides standardized resource  definitions for **GitCodeRepository**, **OCIArtifact**, and **MavenArtifact**,  seamlessly integrating tools into Pipelines via a unified UI interface.
-- Flexible API Access Modes: The Connector API supports dual modes of  native tool API pass-through (Proxy Service) and custom APIs, with the  OCI Connector enhancing forward proxy capabilities.
-- Support integration with SonarQube and SonarCloud by using SonarQube Connector.
-- Support to deploy the Connectors system in a high availability (HA) configuration to ensure service continuity and fault tolerance.
-- More detailed release notes for different versions can be found in the <ExternalSiteLink name="alauda-devops-connectors" children="Alauda DevOps Connectors" /> documentation center.
+- A new version will be released soon.
 
 #### DevOps Toolchain
 
@@ -63,18 +84,12 @@ This update enhances the overall security and stability of the toolchain, which 
 
 ### Breaking Changes
 
-- For `Alauda DevOps Connectors` `v1.6`, Remove the `input.xxx` variable from `spec.auth.types[].generator.rego`. Use `input.data.xxx` instead.
-- For `Alauda DevOps Pipelines` `v4.7`,  `Chains` v0.26.0 upgrades to `Cosign` v2.6.0, which no longer supports `HS256` JWT tokens for keyless signing; users with private OIDC providers using `HS256` must switch to `RS256` before upgrading. For more information, please refer to [Chains](https://github.com/tektoncd/chains/releases/tag/v0.26.0).
+- No breaking changes in this release.
 
 ### Fixed Issues
 
-{/* release-notes-for-bugs?template=fixedIssues&project=DEVOPS&version=(fixVersion ~ "connectors-operator-v1.9.*" OR fixVersion ~ "connectors-operator-v1.8.*" OR fixVersion ~ "connectors-operator-v1.7.*" OR fixVersion ~ "connectors-operator-v1.6.*" OR fixVersion ~ "tektoncd-operator-v4.8.*" OR fixVersion ~ "tektoncd-operator-v4.7.*" OR fixVersion ~ "tektoncd-operator-v4.6.*" OR fixVersion ~ "gitlab-ce-operator-v18.5.*" OR fixVersion ~ "nexus-ce-operator-v3.76.*" OR fixVersion ~ "sonarqube-ce-operator-v2026.1.*" OR fixVersion ~ "sonarqube-ce-operator-v2025.1.*" OR fixVersion ~ "harbor-ce-operator-v2.14.*") */}
+{/* release-notes-for-bugs?template=fixedIssues&project=DEVOPS&version=(fixVersion ~ "tektoncd-operator-v4.10.*") */}
 
 ### Known Issues
 
-{/* release-notes-for-bugs?template=unfixedIssues&project=DEVOPS&version=(affectedVersion ~ "connectors-operator-v1.9.*" OR affectedVersion ~ "connectors-operator-v1.8.*" OR affectedVersion ~ "connectors-operator-v1.7.*" OR affectedVersion ~ "connectors-operator-v1.6.*" OR affectedVersion ~ "tektoncd-operator-v4.8.*" OR affectedVersion ~ "tektoncd-operator-v4.7.*" OR affectedVersion ~ "tektoncd-operator-v4.6.*" OR affectedVersion ~ "gitlab-ce-operator-v18.5.*" OR affectedVersion ~ "nexus-ce-operator-v3.76.*" OR affectedVersion ~ "sonarqube-ce-operator-v2026.1.*" OR affectedVersion ~ "sonarqube-ce-operator-v2025.1.*" OR affectedVersion ~ "harbor-ce-operator-v2.14.*") */}
-
-
-
-
-
+{/* release-notes-for-bugs?template=unfixedIssues&project=DEVOPS&version=(affectedVersion ~ "tektoncd-operator-v4.10.*") */}
