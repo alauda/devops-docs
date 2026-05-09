@@ -11,7 +11,7 @@
     en: Alauda DevOps Connectors
     zh: Alauda DevOps Connectors
   base: /alauda-devops-connectors
-  version: v1.9
+  version: v1.10
   repo: https://github.com/AlaudaDevops/connectors-operator
   image: devops/alauda-devops-connectors-docs
 - name: alauda-build-of-gitlab
@@ -19,7 +19,7 @@
     en: Alauda Build of Gitlab
     zh: Alauda Build of Gitlab
   base: /alauda-build-of-gitlab
-  version: v18.5
+  version: v18.8
   repo: https://github.com/AlaudaDevops/gitlab-ce-operator
   image: devops/alauda-build-of-gitlab-docs
 - name: alauda-build-of-harbor
