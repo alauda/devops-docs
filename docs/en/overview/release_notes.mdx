@@ -8,9 +8,6 @@ weight: 40
 The release notes include aggregated content for multiple versions of each `Operator` in the `Alauda DevOps v4.3` compatibility matrix. More detailed release notes for each `Operator` can be further viewed in the corresponding `Operator` documentation center.
 :::
 
-:::tip
-Some `Operators` are currently being adapted for `ACP 4.3` and will be released soon.
-:::
 
 ## Alauda DevOps (Next-Gen) - 4.3
 
@@ -21,11 +18,11 @@ The table below shows the version matrix of the `Operators` included in `Alauda 
 | Operator                  | Version    |
 | ------------------------- | ---------- |
 | Alauda DevOps Pipelines   | v4.10(LTS) |
-| Alauda DevOps Connectors  |            |
-| Alauda Build of Gitlab    |            |
-| Alauda Build of Harbor    |            |
-| Alauda Build of SonarQube |            |
-| Alauda Build of Nexus     |            |
+| Alauda DevOps Connectors  | v1.10(LTS) |
+| Alauda Build of Gitlab    | v18.8      |
+| Alauda Build of Harbor    | v2.14      |
+| Alauda Build of SonarQube | v2026.1    |
+| Alauda Build of Nexus     | v3.76      |
 
 ### New and Optimized Features
 
@@ -66,7 +63,11 @@ The table below shows the version matrix of the `Operators` included in `Alauda 
 
 #### Alauda DevOps Connectors
 
-- A new version will be released soon.
+- This update expands tool integration coverage and adds finer-grained controls for browsing Connector data and using Connector proxy access.
+- New Connector implementations are available for `GitHub`, `JFrog Artifactory`, and `Nexus Repository`.
+- Permission controls are enhanced with optional `connectors/apis` and `connectors/proxy` checks, approval-gated proxy access through `AccessPolicy` and `AccessRequest`, and ACP platform roles for approval resources.
+- Administration is improved with declarative feature flags in `ConnectorsCore.spec.featureFlags`, custom CA certificate support, Harbor CLI configuration, automatic Harbor Connector creation, and clearer CSI denial errors.
+- More detailed release notes can be found in the <ExternalSiteLink name="alauda-devops-connectors" children="Alauda DevOps Connectors" /> documentation center.
 
 #### DevOps Toolchain
 
@@ -81,10 +82,14 @@ This update enhances the overall security and stability of the toolchain, which 
 
 - No breaking changes in this release.
 
+### Deprecation Notices
+
+- Starting from `Connectors v1.10.0`, `ca.cert` is deprecated in `Connectors CSI` built-in configurations. Use `ca.crt` instead.
+
 ### Fixed Issues
 
-{/* release-notes-for-bugs?template=fixedIssues&project=DEVOPS&version=(fixVersion ~ "tektoncd-operator-v4.10.*") */}
+{/* release-notes-for-bugs?template=fixedIssues&project=DEVOPS&version=(fixVersion ~ "tektoncd-operator-v4.10.*" OR fixVersion ~ "connectors-operator-v1.10.*" OR fixVersion ~ "gitlab-ce-operator-v18.8.*" OR fixVersion ~ "harbor-ce-operator-v2.14.*" OR fixVersion ~ "sonarqube-ce-operator-v2026.1.*" OR fixVersion ~ "nexus-ce-operator-v3.76.*") */}
 
 ### Known Issues
 
-{/* release-notes-for-bugs?template=unfixedIssues&project=DEVOPS&version=(affectedVersion ~ "tektoncd-operator-v4.10.*") */}
+{/* release-notes-for-bugs?template=unfixedIssues&project=DEVOPS&version=(affectedVersion ~ "tektoncd-operator-v4.10.*" OR affectedVersion ~ "connectors-operator-v1.10.*" OR affectedVersion ~ "gitlab-ce-operator-v18.8.*" OR affectedVersion ~ "harbor-ce-operator-v2.14.*" OR affectedVersion ~ "sonarqube-ce-operator-v2026.1.*" OR affectedVersion ~ "nexus-ce-operator-v3.76.*") */}
