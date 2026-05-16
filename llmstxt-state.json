@@ -1,0 +1,253 @@
+{
+  "version": 1,
+  "generator_version": 3,
+  "project_name": "Alauda DevOps Documentation",
+  "summary": "Alauda DevOps platform documentation: overview, installation, upgrades, pipelines, and integrations (Harbor, Nexus, SonarQube, GitLab, connectors).",
+  "generated_at": "2026-05-16T10:39:31Z",
+  "include_patterns": [
+    "**/*.md",
+    "**/*.mdx"
+  ],
+  "exclude_patterns": [
+    "**/node_modules/**",
+    "**/.git/**",
+    "**/llms.txt",
+    "**/CHANGELOG.md",
+    "**/CONTRIBUTING.md",
+    "AGENTS.md",
+    "CLAUDE.md",
+    ".llmstxt-cache/**",
+    "**/.llmstxt-cache/**",
+    "llms.txt",
+    "llmstxt-state.json",
+    "**/llmstxt-state.json"
+  ],
+  "grouping_base_path": "docs/en",
+  "description_max_words": 150,
+  "files": {
+    "DEVELOPMENT.md": {
+      "sha256": "5891a1f71196d510d64a96cab258827463c06727d9a2c445d53ed28abad0f6de",
+      "size": 681,
+      "description": "Local development setup notes (in Chinese) for the docs site: install Node.js, npm, and dependencies via `yarn install`, then use `yarn dev` to start a hot-reloading server (left-nav changes require restart), `yarn build` to emit static files into `dist/`, and `yarn serve` to preview the build. Recommends Visual Studio Code with the MDX extension for authoring.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "README.md": {
+      "sha256": "3ea85bad1a45a34fe23e68d3be58f3aa6bf8b823f3e42aae4baf4c8e5ccefc9b",
+      "size": 777,
+      "description": "Entry-point README for the `devops-docs` repository, pointing contributors to DEVELOPMENT.md for setup and explaining the writing-and-translation workflow: author content in English under `docs/en` and machine-translate to Chinese via `yarn translate -s en -t zh -g '*' --copy` using an `AZURE_OPENAI_API_KEY`. Also links to the Alauda build pipeline (`doc-build-devops`) that must be checked after merges to `main`.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "docs/en/connectors/about.mdx": {
+      "sha256": "fd78a43740da146576c75ba054aa79dd58d98cba5a572a5521619b03ed9d47dd",
+      "size": 104,
+      "description": "About page for Alauda DevOps Connectors that delegates rendering to the `<ExternalSite name=\"alauda-devops-connectors\" />` component, pulling the standalone Connectors product site content into this docs hub.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "docs/en/connectors/index.mdx": {
+      "sha256": "e1f2d9fe6dd345cb9966f0ae691380a8a4f89293d60e619bdd47a8c2e49d80f3",
+      "size": 69,
+      "description": "Section landing page for the Connectors pillar of Alauda DevOps; renders the framework's `<Overview>` component (with no custom headers) to auto-list child pages such as the embedded external Connectors site.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "docs/en/gitlab/about.mdx": {
+      "sha256": "e432f207385c609db149c6c123c22d8520ee1b9869d054558e2632a89d1546db",
+      "size": 100,
+      "description": "About page for Alauda Build of GitLab that embeds the external `alauda-build-of-gitlab` product site via the `<ExternalSite>` component, surfacing the GitLab distribution's own documentation under the DevOps docs hub.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "docs/en/gitlab/index.mdx": {
+      "sha256": "d42661c4b7ef1af0a8136276c2f06bca09324b4605b6125b294ea7542d5d5dd6",
+      "size": 65,
+      "description": "Section landing page for the GitLab pillar in the Alauda DevOps documentation, rendering the framework's `<Overview>` component to list child pages such as the About page for Alauda Build of GitLab.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "docs/en/harbor/about.mdx": {
+      "sha256": "eb485d2ebdba9b520ff054e9b95ab1f723928726301c882ed0702c10bb7a7352",
+      "size": 100,
+      "description": "About page for Alauda Build of Harbor that embeds the standalone `alauda-build-of-harbor` product site via the `<ExternalSite>` component, integrating Harbor registry documentation into the DevOps hub.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "docs/en/harbor/index.mdx": {
+      "sha256": "0ca2278a827a4133141eb117f6de419e3032b6a9eb91a35523707dbef6ebaba3",
+      "size": 65,
+      "description": "Section landing page for the Harbor pillar; uses the framework's `<Overview>` component to surface child documentation pages for the Alauda Build of Harbor registry.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "docs/en/index.mdx": {
+      "sha256": "55255e6597fb279a5d468b7f11ef1d896fe7d4cb80179eb1838b2b312f50ee2d",
+      "size": 57,
+      "description": "Top-level English navigation page for the Alauda DevOps documentation site, rendering the auto-generated overview component with an empty `overviewHeaders` list so the site framework produces the root navigation index from sibling sections.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "docs/en/install/index.mdx": {
+      "sha256": "652ea274fbd049865bb9ff220aa0433ccf79cc0c37af41751a34b8bfe3d4ba48",
+      "size": 65,
+      "description": "Section landing page for installation documentation, rendering the framework's `<Overview>` component to auto-list child pages such as the next-gen install guide for Alauda DevOps and its add-ons.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "docs/en/install/installing-devops-next.mdx": {
+      "sha256": "8ec8ffb278a0902ddb9d1bedb23f1b17063ad8f107e7c6ff9d2ce309778a44ed",
+      "size": 1190,
+      "description": "Top-level install hub for Alauda DevOps next-gen, explaining that each add-on installs and upgrades independently and linking out (via `<ExternalSiteLink>`) to the dedicated install guides for Alauda DevOps Pipelines, Connectors, Build of GitLab, Build of Harbor, Build of SonarQube, and Build of Nexus, plus the core Alauda DevOps platform itself.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "docs/en/nexus/about.mdx": {
+      "sha256": "d59f09a54f67d79000163606d2ae9e36262078457d3d8440195e664af5677b1e",
+      "size": 98,
+      "description": "About page for Alauda Build of Nexus that embeds the external `alauda-build-of-nexus` product site via the `<ExternalSite>` component, surfacing the Nexus binary repository manager documentation in the DevOps docs hub.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "docs/en/nexus/index.mdx": {
+      "sha256": "5d3dc167abc6ea40cbd9e45f5dc84766eecdd4ba3a3d1f9a40ef773c120079ed",
+      "size": 64,
+      "description": "Section landing page for the Nexus pillar; renders the framework's `<Overview>` component to list child pages for the Alauda Build of Nexus binary repository manager.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "docs/en/overview/architecture.mdx": {
+      "sha256": "228a9e7b3c7d20a6e3f7aaff71b632a67f29ad236f5de2a5b2787da0e332eb5a",
+      "size": 1638,
+      "description": "Architecture overview of Alauda DevOps, illustrated by `architecture.drawio.png`, describing the platform as a composition of add-ons: Alauda DevOps Pipelines (Tekton-based), Connectors (external-service integration), Build of GitLab (SCM/CI/issues), Build of Harbor (container registry with RBAC, vulnerability scanning, content trust), Build of SonarQube (AI-aware code quality and security), and Build of Nexus (universal binary repository manager).",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "docs/en/overview/features.mdx": {
+      "sha256": "75c73b4b32de31f509c1ba3ee14285431d28e36c6c8ad138ff22a253c72f47a4",
+      "size": 1709,
+      "description": "Catalogs Alauda DevOps capabilities across three areas: Pipelines (Tekton Pipelines, Triggers, Chains, Hub integration, Results, and webhooks for Git/registry events), Tool Integration (Connectors for git/oci and custom protocols, Connector Class for extensibility, and a Connector CSI Driver for cloud-native workloads), and Tool Deployment (templated deployment for GitLab, Harbor, SonarQube, and Nexus alongside fully customizable Helm-values YAML deployment).",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "docs/en/overview/index.mdx": {
+      "sha256": "b4d47395a865139e5eac351a9bdb50f610771cbad515bf1facab98ba37b8cd15",
+      "size": 45,
+      "description": "Top-level overview landing page for the Alauda DevOps documentation site; renders the auto-generated `<Overview />` index that links readers into the introduction, feature overview, lifecycle policy, and release notes pages.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "docs/en/overview/intro.mdx": {
+      "sha256": "6bd39f0bd49d33558fdbc4d3007bac0cf13dfa28649bb5e536e3cf757ec5ab82",
+      "size": 3033,
+      "description": "Introduces Alauda DevOps as a Kubernetes-based cloud-native DevOps platform delivering an end-to-end toolchain (source management, artifact/dependency management, CI/CD, code quality), then enumerates its core advantages (efficiency, security-first design, extensibility via Tekton plus Connectors, unified workflows, faster time-to-market, modern practices like pipeline-as-code), target scenarios (platform building, golden-path CI/CD, reusable automation), and current limitations (cloud-native focus and limited Connector protocol/auth coverage).",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "docs/en/overview/lifecycle_policy.mdx": {
+      "sha256": "0acff0a9d4e2001f569a1e0751b546efe8f5a2073c6f30ec1ebc39bfd25a1afc",
+      "size": 1012,
+      "description": "States the version lifecycle and release policy for Alauda DevOps (Next-Gen) 4.3, deferring per-component policy to the documentation of Alauda DevOps Pipelines, Alauda DevOps Connectors, and the Alauda Builds of GitLab/Harbor/Nexus/SonarQube; also notes that Alauda DevOps v3 (3.20) is in maintenance with security/bug-fix patches every six months.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "docs/en/overview/release_notes.mdx": {
+      "sha256": "782de663dcb359533e953a96fb1da148e81fde27c58b9d51d4072a94be50fd2b",
+      "size": 5323,
+      "description": "Aggregated 4.3 release notes listing the operator compatibility matrix (Pipelines v4.10 LTS, Connectors v1.10 LTS, GitLab v18.8, Harbor v2.14, SonarQube v2026.1, Nexus v3.76) and summarizing what's new: new/upgraded Tekton Tasks and Pipeline templates (Helm Upgrade, Golang, Node.js, Dotnet, Workload Apply, Send Mail, etc.), new Connector implementations for GitHub/JFrog Artifactory/Nexus Repository, enhanced permission controls via `AccessPolicy`/`AccessRequest`, declarative `ConnectorsCore.spec.featureFlags`, plus the deprecation of `ca.cert` in favor of `ca.crt` in Connectors CSI.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "docs/en/pipelines/about.mdx": {
+      "sha256": "9a7252e6783aeff0b9991ae112b37ed9a747c915c733557b2cd0be3c83778496",
+      "size": 102,
+      "description": "Stub page that embeds the external Alauda DevOps Pipelines documentation site via the `<ExternalSite name=\"alauda-devops-pipelines\" />` component, redirecting readers to the dedicated Pipelines operator documentation.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "docs/en/pipelines/index.mdx": {
+      "sha256": "8411dee296a321ea7e7b08aa36de7304446ac0b603596741195593abfe25870c",
+      "size": 67,
+      "description": "Pipelines section landing page rendering an empty-header `<Overview />` index that links readers into the available pipelines subpages, such as the about-Pipelines redirect.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "docs/en/sonarqube/about.mdx": {
+      "sha256": "6bb31fd73f52c5d87f5a2d0dbb4d1f795bceb4cd7e4374bbb69b0eb09d04d19f",
+      "size": 106,
+      "description": "Stub page that embeds the external Alauda Build of SonarQube documentation via the `<ExternalSite name=\"alauda-build-of-sonarqube\" />` component, directing readers to the dedicated SonarQube operator documentation.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "docs/en/sonarqube/index.mdx": {
+      "sha256": "b832ba75d8f3d189f3495ce0feafd1ade0484a60af8c1880be5cda18ce3bda9a",
+      "size": 68,
+      "description": "SonarQube section landing page rendering an empty-header `<Overview />` index that surfaces the available SonarQube subpages such as the about-SonarQube redirect.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "docs/en/teps/REPOSITORY_AGNOSTIC_SYNC_PROPOSAL.md": {
+      "sha256": "ccfc98360e631d4c553ff0add69a2fef59420e280f989872c7c636497e948e74",
+      "size": 16884,
+      "description": "Tekton Enhancement Proposal-style design document for generalizing the proven `danielfbm/private-docs` ↔ `danielfbm/docs-sync` bidirectional sync into a configuration-driven, repository-agnostic system: defines a `.github/sync-config.yml` schema, parameterized forward/reverse workflow templates, a reusable composite action (`sync-docs/action.yml`), an interactive `setup-sync.sh` bootstrapper, multi-repo matrix support, a four-phase implementation plan, security/content-filter recommendations, and a migration guide from the current implementation.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "docs/en/teps/assets/BIDIRECTIONAL_SYNC.md": {
+      "sha256": "b2843dfd8b99f0c0a75692b475dc966c06833e92b1d59b2e49467fcf5a726c46",
+      "size": 6280,
+      "description": "Reference design for the original bidirectional sync between a private documentation repo and its public mirror: explains the forward-sync trigger (push to main on `docs/` or `README.md`), the reverse-sync trigger (merged external PR creating a PR back into the private repo), loop-prevention markers (`[reverse-sync]` commit text and sync-bot author/title checks), the shared `SYNC_TOKEN` secret with `repo` + `workflow` scopes, end-to-end usage scenarios, troubleshooting tips, and customization hooks for paths, markers, and notifications.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "docs/en/teps/assets/SYNC_SETUP.md": {
+      "sha256": "bc53b7982c539dc64447f9ac568bb8d7bc9a6f520513d9c5dfcff8e3dda524fd",
+      "size": 3276,
+      "description": "Setup guide for the original `private-docs` → `docs-sync` GitHub Actions sync, contrasting the basic `sync-docs.yml` workflow against the advanced `sync-docs-advanced.yml` (backups, sync metadata, force-sync dispatch input, workflow summaries) and walking the operator through creating a classic PAT with `repo` + `workflow` scopes, registering it as the `SYNC_TOKEN` repository secret, and triggering or troubleshooting sync runs from the Actions tab.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "docs/en/upgrade/index.mdx": {
+      "sha256": "5c4ae7175fa9bb1acebad7f26c79cd4cac29616e19458731d6212e52aa18a146",
+      "size": 65,
+      "description": "Upgrade section landing page that renders an empty-header `<Overview />` index linking readers into the v3-to-v4 migration guides for Alauda DevOps and Tekton.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "docs/en/upgrade/migrating-devops-v3-to-v4.mdx": {
+      "sha256": "25b19a8edb28e92958b3a96cfa2931b8edf650473ea437abb67f5a220e11d4b9",
+      "size": 3522,
+      "description": "End-to-end migration plan for moving from Alauda DevOps v3 (on ACP v3.18) to Alauda DevOps (Next-Gen) on ACP v4.0/v4.1: requires pre-upgrade to v3.20, lists the end-of-life v3 operators (Tekton, GitLab, Harbor, SonarQube, Nexus), specifies target Next-Gen versions (Pipelines v4.0.z, GitLab v17.8.z, Harbor v2.12.z, SonarQube v2025.1.z, Nexus v3.76.z), explains using the `violet` CLI to upload operators, and links per-operator migration docs. Warns that Pipelines must stay pinned to v4.0.z to preserve Katanomi Build/Release compatibility.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "docs/en/upgrade/migrating-tekton-v3-to-v4.mdx": {
+      "sha256": "254e5e9f1244089e77eb8a85d954b3de76f24a45a4a4bd0f696b050a8638c8da",
+      "size": 12818,
+      "description": "Step-by-step procedure for replacing `Alauda DevOps Tekton v3` with `Alauda DevOps Pipelines`: deletes the existing `tektonpipelines.operator.tekton.dev` instance and `tekton-operator` subscription, installs Pipelines from OperatorHub on the mandatory `pipelines-4.0` channel (never `latest`), optionally bumps the operator's CPU/memory subscription `config` for large TaskRun/PipelineRun migrations, applies a full `TektonConfig` example (enabling resolvers, step actions, `results-from: sidecar-logs`, `runAsUser: 0` pod-template defaults for legacy compatibility), monitors migration via webhook logs and `pre/post-upgrade-version` annotations, and grants the controller a `pods/log` ClusterRoleBinding so sidecar-log results work.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "docs/en/upgrade/overview.mdx": {
+      "sha256": "4c97b99d8b81869cbb8c271e2a76020fd98f63695885e6055bfbb27965c94e39",
+      "size": 7413,
+      "description": "Maps the Alauda DevOps upgrade strategy for moving Alauda Container Platform (ACP) from v4.0, v4.1, or v4.2 to v4.3, presenting tabbed per-source-version paths that combine ACP platform upgrades with migration from legacy Alauda DevOps to Alauda DevOps (Next-Gen). Includes the pre-migration v3.20 operator matrix (GitLab v3, Nexus v3, SonarQube v3, Harbor v3, Tekton v3) and the post-migration Next-Gen matrix (Alauda DevOps Pipelines v4.0.z, Alauda Build of GitLab/Harbor/SonarQube/Nexus), plus an Operator Hub upgrade walkthrough with a hard restriction not to upgrade Alauda DevOps Pipelines past v4.0.z if v3 Build and Release features must still work (to avoid katanomi incompatibility).",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "docs/en/upgrade/upgrading-devops-v3.mdx": {
+      "sha256": "2c40ccfaa147a4968cf0c6b870ef56ee00b69fd7d9bae8a7ea07ba91a82d6d9b",
+      "size": 3377,
+      "description": "Step-by-step procedure for upgrading Alauda DevOps to v3.20 during ACP transitions v3.18 to v4.0, v3.18 to v4.1, and v4.0 to v4.1, covering the required v3.20 operator/tool-instance version matrix (GitLab v14.0.z, Nexus v3.69.z, SonarQube v9.9.z, Harbor v2.6.z, Tekton, plus mandatory DevOps Tool, Alauda DevOps v3 v0.11.z, Eventing v3 v1.10.z, and Jenkins v3 v2.516.z). Walks through downloading operators from the Alauda Customer Portal, using the violet CLI to upload them to ACP, upgrading via Administrator > Marketplace > Operator Hub, and then bumping each tool instance from DevOps Toolchain > Instances; ends by pointing to the follow-up migration to Alauda DevOps (Next-Gen).",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    },
+    "structure.md": {
+      "sha256": "dd2cb33ab3098149eae53a08417d91d4d691c62983661b4ef0fbbaf3d5478aed",
+      "size": 8711,
+      "description": "Internal design notes (Chinese) describing how the DevOps docs site is composed from multiple downstream operator/plugin repositories (tekton-operator, connector-operator, gitlab-ce-operator). Compares two assembly strategies — independent per-plugin sites versus a synced single site — settling on per-plugin sites, and specifies a sync mechanism using an `imported-docs/` staging directory, symlinks into `docs/`, a `sources`/`target` YAML config, and `.syncignore` plus per-file frontmatter `syncignore: true` for filtering. Includes a verification matrix confirming the doom framework handles linked content, static assets, and API docs.",
+      "generation_method": "ai_agent_reading",
+      "updated_at": "2026-05-16T10:39:31Z"
+    }
+  }
+}
