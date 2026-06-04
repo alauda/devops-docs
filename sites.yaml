@@ -46,6 +46,14 @@
   version: v2026.1
   repo: https://github.com/AlaudaDevops/sonarqube-ce-operator
   image: devops/alauda-build-of-sonarqube-docs
+- name: alauda-sre-agent
+  displayName:
+    en: Alauda SRE Agent
+    zh: Alauda SRE Agent
+  base: /alauda-sre-agent
+  version: main
+  repo: https://github.com/AlaudaDevops/sre-agent-langgraph
+  image: devops/alauda-sre-agent-docs
 - name: container_platform
   base: /container_platform
   version: v4.3
