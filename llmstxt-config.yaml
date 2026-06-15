@@ -1,0 +1,28 @@
+# Configuration for llms.txt generation.
+# Generated for alauda/devops-docs (pure-docs repo, English content only).
+# See https://llmstxt.org for the index format.
+
+project_name: "Alauda DevOps Documentation"
+summary: "Alauda DevOps platform documentation: overview, installation, upgrades, pipelines, and integrations (Harbor, Nexus, SonarQube, GitLab, connectors)."
+
+include_patterns:
+  - "**/*.md"
+  - "**/*.mdx"
+
+exclude_patterns:
+  - "**/node_modules/**"
+  - "**/.git/**"
+  - "**/llms.txt"
+  - "**/CHANGELOG.md"
+  - "**/CONTRIBUTING.md"
+  # Workspace overlay files injected by the gt-task runner; not part of the repo.
+  - "AGENTS.md"
+  - "CLAUDE.md"
+
+# Group H2 sections by the directory under docs/en (overview, install, pipelines, ...).
+# Files at the repo root (README.md, DEVELOPMENT.md, structure.md) and docs/en/index.mdx
+# fall into the "Root" group.
+grouping_base_path: "docs/en"
+
+batch_size: 15
+description_max_words: 150
