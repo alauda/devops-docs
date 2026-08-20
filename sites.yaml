@@ -3,7 +3,7 @@
     en: Alauda DevOps Pipelines
     zh: Alauda DevOps Pipelines
   base: /alauda-devops-pipelines
-  version: v4.10
+  version: v4.14
   repo: https://github.com/AlaudaDevops/tektoncd-operator
   image: devops/alauda-devops-pipelines-docs
 - name: alauda-devops-artifacthub-shim
@@ -11,7 +11,7 @@
     en: Alauda DevOps Artifact Hub Shim
     zh: Alauda DevOps Artifact Hub Shim
   base: /alauda-devops-artifacthub-shim
-  version: main
+  version: v1.0
   repo: https://github.com/AlaudaDevops/artifacthub-shim
   image: devops/alauda-devops-artifacthub-shim-docs
 - name: alauda-devops-connectors
@@ -56,7 +56,7 @@
   image: devops/alauda-build-of-sonarqube-docs
 - name: container_platform
   base: /container_platform
-  version: v4.3
+  version: v4.4
 - name: alauda-devops
   base: /devops
   version: v3.20
