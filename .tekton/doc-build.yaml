@@ -8,15 +8,29 @@ metadata:
     pipelinesascode.tekton.dev/max-keep-runs: "10"
     pipelinesascode.tekton.dev/on-cel-expression: |-
       (
-        event == "push" && (
-          source_branch.matches("^(main|master|release-.*)$") ||
-          target_branch.matches("^(main|master|release-.*)$")
+        event == "push" &&
+        !last_commit_title.contains("ci skip") && (
+          source_branch.matches("^(main|master|release-v?[0-9]+([.][0-9]+)+)$") ||
+          target_branch.matches("^(main|master|release-v?[0-9]+([.][0-9]+)+)$")
         )
       )
 spec:
+  # `tasks` is the budget for all tasks together, not per task — a run whose
+  # steps add up past it is cancelled wherever it happens to be, and everything
+  # already done is thrown away because `upload-translations` runs last.
+  #
+  # Sized from immutable-infra-docs on 2026-09-03/04, where 6h cancelled two
+  # runs during `auto-translate-ru` after Chinese had already succeeded:
+  #   auto-translate-zh   2h06m–2h25m for one attempt, 3h25m–3h34m with retries
+  #   auto-translate-ru   still running at 2h25m and 2h30m when the budget ran out
+  # so the realistic total is over 8h once either language needs a retry.
+  #
+  # This is the coarse bound. What stops a genuinely stuck step is the per-task
+  # `timeout` in the pipeline body (ops/edge-devops-task), and with retries: 2
+  # on each translate task no aggregate can cover the true worst case.
   timeouts:
-    pipeline: 2h
-    tasks: 2h
+    pipeline: 12h
+    tasks: 10h
 
   params:
     - name: doc-base
@@ -56,7 +70,7 @@ spec:
             - ReadWriteOnce
           resources:
             requests:
-              storage: 1Gi
+              storage: 2.5Gi
     - name: cache
       persistentVolumeClaim:
         claimName: doc-build-cache
