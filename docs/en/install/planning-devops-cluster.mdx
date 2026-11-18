@@ -4,7 +4,7 @@ weight: 30
 
 # Planning Harbor and the DevOps Tools
 
-Use this page to plan the additional machines for Harbor and the other Alauda DevOps tools in an Alauda Container Platform (ACP) 4.5 multi-cluster installation on Alauda OS. It adds to the `global` and workload cluster sizes of the ACP installation planning.
+Use this page to plan the additional machines for Harbor and the other Alauda DevOps tools in an Alauda Container Platform (ACP) multi-cluster installation on Alauda OS. It adds to the `global` and workload cluster sizes of the ACP installation planning.
 
 A multi-cluster platform uses one central image registry for application images. If the customer already has one, use it and skip this page. Otherwise, use Harbor in one of two ways:
 
@@ -27,17 +27,17 @@ ACP recommends running only platform components on the `global` cluster of a mul
 
 | Node pool | Nodes | CPU | Memory | Runs |
 | --- | ---: | --- | --- | --- |
-| harbor | 3 | 12 cores | 24 GiB | Harbor, its PostgreSQL and Redis, Envoy Gateway |
+| harbor | 3 | 8 cores | 16 GiB | Harbor, its PostgreSQL and Redis, Envoy Gateway |
 | storage | 3 (4 on Bare Metal) | 8 cores | 24 GiB | Ceph |
 
-In total: 6 nodes, 60 cores, and 144 GiB of memory. On Bare Metal: 7 nodes, 68 cores, and 168 GiB.
+In total: 6 nodes, 48 cores, and 120 GiB of memory. On Bare Metal: 7 nodes, 56 cores, and 144 GiB.
 
 - On Bare Metal, use 4 storage nodes. A replacement server can take a long time to arrive. With 3 nodes, Ceph would run degraded on 2 nodes for that time, and maintenance and upgrades would be blocked.
 - With `global` disaster recovery, prepare these pools on the primary only. Harbor disaster recovery is optional; if it is required, prepare the same pools on the standby as well.
 
 #### Disks
 
-Sizes are per node, in GB. For what each disk holds, see [Disk Configuration](https://docs.alauda.io/container_platform/4.5/configure/scalability/disk_configuration.html).
+Sizes are per node, in GB.
 
 | Disk | harbor | storage |
 | --- | ---: | ---: |
@@ -72,11 +72,11 @@ All DevOps tools, including Harbor, run in a workload cluster of their own.
 
 In total, without the pipeline pool: 12 nodes, 156 cores, and 408 GiB of memory. On Bare Metal: 13 nodes, 164 cores, and 432 GiB.
 
-For what runs on each devops node and what happens when one fails, see [devops Pool](#devops-pool).
+For what runs on each devops node and what happens when one fails, see [DevOps Pool](#devops-pool).
 
 #### Disks
 
-Sizes are per node, in GB. For what each disk holds, see [Disk Configuration](https://docs.alauda.io/container_platform/4.5/configure/scalability/disk_configuration.html).
+Sizes are per node, in GB.
 
 | Disk | control-plane | infra | devops | storage | pipeline |
 | --- | ---: | ---: | ---: | ---: | ---: |
@@ -115,9 +115,9 @@ A separate pipeline pool is not needed by default. Size it by the number of Pipe
 
 CPU and memory are limits, and requests are assumed to equal limits. Node sizes are rounded up to common sizes: 4, 8, 12, 16, 24, or 32 cores and 8, 16, 24, 32, 48, or 64 GiB.
 
-### devops Pool \{#devops-pool}
+### DevOps Pool \{#devops-pool}
 
-The table lists every component in Case 2 with its resources per replica and an example placement on 3 devops nodes. In the node columns, `1` means one replica on that node. The rows of each tool end with its total, and the last row gives the total of each node. The scheduler decides the actual placement.
+The table lists every component in Case 2 with its resources per replica and an example placement on 3 devops nodes. In the node columns, `1` means one replica on that node. The last row gives the total of each node. The scheduler decides the actual placement.
 
 | Tool | Component | CPU per replica | Memory per replica | Replicas | Node 1 | Node 2 | Node 3 |
 | --- | --- | ---: | ---: | ---: | :---: | :---: | :---: |
@@ -129,7 +129,6 @@ The table lists every component in Case 2 with its resources per replica and an 
 | | PostgreSQL | 1 | 2 GiB | 3 | 1 | 1 | 1 |
 | | Redis data node | 1 | 2 GiB | 2 | | master | replica |
 | | Redis Sentinel | 0.1 | 0.125 GiB | 3 | 1 | 1 | 1 |
-| | **Harbor total** | **10.1** | **19.4 GiB** | | 1.5 / 2.6 GiB | 4.5 / 9.1 GiB | 4.1 / 7.6 GiB |
 | GitLab | webservice | 1 | 4 GiB | 2 | 1 | | 1 |
 | | workhorse | 0.5 | 0.5 GiB | 2 | 1 | | 1 |
 | | Sidekiq | 1 | 2 GiB | 2 | 1 | | 1 |
@@ -139,21 +138,16 @@ The table lists every component in Case 2 with its resources per replica and an 
 | | PostgreSQL | 1 | 2 GiB | 3 | 1 | 1 | 1 |
 | | Redis data node | 1 | 2 GiB | 2 | | replica | master |
 | | Redis Sentinel | 0.1 | 0.125 GiB | 3 | 1 | 1 | 1 |
-| | **GitLab total** | **17.6** | **37.9 GiB** | | 6.1 / 13.6 GiB | 4.4 / 8.6 GiB | 7.1 / 15.6 GiB |
 | SonarQube | SonarQube | 2 | 8 GiB | 1 | | 1 | |
 | | PostgreSQL | 1 | 2 GiB | 1 | | 1 | |
-| | **SonarQube total** | **3** | **10 GiB** | | — | 3 / 10 GiB | — |
 | Nexus | Nexus | 4 | 8 GiB | 1 | 1 | | |
 | | Logging container | 0.2 | 0.5 GiB | 3 | 3 | | |
-| | **Nexus total** | **4.6** | **9.5 GiB** | | 4.6 / 9.5 GiB | — | — |
-| Alauda DevOps Pipelines | Tekton controller | 1 | 1 GiB | 2 | | 1 | 1 |
+| Tekton | Tekton controller | 1 | 1 GiB | 2 | | 1 | 1 |
 | | Other Tekton components | 3 | 3 GiB | 1 | | | 1 |
-| | **Tekton total** | **5** | **5 GiB** | | — | 1 / 1 GiB | 4 / 4 GiB |
 | Builds | PipelineRun, light load | 2.3 | 2.3 GiB | 2 | 1 | 1 | |
-| | **Builds total** | **4.6** | **4.6 GiB** | | 2.3 / 2.3 GiB | 2.3 / 2.3 GiB | — |
 | **Total** | | **44.9** | **86.4 GiB** | | **14.5 / 28.1 GiB** | **15.2 / 31.1 GiB** | **15.2 / 27.3 GiB** |
 
-Node cells in the total rows give cores / memory.
+In the last row, the node cells give cores / memory.
 
 Sources of the values:
 
@@ -171,7 +165,7 @@ Sources of the values:
 - **Builds**: the peak of one `python-image-build-scan-deploy` PipelineRun of the Alauda catalog, while the pre-build and the SonarQube scan run in parallel. Light load is 2 concurrent PipelineRuns.
 - **Not counted**: the metrics exporters of PostgreSQL and Redis, the GitLab `migrations` Job, and the operator Pods.
 
-#### When a devops Node Fails
+#### When a DevOps Node Fails
 
 With all 3 nodes running, the pool is at about 62% CPU and 60% memory. When one node fails, the remaining 2 nodes have 48 cores and 96 GiB. The tools need 40.3 cores and 81.8 GiB (84% and 85%), and with light builds 44.9 cores and 86.4 GiB (93% and 90%), so every component can start again on the remaining nodes.
 
@@ -190,13 +184,13 @@ With all 3 nodes running, the pool is at about 62% CPU and 60% memory. When one 
 
 | Node pool | Workload | Nodes × size | Remaining with one node down | Utilization (CPU / memory) |
 | --- | --- | --- | --- | --- |
-| harbor (Case 1) | 15.1 cores, 24.4 GiB | 3 × 12 cores / 24 GiB | 24 cores, 48 GiB | 63% / 51% |
+| harbor (Case 1) | 15.1 cores, 22.4 GiB | 3 × 8 cores / 16 GiB | 16 cores, 32 GiB | 94% / 70% |
 | devops (Case 2) | 44.9 cores, 86.4 GiB, including light builds | 3 × 24 cores / 48 GiB | 48 cores, 96 GiB | 93% / 90% |
 
-- harbor: the Harbor rows of the devops table (10.1 cores, 19.4 GiB), plus Envoy Gateway: the controller at its default limit of 1 core and 1 GiB, and 2 `envoy-proxy` replicas at a planning allowance of 2 cores and 2 GiB each.
-- storage: one OSD and the block and object services per node. The small three-node baseline of the Ceph planning page reserves about 20 CPUs and 40 GiB for such a cluster; 3 nodes of 8 cores and 24 GiB cover it. See [Aggregate Cluster Planning Budget](https://docs.alauda.io/container_platform/4.5/storage/storagesystem_ceph/planning.html#aggregate-cluster-planning-budget).
-- control-plane: the DevOps cluster has fewer than 24 worker nodes, so it uses the 24-worker tier of [Evaluating Resources for Workload Cluster](https://docs.alauda.io/container_platform/4.5/configure/scalability/evaluating_workload.html).
-- infra: the same components and tiers as the infra nodes of a workload cluster with about 20 worker nodes.
+- harbor: the Harbor rows of the DevOps Pool table (10.1 cores, 19.4 GiB), plus Envoy Gateway: the controller at its default limit of 1 core and 1 GiB, and 2 `envoy-proxy` replicas at 2 cores and 1 GiB each, the 4,000 QPS tier of the Envoy Gateway sizing.
+- storage: one OSD and the block and object services per node, within the small three-node Ceph baseline of about 20 CPUs and 40 GiB in total.
+- control-plane: the 24-worker tier, because the DevOps cluster has fewer than 24 worker nodes.
+- infra: the same as the infra nodes of a workload cluster with about 20 worker nodes.
 
 ### Pipeline Sizing \{#pipeline-sizing}
 
@@ -244,7 +238,7 @@ In Case 1, only the Harbor rows apply.
 | --- | --- | --- |
 | Harbor | `Alauda Toolchain Enterprise Registry E1` | High availability; 2 replicas of portal, core, registry, and jobservice |
 | GitLab | `Alauda Toolchain Code Repository E1` | High availability; Gitaly Cluster with 3 Gitaly and 3 Praefect replicas; 2 replicas of webservice, Sidekiq, and gitlab-shell |
-| Alauda DevOps Pipelines | `Alauda Container Platform Pipelines` | Tekton controller with 2 replicas |
+| Tekton | `Alauda Container Platform Pipelines` | Tekton controller with 2 replicas |
 | SonarQube | `Alauda Build of SonarQube` | Single instance |
 | Nexus | `Alauda Build of Nexus` | Single instance |
 
@@ -270,7 +264,6 @@ Block data is on Ceph block storage (RBD). Object data is on Ceph object storage
 - **Case 2**: reserve two VIPs, one for the control plane endpoint and one for the gateway that serves Harbor and GitLab.
 - The gateway VIP can come from the enterprise load balancer, or from MetalLB. On Huawei Cloud Stack, run `envoy-proxy` with the host network behind the HCS ELB.
 
-See [Tasks for Envoy Gateway](https://docs.alauda.io/container_platform/4.5/networking/how_to/tasks_for_envoy_gateway.html).
 
 ### Node Pools
 
