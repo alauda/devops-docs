@@ -66,11 +66,13 @@ All DevOps tools, including Harbor, run in a workload cluster of their own.
 | --- | ---: | --- | --- | --- |
 | control-plane | 3 | 4 cores | 16 GiB | Control plane and platform components |
 | infra | 3 | 16 cores | 48 GiB | Monitoring, logging, Envoy Gateway |
-| devops | 4 | 32 cores | 64 GiB | The DevOps tools and their PostgreSQL and Redis; light builds |
+| devops | 3 | 24 cores | 48 GiB | The DevOps tools, their PostgreSQL and Redis, and light builds |
 | storage | 3 (4 on Bare Metal) | 8 cores | 24 GiB | Ceph |
-| pipeline | 3 to 6 | 4 or 8 cores | 16 or 32 GiB | Builds, only for 3 or more concurrent PipelineRuns; see [Pipeline Pool](#pipeline-pool) |
+| pipeline | 4 to 6 | 8 cores | 32 GiB | Builds, only for 3 or more concurrent PipelineRuns; see [Pipeline Pool](#pipeline-pool) |
 
-In total, without the pipeline pool: 13 nodes, 212 cores, and 520 GiB of memory. On Bare Metal: 14 nodes, 220 cores, and 544 GiB.
+In total, without the pipeline pool: 12 nodes, 156 cores, and 408 GiB of memory. On Bare Metal: 13 nodes, 164 cores, and 432 GiB.
+
+For what runs on each devops node and what happens when one fails, see [devops Pool](#devops-pool).
 
 #### Disks
 
@@ -93,7 +95,7 @@ Sizes are per node, in GB. For what each disk holds, see [Disk Configuration](ht
 
 - The devops nodes need no data disk. All tool data is on Ceph.
 - The OSD size assumes 500 GB of object storage. See [OSD Capacity](#osd-capacity).
-- If builds use `emptyDir` workspaces or caches, enlarge `/var/lib/kubelet` on the pipeline nodes.
+- If builds use `emptyDir` workspaces or caches, enlarge `/var/lib/kubelet` on the nodes that run builds.
 
 #### Pipeline Pool \{#pipeline-pool}
 
@@ -106,56 +108,92 @@ A separate pipeline pool is not needed by default. Size it by the number of Pipe
 | 6 to 10 | Pipeline pool: 6 nodes, 8 cores, 32 GiB |
 | More than 10 | Pipeline pool sized with the formula in [Pipeline Sizing](#pipeline-sizing) |
 
-- When builds run on the devops nodes, limit the build namespaces with a `ResourceQuota` of 6 cores and 24 GiB, so that builds cannot starve the tools.
+- When builds run on the devops nodes, limit the build namespaces with a `ResourceQuota` of about 5 cores and 5 GiB, and give build Pods a lower `PriorityClass` than the tools. When a node fails, the tools can then preempt builds.
 - Do not run builds on the control-plane, infra, or storage nodes.
 
 ## Sizing Basis \{#sizing-basis}
 
 CPU and memory are limits, and requests are assumed to equal limits. Node sizes are rounded up to common sizes: 4, 8, 12, 16, 24, or 32 cores and 8, 16, 24, 32, 48, or 64 GiB.
 
-### Tool Resources
+### devops Pool \{#devops-pool}
 
-Resources are given per replica. Multiply by the number of replicas for the total.
+The table lists every component in Case 2 with its resources per replica and an example placement on 3 devops nodes. In the node columns, `1` means one replica on that node. The rows of each tool end with its total, and the last row gives the total of each node. The scheduler decides the actual placement.
 
-| Tool | Component | CPU per replica | Memory per replica | Replicas |
-| --- | --- | ---: | ---: | ---: |
-| Harbor | Harbor components | 2 cores | 4 GiB | 3 |
-| | PostgreSQL | 1 core | 2 GiB | 3 |
-| | Redis data node | 1 core | 2 GiB | 2 |
-| | Redis Sentinel | 0.1 cores | 0.125 GiB | 3 |
-| GitLab | GitLab components | 8 cores | 9 GiB | 3 |
-| | PostgreSQL | 1 core | 2 GiB | 3 |
-| | Redis data node | 1 core | 2 GiB | 2 |
-| | Redis Sentinel | 0.1 cores | 0.125 GiB | 3 |
-| SonarQube | SonarQube | 8 cores | 16 GiB | 1 |
-| | PostgreSQL | 1 core | 2 GiB | 3 |
-| Nexus | Nexus, with its 3 logging containers | 6.6 cores | 13.5 GiB | 1 |
-| Alauda DevOps Pipelines | Tekton components | 4 cores | 4 GiB | 1 |
-| Envoy Gateway (Case 1 only) | Controller | 1 core | 1 GiB | 1 |
-| | `envoy-proxy` | 2 cores | 2 GiB | 2 |
+| Tool | Component | CPU per replica | Memory per replica | Replicas | Node 1 | Node 2 | Node 3 |
+| --- | --- | ---: | ---: | ---: | :---: | :---: | :---: |
+| Harbor | portal | 0.4 | 0.5 GiB | 2 | 1 | | 1 |
+| | core | 0.4 | 0.5 GiB | 2 | | 1 | 1 |
+| | registry | 0.8 | 2 GiB | 2 | | 1 | 1 |
+| | jobservice | 0.4 | 0.5 GiB | 2 | | 1 | 1 |
+| | Trivy | 0.8 | 2 GiB | 1 | | 1 | |
+| | PostgreSQL | 1 | 2 GiB | 3 | 1 | 1 | 1 |
+| | Redis data node | 1 | 2 GiB | 2 | | master | replica |
+| | Redis Sentinel | 0.1 | 0.125 GiB | 3 | 1 | 1 | 1 |
+| | **Harbor total** | **10.1** | **19.4 GiB** | | 1.5 / 2.6 GiB | 4.5 / 9.1 GiB | 4.1 / 7.6 GiB |
+| GitLab | webservice | 1 | 4 GiB | 2 | 1 | | 1 |
+| | workhorse | 0.5 | 0.5 GiB | 2 | 1 | | 1 |
+| | Sidekiq | 1 | 2 GiB | 2 | 1 | | 1 |
+| | gitlab-shell | 0.25 | 0.5 GiB | 2 | 1 | | 1 |
+| | Gitaly | 2 | 4 GiB | 3 | 1 | 1 | 1 |
+| | Praefect | 0.25 | 0.5 GiB | 3 | 1 | 1 | 1 |
+| | PostgreSQL | 1 | 2 GiB | 3 | 1 | 1 | 1 |
+| | Redis data node | 1 | 2 GiB | 2 | | replica | master |
+| | Redis Sentinel | 0.1 | 0.125 GiB | 3 | 1 | 1 | 1 |
+| | **GitLab total** | **17.6** | **37.9 GiB** | | 6.1 / 13.6 GiB | 4.4 / 8.6 GiB | 7.1 / 15.6 GiB |
+| SonarQube | SonarQube | 2 | 8 GiB | 1 | | 1 | |
+| | PostgreSQL | 1 | 2 GiB | 1 | | 1 | |
+| | **SonarQube total** | **3** | **10 GiB** | | — | 3 / 10 GiB | — |
+| Nexus | Nexus | 4 | 8 GiB | 1 | 1 | | |
+| | Logging container | 0.2 | 0.5 GiB | 3 | 3 | | |
+| | **Nexus total** | **4.6** | **9.5 GiB** | | 4.6 / 9.5 GiB | — | — |
+| Alauda DevOps Pipelines | Tekton controller | 1 | 1 GiB | 2 | | 1 | 1 |
+| | Other Tekton components | 3 | 3 GiB | 1 | | | 1 |
+| | **Tekton total** | **5** | **5 GiB** | | — | 1 / 1 GiB | 4 / 4 GiB |
+| Builds | PipelineRun, light load | 2.3 | 2.3 GiB | 2 | 1 | 1 | |
+| | **Builds total** | **4.6** | **4.6 GiB** | | 2.3 / 2.3 GiB | 2.3 / 2.3 GiB | — |
+| **Total** | | **44.9** | **86.4 GiB** | | **14.5 / 28.1 GiB** | **15.2 / 31.1 GiB** | **15.2 / 27.3 GiB** |
 
-- **Harbor and GitLab components** are planned as a share per node across 3 nodes for the high availability form. The share covers all their components, which run 1 or 2 replicas each. Scale up when the load grows.
-- **PostgreSQL** runs as a high availability instance of 3 nodes for each tool. One node is the primary and serves all connections; the other nodes are standbys. Scale up the instance when the load grows. This is below the 2 cores and 4 GB per node that the PostgreSQL documentation recommends as a minimum.
-- **Redis** runs in Sentinel mode: 1 master, 1 replica, and 3 Sentinels.
-- **SonarQube** uses its `Production Template` (8 cores, 16 Gi).
-- **Nexus** uses its `Production Template`. The 4 cores and 8 Gi in the template description are requests; the limits are 6 cores and 12 Gi, plus 0.2 cores and 512 Mi for each logging container.
-- **Tekton** is a planning allowance. Its components request about 3.4 cores and 3.5 GiB, including Triggers, Results, and Artifact Hub.
-- **Envoy Gateway**: the controller value is its default limit. The `envoy-proxy` value is a planning allowance.
-- **Not counted**: the metrics exporters of PostgreSQL and Redis (about 5 cores and 6 GiB in Case 2), the GitLab `migrations` Job, and the operator Pods. The headroom of the pools covers them.
+Node cells in the total rows give cores / memory.
+
+Sources of the values:
+
+- **Harbor** components: the limits in the high availability YAML example of the Harbor deployment page.
+- **GitLab** components: the high availability form with Gitaly Cluster. The values are below the high availability YAML example of the GitLab deployment page, where the upstream GitLab sizing allows it:
+  - webservice: 4 GiB covers 2 Puma workers and the main process; CPU is lowered to 1 core.
+  - workhorse: the LFS test on the GitLab LFS page used about 100 Mi of memory.
+  - gitlab-shell: it serves only SSH Git operations.
+  - Gitaly: memory stays at 4 GiB, because Gitaly is sensitive to memory; CPU is lowered to 2 cores.
+  - Praefect: a planning allowance; the GitLab documentation gives no value.
+- **PostgreSQL**: 1 core and 2 GiB per node, below the 2 cores and 4 GB per node that the PostgreSQL documentation recommends as a minimum. Scale up when the load grows. SonarQube uses 1 node, because SonarQube itself runs as a single instance.
+- **SonarQube**: the small tier of the SonarQube host requirements, up to 1 million lines of code: 2 cores, and 8 GB recommended for production.
+- **Nexus**: the 8 GB minimum of the Nexus Repository system requirements. Set the JVM to fit the limit; see [Deployment Notes](#deployment-notes).
+- **Tekton**: the controller runs 2 replicas at its example limit of 1 core and 1 GiB. The other components are a planning allowance; they request about 3 cores and 3 GiB.
+- **Builds**: the peak of one `python-image-build-scan-deploy` PipelineRun of the Alauda catalog, while the pre-build and the SonarQube scan run in parallel. Light load is 2 concurrent PipelineRuns.
+- **Not counted**: the metrics exporters of PostgreSQL and Redis, the GitLab `migrations` Job, and the operator Pods.
+
+#### When a devops Node Fails
+
+With all 3 nodes running, the pool is at about 62% CPU and 60% memory. When one node fails, the remaining 2 nodes have 48 cores and 96 GiB. The tools need 40.3 cores and 81.8 GiB (84% and 85%), and with light builds 44.9 cores and 86.4 GiB (93% and 90%), so every component can start again on the remaining nodes.
+
+| Failed node | Unavailable until restarted on another node | Degraded but available |
+| --- | --- | --- |
+| Node 1 | Nexus | Harbor and GitLab, with one replica fewer |
+| Node 2 | SonarQube, which has both its Pods on this node | Harbor and GitLab; Harbor vulnerability scanning pauses |
+| Node 3 | The Tekton components other than the controller; they restart automatically | Harbor and GitLab; new builds are still scheduled by the other controller |
+
+- In every case, builds that ran on the failed node fail and must be run again.
+- If the failed node held a PostgreSQL primary or a Redis master, the service fails over to another node with a short interruption.
+- SonarQube and Nexus keep their data on `ReadWriteOnce` volumes, so they restart on another node only after a manual step; see [Deployment Notes](#deployment-notes).
+- With 2 nodes left, the 3 replicas of PostgreSQL, Redis Sentinel, Gitaly, and Praefect share nodes. A second node failure before the first is repaired is not tolerated. If the customer needs full redundancy during a node failure, use 4 devops nodes.
 
 ### Node Pool Check
 
-Each pool must still hold its workload when one node is unavailable.
-
 | Node pool | Workload | Nodes × size | Remaining with one node down | Utilization (CPU / memory) |
 | --- | --- | --- | --- | --- |
-| harbor | 16.3 cores, 27.4 GiB | 3 × 12 cores / 24 GiB | 24 cores, 48 GiB | 68% / 57% |
-| devops | 62.2 cores, 99.3 GiB | 4 × 32 cores / 64 GiB | 96 cores, 192 GiB | 65% / 52% |
-| devops, with light builds | 68.2 cores, 123.3 GiB | 4 × 32 cores / 64 GiB | 96 cores, 192 GiB | 71% / 64% |
+| harbor (Case 1) | 15.1 cores, 24.4 GiB | 3 × 12 cores / 24 GiB | 24 cores, 48 GiB | 63% / 51% |
+| devops (Case 2) | 44.9 cores, 86.4 GiB, including light builds | 3 × 24 cores / 48 GiB | 48 cores, 96 GiB | 93% / 90% |
 
-- harbor: Harbor with its PostgreSQL and Redis, plus Envoy Gateway. With 8 cores per node, 2 nodes would not hold it.
-- devops: all tools. With 24 cores per node, CPU utilization would reach about 86%.
-- Builds of 3 to 5 concurrent PipelineRuns on the devops nodes would raise memory utilization to about 89%, so they need the pipeline pool.
+- harbor: the Harbor rows of the devops table (10.1 cores, 19.4 GiB), plus Envoy Gateway: the controller at its default limit of 1 core and 1 GiB, and 2 `envoy-proxy` replicas at a planning allowance of 2 cores and 2 GiB each.
 - storage: one OSD and the block and object services per node. The small three-node baseline of the Ceph planning page reserves about 20 CPUs and 40 GiB for such a cluster; 3 nodes of 8 cores and 24 GiB cover it. See [Aggregate Cluster Planning Budget](https://docs.alauda.io/container_platform/4.5/storage/storagesystem_ceph/planning.html#aggregate-cluster-planning-budget).
 - control-plane: the DevOps cluster has fewer than 24 worker nodes, so it uses the 24-worker tier of [Evaluating Resources for Workload Cluster](https://docs.alauda.io/container_platform/4.5/configure/scalability/evaluating_workload.html).
 - infra: the same components and tiers as the infra nodes of a workload cluster with about 20 worker nodes.
@@ -183,9 +221,9 @@ Volume sizes follow the default or example sizes in the product documentation. R
 
 | Data | Storage | Volumes × size (GB) | Case 1 (GB) | Case 2 (GB) |
 | --- | --- | --- | ---: | ---: |
-| PostgreSQL | RBD | 3 × 50 per instance | 150 | 450 |
-| Redis | RBD | 2 × 2 per instance | 4 | 8 |
-| GitLab Gitaly | RBD | 1 × 50 | — | 50 |
+| PostgreSQL | RBD | 50 per PostgreSQL node: Harbor 3, GitLab 3, SonarQube 1 | 150 | 350 |
+| Redis | RBD | 2 × 2 per Redis instance | 4 | 8 |
+| GitLab Gitaly | RBD | 3 × 50 | — | 150 |
 | SonarQube data | RBD | 1 × 30 | — | 30 |
 | Nexus data | RBD | 1 × 200 | — | 200 |
 | Object storage | RGW | Expected volume, at least 500 | 500 | 500 |
@@ -204,11 +242,11 @@ In Case 1, only the Harbor rows apply.
 
 | Tool | Operator in OperatorHub | Deployment form |
 | --- | --- | --- |
-| Harbor | `Alauda Toolchain Enterprise Registry E1` | High availability; at least 2 replicas of portal, core, registry, and jobservice |
-| GitLab | `Alauda Toolchain Code Repository E1` | 2 replicas of webservice, Sidekiq, and gitlab-shell; a single Gitaly, not Gitaly Cluster |
-| Alauda DevOps Pipelines | `Alauda Container Platform Pipelines` | Operator-managed Tekton components |
-| SonarQube | `Alauda Build of SonarQube` | `Production Template`, single instance |
-| Nexus | `Alauda Build of Nexus` | `Production Template`, single instance |
+| Harbor | `Alauda Toolchain Enterprise Registry E1` | High availability; 2 replicas of portal, core, registry, and jobservice |
+| GitLab | `Alauda Toolchain Code Repository E1` | High availability; Gitaly Cluster with 3 Gitaly and 3 Praefect replicas; 2 replicas of webservice, Sidekiq, and gitlab-shell |
+| Alauda DevOps Pipelines | `Alauda Container Platform Pipelines` | Tekton controller with 2 replicas |
+| SonarQube | `Alauda Build of SonarQube` | Single instance |
+| Nexus | `Alauda Build of Nexus` | Single instance |
 
 ### Data and Middleware
 
@@ -216,9 +254,9 @@ Block data is on Ceph block storage (RBD). Object data is on Ceph object storage
 
 | Tool | On Ceph RBD | On object storage | PostgreSQL | Redis |
 | --- | --- | --- | --- | --- |
-| Harbor | PostgreSQL, Redis | Image layers, PostgreSQL backups | 15.x or 16.x | 7.x, Sentinel |
-| GitLab | Gitaly, PostgreSQL, Redis | Uploads, CI artifacts, LFS, packages, PostgreSQL backups | 16 or 17 | 7.2 or later, Sentinel |
-| SonarQube | Data directory, PostgreSQL | PostgreSQL backups | 13 to 17 | — |
+| Harbor | PostgreSQL, Redis | Image layers, PostgreSQL backups | 3 nodes; 15.x or 16.x | Sentinel; 7.x |
+| GitLab | Gitaly, PostgreSQL, Redis | Uploads, CI artifacts, LFS, packages, PostgreSQL backups | 3 nodes, with a separate database for Praefect; 16 or 17 | Sentinel; 7.2 or later |
+| SonarQube | Data directory, PostgreSQL | PostgreSQL backups | 1 node; 13 to 17 | — |
 | Nexus | `/nexus-data` | — | — | — |
 
 - Harbor keeps its job logs in its database, and its Trivy vulnerability database in an `emptyDir`.
@@ -253,26 +291,32 @@ For disaster recovery, see <ExternalSiteLink name="alauda-build-of-harbor" href=
 
 ### GitLab
 
-- Do not use the `GitLab High Availability` template: it always enables Gitaly Cluster and a `ReadWriteMany` attachment volume. Deploy from YAML with `global.praefect.enabled: false`.
+- The `GitLab High Availability` template enables Gitaly Cluster, but it puts attachments on a `ReadWriteMany` volume. To keep attachments on object storage, deploy from YAML with the high availability settings of the GitLab deployment page: `global.praefect.enabled: true`, and `gitalyReplicas: 3` under `global.praefect.virtualStorages`.
+- Praefect needs a separate database. Create it in the GitLab PostgreSQL instance and configure its credentials as described on the GitLab deployment page.
 - Object storage is required. Without it, avatars, attachments, and CI artifacts stay inside each Pod and are lost when the Pod restarts.
   - Configure the connection in `global.appConfig.object_store.connection`.
   - Create the buckets `gitlab-uploads`, `gitlab-artifacts`, `git-lfs`, and `gitlab-packages` in advance.
   - Keep `global.uploads.persistence.enabled: true`, and leave its storage class empty.
 - For production, the GitLab deployment page recommends read IOPS ≥ 8,000 and write IOPS ≥ 2,000 for Gitaly. Validate the Ceph RBD performance on the delivered hardware.
 
-### Namespace Security
+### SonarQube and Nexus
 
-- SonarQube: use the `Privileged` Pod Security level. SonarQube sets kernel parameters with a privileged init container.
-- GitLab: do not use the `Restricted` level.
+- **SonarQube**: set the resources to 2 cores and 8 GiB. Keep the sum of the JVM heaps of its processes, plus 25%, within the memory limit; see <ExternalSiteLink name="alauda-build-of-sonarqube" href="/howto/06_customize_jvm_options.html" children="Customize JVM Options" />. For more than 1 million lines of code, scale up.
+- **Nexus**: set the main container to 4 cores and 8 GiB, and set the JVM to fit, for example a 3 GB heap and 2 GB of direct memory. The default heap and direct memory of 2703 MB each leave too little room in 8 GiB.
+- **Namespace security**: the SonarQube namespace must use the `Privileged` Pod Security level, because SonarQube sets kernel parameters with a privileged init container. The GitLab namespace must not use the `Restricted` level.
 
-### Single Instances on Ceph RBD
+### Tekton
 
-GitLab Gitaly, SonarQube, and Nexus run one Pod each, on a `ReadWriteOnce` volume. If the node fails, Kubernetes does not move the Pod by itself, and the tool is unavailable until you do one of the following:
+Set `spec.pipeline.performance.replicas: 2` in the `TektonConfig`, so that the controller runs 2 replicas. High availability mode is enabled by default. See <ExternalSiteLink name="alauda-devops-pipelines" href="/install.html" children="Installing Alauda DevOps Pipelines" />.
+
+### Pods on a Failed Node
+
+SonarQube, Nexus, and the replicas of PostgreSQL, Redis, and Gitaly keep their data on `ReadWriteOnce` volumes. When their node fails, Kubernetes does not move these Pods by itself. Do one of the following:
 
 - Delete the Pod with `--force`.
 - Add the `node.kubernetes.io/out-of-service` taint to the failed node.
 
-The Pod then starts on another node. See [Non-Graceful Node Shutdown](https://kubernetes.io/docs/concepts/cluster-administration/node-shutdown/).
+The Pod then starts on another node. For PostgreSQL, Redis, and Gitaly, the service continues on the other replicas in the meantime. See [Non-Graceful Node Shutdown](https://kubernetes.io/docs/concepts/cluster-administration/node-shutdown/).
 
 ### Storage
 
@@ -289,3 +333,5 @@ The Pod then starts on another node. See [Non-Graceful Node Shutdown](https://ku
 - <ExternalSiteLink name="alauda-build-of-nexus" href="/install/03_nexus_deploy.html" children="Nexus Instance Deployment" />
 - [Configuring a High Availability PostgreSQL Cluster](https://docs.alauda.io/postgresql/4.3/how_to/configure_ha_cluster.html)
 - [Create a Redis Instance](https://docs.alauda.io/redis/5.1/functions/10-create-instance.html)
+- [SonarQube Server Host Requirements](https://docs.sonarsource.com/sonarqube-community-build/server-installation/server-host-requirements)
+- [Nexus Repository System Requirements](https://help.sonatype.com/en/sonatype-nexus-repository-system-requirements.html)
