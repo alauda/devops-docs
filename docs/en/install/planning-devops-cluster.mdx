@@ -8,57 +8,36 @@ Use this page to plan the machines, disks, storage, and middleware for Harbor an
 
 A multi-cluster platform uses one central image registry for application images. If the customer already has a central registry, use it and skip this page. Otherwise, use Harbor in one of two ways:
 
-| Case | When it applies | What to add | Plan |
-| --- | --- | --- | --- |
-| 1. Harbor only | The customer needs a central registry, but no other DevOps tools | A harbor node pool and a storage node pool on the `global` cluster | [Case 1: Harbor on the global Cluster](#harbor-on-global) |
-| 2. Harbor and other DevOps tools | The customer also needs GitLab, pipelines, SonarQube, or Nexus | A dedicated DevOps cluster, which also runs Harbor | [Case 2: Dedicated DevOps Cluster](#devops-cluster) |
+| Case | When it applies | What to add |
+| --- | --- | --- |
+| [Case 1: Harbor on the global Cluster](#harbor-on-global) | The customer needs a central registry, but no other DevOps tools | A harbor node pool and a storage node pool on the `global` cluster |
+| [Case 2: Dedicated DevOps Cluster](#devops-cluster) | The customer also needs GitLab, pipelines, SonarQube, or Nexus | A new workload cluster that runs all the tools, including Harbor |
 
-In both cases, the tools keep their data on Ceph distributed storage that runs on dedicated storage nodes in the same cluster, and each tool uses its own PostgreSQL and Redis instances in that cluster.
+In both cases, the tools keep their data on Ceph that runs on dedicated storage nodes in the same cluster. Ceph needs at least 3 storage nodes, each with a dedicated raw disk; if the environment cannot provide them, this plan cannot be delivered.
 
-## Additional Machines at a Glance \{#at-a-glance}
+The machine tables give the **minimum recommended size of each node**. Physical servers are usually larger; select servers that are at least this size. CPU and memory assume that requests equal limits. For how each size is derived, see [Sizing Basis](#sizing-basis). After the installation, scale up according to the actual utilization.
 
-The values are the **minimum recommended size of each node**. Physical servers are usually larger; select servers that are at least this size. CPU and memory assume that requests equal limits.
+## Case 1: Harbor on the global Cluster \{#harbor-on-global}
 
-**Case 1**, added to the `global` cluster. With `global` disaster recovery, prepare it for the primary only; see [Disaster Recovery](#harbor-dr).
+ACP recommends running only platform components on the `global` cluster of a multi-cluster platform. A central Harbor is an exception: it serves every cluster of the platform, and running it on the `global` cluster avoids a separate cluster for the registry alone. It runs on its own node pools, so that it does not compete with the platform components.
+
+### Machines
+
+Add these node pools to the `global` cluster:
 
 | Node pool | Nodes | CPU | Memory | Purpose |
 | --- | ---: | --- | --- | --- |
-| harbor | 3 | 16 cores | 32 GiB | Harbor, its PostgreSQL and Redis instances, and the Envoy Gateway proxies that expose Harbor |
+| harbor | 3 | 16 cores | 32 GiB | Harbor, its PostgreSQL and Redis, and the Envoy Gateway that exposes Harbor |
 | storage | 3 on Huawei DCS, Huawei Cloud Stack, or VMware vSphere; 4 on Bare Metal | 8 cores | 24 GiB | Ceph |
 
 In total: 6 nodes, 72 cores, and 168 GiB of memory; on Bare Metal, 7 nodes, 80 cores, and 192 GiB.
 
-**Case 2**, a new workload cluster:
-
-| Node pool | Nodes | CPU | Memory | Purpose |
-| --- | ---: | --- | --- | --- |
-| control-plane | 3 | 4 cores | 16 GiB | Control plane and platform components |
-| infra | 3 | 16 cores | 48 GiB | Monitoring, logging, and the gateway (Envoy Gateway) of this cluster |
-| devops | 4 | 32 cores | 64 GiB | The DevOps tools and their PostgreSQL and Redis instances |
-| storage | 3 on Huawei DCS, Huawei Cloud Stack, or VMware vSphere; 4 on Bare Metal | 8 cores | 24 GiB | Ceph |
-| pipeline | 3 to 6, by build load | 4 or 8 cores | 16 or 32 GiB | PipelineRun and TaskRun Pods; see [Pipeline Pool](#pipeline-pool) |
-
-Without the pipeline pool: 13 nodes, 212 cores, and 520 GiB of memory; on Bare Metal, 14 nodes, 220 cores, and 544 GiB.
-
-For the disks of each pool, see the Disks section of each case. The sizes follow the product capacity tiers in [Sizing Basis](#sizing-basis). After the installation, scale up according to the actual utilization.
-
-## Case 1: Harbor on the global Cluster \{#harbor-on-global}
-
-ACP recommends running only platform components on the `global` cluster of a multi-cluster platform. A central Harbor is an exception: it serves every cluster of the platform, and running it on the `global` cluster avoids a separate cluster for the registry alone. Run it on its own node pools so that it does not compete with the platform components.
-
-### Machines
-
-| Node pool | Nodes | CPU | Memory | Purpose |
-| --- | ---: | --- | --- | --- |
-| harbor | 3 | 16 cores | 32 GiB | Harbor, its PostgreSQL and Redis instances, and the Envoy Gateway proxies that expose Harbor |
-| storage | 3 on Huawei DCS, Huawei Cloud Stack, or VMware vSphere; 4 on Bare Metal | 8 cores | 24 GiB | Ceph block storage (RBD) for PostgreSQL and Redis, and Ceph object storage (RGW) for the image layers. Spread the nodes across failure domains. |
-
-- With one harbor node unavailable, the other 2 nodes still hold all Harbor Pods.
 - On Bare Metal, use 4 storage nodes. A replacement for a failed server can take a long time to arrive; with 3 nodes, Ceph runs degraded on 2 nodes for that time, and maintenance and upgrades are blocked. With 4 nodes, Ceph can restore all 3 replicas on the remaining nodes.
+- With `global` disaster recovery, prepare these pools for the primary only. Harbor disaster recovery is optional. If it is required, prepare the same pools on the standby `global` cluster, and set up <ExternalSiteLink name="alauda-build-of-harbor" href="/howto/10_disaster_recovery.html" children="Harbor disaster recovery" />; `global` cluster disaster recovery does not synchronize Harbor data.
 
 ### Disks
 
-Sizes are per node, in GB. The nodes are `global` cluster nodes, so `/var/lib/kubelet` is 200 GB. For what each disk holds, see [Disk Configuration](https://docs.alauda.io/container_platform/4.5/configure/scalability/disk_configuration.html).
+Sizes are per node, in GB. For what each disk holds, see [Disk Configuration](https://docs.alauda.io/container_platform/4.5/configure/scalability/disk_configuration.html).
 
 | Disk | harbor | storage |
 | --- | ---: | ---: |
@@ -70,56 +49,39 @@ Sizes are per node, in GB. The nodes are `global` cluster nodes, so `/var/lib/ku
 | **On Bare Metal** | | |
 | System disk, minimum / recommended | 512 / 512 | 512 / 512 |
 | **On all providers** | | |
-| Raw disk for TopoLVM | — | — |
 | Raw disk for the Ceph OSD (SSD) | — | 1 TB; 512 if the image layers use the customer's object storage |
 | Persistent disk for `/var/lib/rook` | — | 100 |
 
-The harbor nodes need no data disk: all Harbor data is on Ceph or on the customer's object storage. The OSD size assumes 500 GB of image layers; replace it with the expected image volume; see [OSD Capacity](#osd-capacity).
+- `/var/lib/kubelet` is 200 GB because these are `global` cluster nodes.
+- The harbor nodes need no data disk or TopoLVM disk: all Harbor data is on Ceph or on the customer's object storage.
+- The OSD size assumes 500 GB of object storage; see [OSD Capacity](#osd-capacity).
 
 ### Network and Node Pools
 
 - Expose Harbor through Envoy Gateway (Gateway API). Install Envoy Gateway on the `global` cluster and place `envoy-proxy` on the harbor nodes. For the gateway VIP, allocate one on the enterprise load balancer, or use MetalLB; on Huawei Cloud Stack, run `envoy-proxy` with the host network behind the HCS ELB. See [Tasks for Envoy Gateway](https://docs.alauda.io/container_platform/4.5/networking/how_to/tasks_for_envoy_gateway.html).
-- Declare a role label on each pool, and schedule Harbor and its PostgreSQL and Redis instances to the harbor nodes with node selectors. Give the storage pool its own role label and taint.
-
-### Disaster Recovery \{#harbor-dr}
-
-Harbor disaster recovery is optional. If it is required, prepare the same harbor and storage node pools on the standby `global` cluster, and set up <ExternalSiteLink name="alauda-build-of-harbor" href="/howto/10_disaster_recovery.html" children="Harbor disaster recovery" />; `global` cluster disaster recovery does not synchronize Harbor data.
+- Declare a role label on each pool, and schedule Harbor and its PostgreSQL and Redis to the harbor nodes with node selectors. Give the storage pool its own role label and taint.
 
 ## Case 2: Dedicated DevOps Cluster \{#devops-cluster}
 
-The DevOps tools, including Harbor, run in a workload cluster of their own, separate from the clusters that run applications.
-
-### Tools to Deliver \{#tools-to-deliver}
-
-| Capability | Product | Operator in OperatorHub | Deployment form |
-| --- | --- | --- | --- |
-| Container image registry | Alauda Build of Harbor | `Alauda Toolchain Enterprise Registry E1` | High availability: at least 2 replicas of the portal, core, registry, and jobservice components. Image layers on object storage, job logs in the database, exposed through Envoy Gateway. Deploy from YAML; see [Deployment Notes](#deployment-notes). |
-| Source code management | GitLab | `Alauda Toolchain Code Repository E1` | 2 replicas of the webservice, Sidekiq, and gitlab-shell components, and a single Gitaly (not Gitaly Cluster) on Ceph block storage. Deploy from YAML; see [Deployment Notes](#deployment-notes). |
-| CI/CD pipelines | Alauda DevOps Pipelines (Tekton) | `Alauda Container Platform Pipelines` | Operator-managed Tekton components. |
-| Code quality | Alauda Build of SonarQube | `Alauda Build of SonarQube` | `Production Template`, single instance. |
-| Artifact repository | Alauda Build of Nexus | `Alauda Build of Nexus` | `Production Template`, single instance. |
-
-Deployment guides:
-
-- <ExternalSiteLink name="alauda-build-of-harbor" href="/install/03_harbor_deploy.html" children="Harbor Instance Deployment" />
-- <ExternalSiteLink name="alauda-build-of-gitlab" href="/install/03_gitlab_deploy.html" children="GitLab Instance Deployment" />
-- <ExternalSiteLink name="alauda-devops-pipelines" href="/install.html" children="Installing Alauda DevOps Pipelines" />
-- <ExternalSiteLink name="alauda-build-of-sonarqube" href="/install/03_sonarqube_deploy.html" children="SonarQube Instance Deployment" />
-- <ExternalSiteLink name="alauda-build-of-nexus" href="/install/03_nexus_deploy.html" children="Nexus Instance Deployment" />
+All DevOps tools, including Harbor, run in a workload cluster of their own, separate from the clusters that run applications.
 
 ### Machines
 
+Create a workload cluster with these node pools:
+
 | Node pool | Nodes | CPU | Memory | Purpose |
 | --- | ---: | --- | --- | --- |
-| control-plane | 3 | 4 cores | 16 GiB | Control plane and platform components, sized as the 24-worker tier of [Evaluating Resources for Workload Cluster](https://docs.alauda.io/container_platform/4.5/configure/scalability/evaluating_workload.html). |
-| infra | 3 | 16 cores | 48 GiB | Monitoring, logging, and the gateway (Envoy Gateway) of this cluster, the same as the infra nodes of a workload cluster with about 20 worker nodes. Harbor and GitLab are exposed through this gateway. |
-| devops | 4 | 32 cores | 64 GiB | The DevOps tools and their PostgreSQL and Redis instances. With one node unavailable, the other 3 nodes still hold all tools. |
-| storage | 3 on Huawei DCS, Huawei Cloud Stack, or VMware vSphere; 4 on Bare Metal | 8 cores | 24 GiB | Ceph block storage (RBD) and object storage (RGW). Spread the nodes across failure domains. On Bare Metal, use 4 nodes, for the reason given in [Case 1](#harbor-on-global). |
-| pipeline | See [Pipeline Pool](#pipeline-pool) | | | PipelineRun and TaskRun Pods |
+| control-plane | 3 | 4 cores | 16 GiB | Control plane and platform components |
+| infra | 3 | 16 cores | 48 GiB | Monitoring, logging, and the gateway (Envoy Gateway) of this cluster |
+| devops | 4 | 32 cores | 64 GiB | The DevOps tools and their PostgreSQL and Redis |
+| storage | 3 on Huawei DCS, Huawei Cloud Stack, or VMware vSphere; 4 on Bare Metal | 8 cores | 24 GiB | Ceph |
+| pipeline | 3 to 6, by build load | 4 or 8 cores | 16 or 32 GiB | PipelineRun and TaskRun Pods; see [Pipeline Pool](#pipeline-pool) |
+
+Without the pipeline pool: 13 nodes, 212 cores, and 520 GiB of memory; on Bare Metal, 14 nodes, 220 cores, and 544 GiB. Use 4 storage nodes on Bare Metal for the reason given in [Case 1](#harbor-on-global).
 
 ### Disks
 
-Sizes are per node, in GB. The nodes are workload cluster nodes, so `/var/lib/kubelet` is 100 GB. For what each disk holds, see [Disk Configuration](https://docs.alauda.io/container_platform/4.5/configure/scalability/disk_configuration.html).
+Sizes are per node, in GB. For what each disk holds, see [Disk Configuration](https://docs.alauda.io/container_platform/4.5/configure/scalability/disk_configuration.html).
 
 | Disk | control-plane | infra | devops | storage | pipeline |
 | --- | ---: | ---: | ---: | ---: | ---: |
@@ -136,8 +98,8 @@ Sizes are per node, in GB. The nodes are workload cluster nodes, so `/var/lib/ku
 | Raw disk for the Ceph OSD (SSD) | — | — | — | 2 TB | — |
 | Persistent disk for `/var/lib/rook` | — | — | — | 100 | — |
 
-- The devops nodes need no data disk: all tool data is on Ceph.
-- The OSD size assumes 500 GB of object storage; replace it with the expected volume; see [OSD Capacity](#osd-capacity).
+- The devops nodes need no data disk or TopoLVM disk: all tool data is on Ceph.
+- The OSD size assumes 500 GB of object storage; see [OSD Capacity](#osd-capacity).
 - If PipelineRuns use `emptyDir` workspaces or build caches, enlarge `/var/lib/kubelet` on the pipeline nodes.
 
 ### Pipeline Pool \{#pipeline-pool}
@@ -150,69 +112,67 @@ Size the pipeline pool by the number of PipelineRuns that run at the same time a
 | 3 to 5 (medium) | 4 × 8 cores / 32 GiB |
 | 6 to 10 (heavy) | 6 × 8 cores / 32 GiB |
 
-For more than 10, see the formula in [Sizing Basis](#pipeline-sizing).
+For more than 10, use the formula in [Pipeline Sizing](#pipeline-sizing).
 
 If no additional machines are available:
 
-- **Light load** can run on the devops nodes. With one devops node unavailable, about 24 cores and 70 GiB remain after the tools, which covers the light tier. Cap the build namespaces with a `ResourceQuota` of 6 cores and 24 GiB, so that builds cannot starve GitLab, Harbor, or the databases.
-- **Medium and heavy load** need the pipeline pool. Their peak exceeds what the devops nodes have left with one node unavailable.
+- **Light load** can run on the devops nodes. Cap the build namespaces with a `ResourceQuota` of 6 cores and 24 GiB, so that builds cannot starve GitLab, Harbor, or the databases.
+- **Medium and heavy load** need the pipeline pool.
 - Do not run builds on the control-plane, infra, or storage nodes.
 
 Taint the pipeline pool, and send the PipelineRun and TaskRun Pods to it with the default Pod template of Tekton: set `nodeSelector` and `tolerations` in `spec.pipeline.default-pod-template` of the `TektonConfig`. See <ExternalSiteLink name="alauda-devops-pipelines" href="/configure/pod_template_guide.html" children="Pod Template Configuration Guide" />.
 
 ### Network and Node Pools
 
-- Reserve two VIPs for the DevOps cluster: the control plane endpoint, and the gateway VIP for Harbor and GitLab. Both can come from the enterprise load balancer. The choices are the same as for any workload cluster.
-- Give the infra, storage, and pipeline pools their own role labels and taints, and leave the devops pool without a taint. The tools and their PostgreSQL and Redis instances then run on the devops nodes, the only nodes without a taint.
+- Reserve two VIPs: the control plane endpoint, and the gateway VIP for Harbor and GitLab. Both can come from the enterprise load balancer. The choices are the same as for any workload cluster.
+- Give the infra, storage, and pipeline pools their own role labels and taints, and leave the devops pool without a taint. The tools and their PostgreSQL and Redis then run on the devops nodes, the only nodes without a taint.
 
-## Deployment Notes for Both Cases \{#deployment-notes}
+## Tools \{#tools}
+
+This section applies to both cases. In Case 1, only the Harbor rows apply.
+
+### Deployment Form
+
+| Tool | Operator in OperatorHub | Deployment form |
+| --- | --- | --- |
+| Harbor | `Alauda Toolchain Enterprise Registry E1` | High availability, at least 2 replicas of the portal, core, registry, and jobservice components. Deploy from YAML; see [Deployment Notes](#deployment-notes). |
+| GitLab | `Alauda Toolchain Code Repository E1` | 2 replicas of the webservice, Sidekiq, and gitlab-shell components, and a single Gitaly (not Gitaly Cluster). Deploy from YAML; see [Deployment Notes](#deployment-notes). |
+| Alauda DevOps Pipelines (Tekton) | `Alauda Container Platform Pipelines` | Operator-managed Tekton components |
+| SonarQube | `Alauda Build of SonarQube` | `Production Template`, single instance |
+| Nexus | `Alauda Build of Nexus` | `Production Template`, single instance |
+
+### Data and Middleware
+
+Each tool uses its own PostgreSQL and Redis instances; do not share an instance between tools. Block data is on Ceph block storage (RBD). Object data is on Ceph object storage (RGW), or on the customer's S3-compatible storage.
+
+| Tool | On Ceph RBD | On object storage | PostgreSQL | Redis |
+| --- | --- | --- | --- | --- |
+| Harbor | PostgreSQL, Redis | Image layers; PostgreSQL backups | High availability, 3 nodes; version 15.x or 16.x | Sentinel: 1 master, 1 replica, 3 Sentinels; version 7.x |
+| GitLab | Gitaly (repositories), PostgreSQL, Redis | Uploads, CI artifacts, LFS objects, packages; PostgreSQL backups | High availability, 3 nodes; version 16 or 17 | Sentinel: 1 master, 1 replica, 3 Sentinels; version 7.2 or later |
+| SonarQube | Data directory, PostgreSQL | PostgreSQL backups | High availability, 3 nodes; version 13 to 17 | — |
+| Nexus | `/nexus-data` | — | — | — |
+
+Redis Cluster mode is not supported by Harbor or GitLab. Harbor keeps its job logs in its database, and its Trivy vulnerability database in an `emptyDir`; after a Trivy Pod restarts, scans pause until the database is loaded again.
+
+### Deployment Notes \{#deployment-notes}
 
 - **Harbor**: the built-in templates do not combine object storage with Envoy Gateway. Deploy from YAML. Set `expose.type: route` as in Option B of <ExternalSiteLink name="alauda-build-of-harbor" href="/howto/11_expose_with_envoy_gateway.html" children="Expose Harbor with Envoy Gateway" />, store the image layers on object storage as in <ExternalSiteLink name="alauda-build-of-harbor" href="/install/03_harbor_deploy.html#storage-yaml-snippets" children="Using Object Storage as the Registry Storage Backend" />, and store the job logs in the database as in <ExternalSiteLink name="alauda-build-of-harbor" href="/howto/07_configure_job_log_storage.html#store-job-log-to-db" children="Configure Job Log Storage" />. In `resources`, use the keys `requests` and `limits`.
 - **GitLab**: the `GitLab High Availability` template always enables Gitaly Cluster and a `ReadWriteMany` attachment volume, so do not use it. Deploy from YAML with `global.praefect.enabled: false`.
 - **GitLab object storage is required.** Without it, avatars, attachments, and CI artifacts are kept inside each Pod and are lost when the Pod restarts. Configure the connection in `global.appConfig.object_store.connection`, and create the buckets `gitlab-uploads`, `gitlab-artifacts`, `git-lfs`, and `gitlab-packages` in advance. Keep `global.uploads.persistence.enabled: true` and leave its storage class empty.
+- **Gitaly performance**: the GitLab deployment page recommends block storage with read IOPS ≥ 8,000 and write IOPS ≥ 2,000 for production. Validate the Ceph RBD performance on the delivered hardware.
 - **Namespace security**: the SonarQube namespace must use the `Privileged` Pod Security level, because SonarQube sets kernel parameters with a privileged init container. The GitLab namespace must not use the `Restricted` level.
 - **Single instances on Ceph RBD**: GitLab Gitaly, SonarQube, and Nexus run one Pod each, on a `ReadWriteOnce` volume. If their node goes down, Kubernetes does not move the Pod to another node by itself. Delete the Pod with `--force`, or add the `node.kubernetes.io/out-of-service` taint to the failed node; the Pod then starts on another node. Until then, the tool is unavailable. See [Non-Graceful Node Shutdown](https://kubernetes.io/docs/concepts/cluster-administration/node-shutdown/).
+- **Storage choices**: do not place databases on CephFS, and do not use remote-mounted file storage for SonarQube data. The plan does not use CephFS, so no MDS runs. PostgreSQL and Redis replicate their own data, and Ceph RBD keeps 3 replicas of each volume, so every database is stored 9 times and each write waits for Ceph replication. The plan accepts this to keep one storage system for all tool data; the OSD capacity counts it.
 
-## Storage
+Product guides:
 
-| Data | Storage | Notes |
-| --- | --- | --- |
-| PostgreSQL of Harbor, GitLab, and SonarQube | Ceph RBD | Do not place databases on CephFS. |
-| Redis of Harbor and GitLab | Ceph RBD | RDB persistence enabled. |
-| Harbor image layers | Ceph RGW, or the customer's S3-compatible storage | |
-| Harbor job logs | Harbor database | |
-| Harbor Trivy vulnerability database | `emptyDir` | After a Trivy Pod restarts, scans pause until the database is loaded again. |
-| GitLab Gitaly (repositories) | Ceph RBD | The GitLab deployment page recommends block storage with read IOPS ≥ 8,000 and write IOPS ≥ 2,000 for production. Validate the Ceph RBD performance on the delivered hardware. |
-| GitLab uploads, CI artifacts, LFS objects, and packages | Ceph RGW, or the customer's S3-compatible storage | Required; see [Deployment Notes](#deployment-notes). |
-| SonarQube data directory | Ceph RBD | Do not use remote-mounted file storage for SonarQube data. |
-| Nexus data (`/nexus-data`) | Ceph RBD | One volume for the single instance. |
-| PostgreSQL backups | Ceph RGW, or the customer's S3-compatible storage | The PostgreSQL operator writes backups to S3-compatible storage. |
-
-The plan does not use CephFS, so no MDS runs.
-
-PostgreSQL and Redis replicate their own data, and Ceph RBD keeps 3 replicas of each volume, so every database is stored 9 times and each write waits for Ceph replication. The plan accepts this to keep one storage system for all tool data. The capacity table counts it.
-
-:::warning
-Ceph requires at least 3 storage nodes, each with a dedicated raw disk. If the environment cannot provide them, this plan cannot be delivered.
-:::
-
-## Middleware
-
-Harbor, GitLab, and SonarQube each use their own PostgreSQL instance, and Harbor and GitLab each use their own Redis instance. Do not share an instance between products. In Case 1, only the Harbor row applies.
-
-| Product | PostgreSQL | Redis |
-| --- | --- | --- |
-| Harbor | Own high availability instance, 3 nodes. Harbor 2.14 supports PostgreSQL 15.x and 16.x. | Own Sentinel instance: 1 master, 1 replica, 3 Sentinels. Redis 7.x is recommended. Redis Cluster mode is not supported. |
-| GitLab | Own high availability instance, 3 nodes. GitLab 18.8 supports PostgreSQL 16 and 17. | Own Sentinel instance: 1 master, 1 replica, 3 Sentinels. Redis 7.2 or later is required. Redis Cluster mode is not supported. |
-| SonarQube | Own high availability instance, 3 nodes. SonarQube supports PostgreSQL 13 to 17. | Not used. |
-| Nexus | Not used. | Not used. |
-
-Create the instances with the platform PostgreSQL and Redis operators, then give each product its connection credentials:
-
+- <ExternalSiteLink name="alauda-build-of-harbor" href="/install/03_harbor_deploy.html" children="Harbor Instance Deployment" /> and <ExternalSiteLink name="alauda-build-of-harbor" href="/install/02_harbor_credential.html" children="Harbor credentials" />
+- <ExternalSiteLink name="alauda-build-of-gitlab" href="/install/03_gitlab_deploy.html" children="GitLab Instance Deployment" /> and <ExternalSiteLink name="alauda-build-of-gitlab" href="/install/02_gitlab_credential.html" children="GitLab credentials" />
+- <ExternalSiteLink name="alauda-devops-pipelines" href="/install.html" children="Installing Alauda DevOps Pipelines" />
+- <ExternalSiteLink name="alauda-build-of-sonarqube" href="/install/03_sonarqube_deploy.html" children="SonarQube Instance Deployment" />
+- <ExternalSiteLink name="alauda-build-of-nexus" href="/install/03_nexus_deploy.html" children="Nexus Instance Deployment" />
 - [Configuring a High Availability PostgreSQL Cluster](https://docs.alauda.io/postgresql/4.3/how_to/configure_ha_cluster.html)
 - [Create a Redis Instance](https://docs.alauda.io/redis/5.1/functions/10-create-instance.html)
-- <ExternalSiteLink name="alauda-build-of-harbor" href="/install/02_harbor_credential.html" children="Harbor: Configure Redis, PostgreSQL, and Account Access Credentials" />
-- <ExternalSiteLink name="alauda-build-of-gitlab" href="/install/02_gitlab_credential.html" children="GitLab: Configure Redis, PostgreSQL, and Account Credentials" />
 
 ## Sizing Basis \{#sizing-basis}
 
@@ -220,7 +180,7 @@ All CPU and memory values are limits, and requests are assumed to equal limits. 
 
 ### Tool Resources
 
-| Product | Component | CPU | Memory (GiB) | Source |
+| Tool | Component | CPU | Memory (GiB) | Source |
 | --- | --- | --- | --- | --- |
 | Harbor | Harbor components | 8 | 16 | High availability minimum on the Harbor deployment page (8 cores, 16Gi). The limits of the object storage form are lower, so this value is conservative. |
 | | PostgreSQL: 3 × (2 + exporter 0.5) cores, 3 × (4 + exporter 0.5) GiB | 7.5 | 13.5 | High availability example in the PostgreSQL documentation |
@@ -239,15 +199,17 @@ All CPU and memory values are limits, and requests are assumed to equal limits. 
 
 The totals do not include the GitLab `migrations` Job (1 core, 1 GiB), which runs during installation and upgrade, or the operator Pods, whose resources are not documented.
 
-### harbor Pool (Case 1)
+### Node Pools
 
-Harbor with its PostgreSQL and Redis needs 18 cores and 34.625 GiB. The Envoy Gateway controller adds 1 core and 1 GiB (its default limits), and 2 `envoy-proxy` replicas are planned at 2 cores and 2 GiB each: in total, 23 cores and 39.625 GiB. With one of 3 nodes of 16 cores and 32 GiB unavailable, the remaining 32 cores and 64 GiB hold this at about 72% CPU and 62% memory. Nodes of 12 cores and 24 GiB would run at about 96% CPU.
+| Node pool | Holds | Node size | With one node unavailable |
+| --- | --- | --- | --- |
+| harbor (Case 1) | Harbor 18 cores / 34.625 GiB, the Envoy Gateway controller 1 core / 1 GiB (its default limits), and 2 `envoy-proxy` replicas at 2 cores / 2 GiB each (planning allowance): 23 cores / 39.625 GiB | 3 × 16 cores / 32 GiB | 32 cores / 64 GiB remain: about 72% CPU and 62% memory. With 12 cores / 24 GiB, CPU would reach about 96%. |
+| devops (Case 2) | All tools: 72.1 cores / 122.25 GiB | 4 × 32 cores / 64 GiB | 96 cores / 192 GiB remain: about 75% CPU and 64% memory. About 24 cores and 70 GiB are left, which covers the light pipeline tier but not the medium tier. |
+| storage (both cases) | One OSD and the block and object services per node. The small three-node baseline of the Ceph planning page reserves about 20 CPUs and 40 GiB for such a cluster; see [Aggregate Cluster Planning Budget](https://docs.alauda.io/container_platform/4.5/storage/storagesystem_ceph/planning.html#aggregate-cluster-planning-budget). | 3 × 8 cores / 24 GiB | Ceph keeps serving with 2 nodes; see the Bare Metal note in [Case 1](#harbor-on-global). |
+| control-plane (Case 2) | Fewer than 24 worker nodes: the 24-worker tier of [Evaluating Resources for Workload Cluster](https://docs.alauda.io/container_platform/4.5/configure/scalability/evaluating_workload.html) | 3 × 4 cores / 16 GiB | — |
+| infra (Case 2) | The same components and tiers as the infra nodes of a workload cluster with about 20 worker nodes: monitoring, logging for 5,000 log entries per second with 7 days of retention, and Envoy Gateway | 3 × 16 cores / 48 GiB | — |
 
-### devops Pool (Case 2)
-
-All tools need 72.1 cores and 122.25 GiB. With one of 4 nodes of 32 cores and 64 GiB unavailable, the remaining 96 cores and 192 GiB hold them at about 75% CPU and 64% memory, and about 24 cores and 70 GiB remain. That covers the light pipeline tier, but not the medium tier.
-
-### Pipeline Pool (Case 2) \{#pipeline-sizing}
+### Pipeline Sizing \{#pipeline-sizing}
 
 The peak of one PipelineRun is taken from the requests of the Tasks that run at the same time in the `java-image-build-scan-deploy` and `python-image-build-scan-deploy` pipelines of the Alauda catalog:
 
@@ -263,10 +225,6 @@ Nodes = max(3, 1 + ceil(Rcpu / 6), 1 + ceil(Rmem / 24))
 ```
 
 Tekton adds init containers and sidecars to each Pod, and real builds can exceed the Task requests. After the installation, watch the time that TaskRuns stay pending, node CPU and memory utilization, OOM kills, and throttling over at least two busy periods, then adjust the pool.
-
-### storage Pool (Both Cases)
-
-Each storage node runs one OSD and the block and object services. The small three-node baseline of the Ceph planning page reserves about 20 CPUs and 40 GiB for such a cluster; 3 nodes of 8 cores and 24 GiB cover it. See [Aggregate Cluster Planning Budget](https://docs.alauda.io/container_platform/4.5/storage/storagesystem_ceph/planning.html#aggregate-cluster-planning-budget).
 
 ### OSD Capacity \{#osd-capacity}
 
@@ -286,20 +244,3 @@ Ceph keeps 3 replicas, and each storage node holds one OSD. After a node fails, 
 
 - Case 1: 654 / 0.8 ≈ 818 GB, rounded up to 1 TB. With the image layers on the customer's object storage, 154 / 0.8 ≈ 193 GB, rounded up to 512 GB.
 - Case 2: 1238 / 0.8 ≈ 1548 GB, rounded up to 2 TB.
-
-### control-plane and infra Pools (Case 2)
-
-- control-plane: the DevOps cluster has fewer than 24 worker nodes, so it uses the 24-worker tier of [Evaluating Resources for Workload Cluster](https://docs.alauda.io/container_platform/4.5/configure/scalability/evaluating_workload.html): 4 cores and 16 GiB.
-- infra: the same components and tiers as the infra nodes of a workload cluster with about 20 worker nodes: monitoring, logging for 5,000 log entries per second with 7 days of retention, and Envoy Gateway.
-
-### References
-
-- <ExternalSiteLink name="alauda-build-of-harbor" href="/install/03_harbor_deploy.html" children="Harbor Instance Deployment" />
-- <ExternalSiteLink name="alauda-build-of-gitlab" href="/install/03_gitlab_deploy.html" children="GitLab Instance Deployment" />
-- <ExternalSiteLink name="alauda-build-of-sonarqube" href="/install/03_sonarqube_deploy.html" children="SonarQube Instance Deployment" />
-- <ExternalSiteLink name="alauda-build-of-nexus" href="/install/03_nexus_deploy.html" children="Nexus Instance Deployment" />
-- [Configuring a High Availability PostgreSQL Cluster](https://docs.alauda.io/postgresql/4.3/how_to/configure_ha_cluster.html)
-- [Create a Redis Instance](https://docs.alauda.io/redis/5.1/functions/10-create-instance.html)
-- [Ceph: Planning Your Deployment](https://docs.alauda.io/container_platform/4.5/storage/storagesystem_ceph/planning.html)
-- [Disk Configuration](https://docs.alauda.io/container_platform/4.5/configure/scalability/disk_configuration.html)
-- [Evaluating Resources for Workload Cluster](https://docs.alauda.io/container_platform/4.5/configure/scalability/evaluating_workload.html)
