@@ -3,9 +3,17 @@
     en: Alauda DevOps Pipelines
     zh: Alauda DevOps Pipelines
   base: /alauda-devops-pipelines
-  version: v4.10
+  version: v4.14
   repo: https://github.com/AlaudaDevops/tektoncd-operator
   image: devops/alauda-devops-pipelines-docs
+- name: alauda-devops-artifacthub-shim
+  displayName:
+    en: Alauda DevOps Artifact Hub Shim
+    zh: Alauda DevOps Artifact Hub Shim
+  base: /alauda-devops-artifacthub-shim
+  version: v1.0
+  repo: https://github.com/AlaudaDevops/artifacthub-shim
+  image: devops/alauda-devops-artifacthub-shim-docs
 - name: alauda-devops-connectors
   displayName:
     en: Alauda DevOps Connectors
