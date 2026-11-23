@@ -117,11 +117,11 @@
       "updated_at": "2026-05-16T10:39:31Z"
     },
     "docs/en/overview/architecture.mdx": {
-      "sha256": "228a9e7b3c7d20a6e3f7aaff71b632a67f29ad236f5de2a5b2787da0e332eb5a",
-      "size": 1638,
-      "description": "Architecture overview of Alauda DevOps, illustrated by `architecture.drawio.png`, describing the platform as a composition of add-ons: Alauda DevOps Pipelines (Tekton-based), Connectors (external-service integration), Build of GitLab (SCM/CI/issues), Build of Harbor (container registry with RBAC, vulnerability scanning, content trust), Build of SonarQube (AI-aware code quality and security), and Build of Nexus (universal binary repository manager).",
+      "sha256": "66fbab5523d39631416da55c037d17429570929608320b91f39db8a4498dd2cb",
+      "size": 1641,
+      "description": "Architecture overview of Alauda DevOps, illustrated by `architecture.drawio.png`, describing the platform as a composition of Operators: Alauda DevOps Pipelines (Tekton-based), Connectors (external-service integration), Build of GitLab (SCM/CI/issues), Build of Harbor (container registry with RBAC, vulnerability scanning, content trust), Build of SonarQube (AI-aware code quality and security), and Build of Nexus (universal binary repository manager).",
       "generation_method": "ai_agent_reading",
-      "updated_at": "2026-05-16T10:39:31Z"
+      "updated_at": "2026-11-23T10:38:32Z"
     },
     "docs/en/overview/features.mdx": {
       "sha256": "75c73b4b32de31f509c1ba3ee14285431d28e36c6c8ad138ff22a253c72f47a4",
@@ -229,18 +229,18 @@
       "updated_at": "2026-05-16T10:39:31Z"
     },
     "docs/en/upgrade/overview.mdx": {
-      "sha256": "4c97b99d8b81869cbb8c271e2a76020fd98f63695885e6055bfbb27965c94e39",
-      "size": 7413,
-      "description": "Maps the Alauda DevOps upgrade strategy for moving Alauda Container Platform (ACP) from v4.0, v4.1, or v4.2 to v4.3, presenting tabbed per-source-version paths that combine ACP platform upgrades with migration from legacy Alauda DevOps to Alauda DevOps (Next-Gen). Includes the pre-migration v3.20 operator matrix (GitLab v3, Nexus v3, SonarQube v3, Harbor v3, Tekton v3) and the post-migration Next-Gen matrix (Alauda DevOps Pipelines v4.0.z, Alauda Build of GitLab/Harbor/SonarQube/Nexus), plus an Operator Hub upgrade walkthrough with a hard restriction not to upgrade Alauda DevOps Pipelines past v4.0.z if v3 Build and Release features must still work (to avoid katanomi incompatibility).",
+      "sha256": "260d61138c8cfb600c74298f604d66f9f60b8986ef7abc26e33c37729a861423",
+      "size": 7412,
+      "description": "Maps the Alauda DevOps upgrade strategy for moving Alauda Container Platform (ACP) from v4.0, v4.1, or v4.2 to v4.3, presenting tabbed per-source-version paths that combine ACP platform upgrades with migration from legacy Alauda DevOps to Alauda DevOps (Next-Gen). Includes the pre-migration v3.20 operator matrix (GitLab v3, Nexus v3, SonarQube v3, Harbor v3, Tekton v3) and the post-migration Next-Gen matrix (Alauda DevOps Pipelines v4.0.z, Alauda Build of GitLab/Harbor/SonarQube/Nexus), plus an OperatorHub upgrade walkthrough with a hard restriction not to upgrade Alauda DevOps Pipelines past v4.0.z if v3 Build and Release features must still work (to avoid katanomi incompatibility).",
       "generation_method": "ai_agent_reading",
-      "updated_at": "2026-05-16T10:39:31Z"
+      "updated_at": "2026-11-23T10:38:32Z"
     },
     "docs/en/upgrade/upgrading-devops-v3.mdx": {
-      "sha256": "2c40ccfaa147a4968cf0c6b870ef56ee00b69fd7d9bae8a7ea07ba91a82d6d9b",
-      "size": 3377,
-      "description": "Step-by-step procedure for upgrading Alauda DevOps to v3.20 during ACP transitions v3.18 to v4.0, v3.18 to v4.1, and v4.0 to v4.1, covering the required v3.20 operator/tool-instance version matrix (GitLab v14.0.z, Nexus v3.69.z, SonarQube v9.9.z, Harbor v2.6.z, Tekton, plus mandatory DevOps Tool, Alauda DevOps v3 v0.11.z, Eventing v3 v1.10.z, and Jenkins v3 v2.516.z). Walks through downloading operators from the Alauda Customer Portal, using the violet CLI to upload them to ACP, upgrading via Administrator > Marketplace > Operator Hub, and then bumping each tool instance from DevOps Toolchain > Instances; ends by pointing to the follow-up migration to Alauda DevOps (Next-Gen).",
+      "sha256": "7c7c8c1b2b2e29302684c66737efbd27f849097d7519aa809f070d38d44ab96d",
+      "size": 3376,
+      "description": "Step-by-step procedure for upgrading Alauda DevOps to v3.20 during ACP transitions v3.18 to v4.0, v3.18 to v4.1, and v4.0 to v4.1, covering the required v3.20 operator/tool-instance version matrix (GitLab v14.0.z, Nexus v3.69.z, SonarQube v9.9.z, Harbor v2.6.z, Tekton, plus mandatory DevOps Tool, Alauda DevOps v3 v0.11.z, Eventing v3 v1.10.z, and Jenkins v3 v2.516.z). Walks through downloading operators from the Alauda Customer Portal, using the violet CLI to upload them to ACP, upgrading via Administrator > Marketplace > OperatorHub, and then bumping each tool instance from DevOps Toolchain > Instances; ends by pointing to the follow-up migration to Alauda DevOps (Next-Gen).",
       "generation_method": "ai_agent_reading",
-      "updated_at": "2026-05-16T10:39:31Z"
+      "updated_at": "2026-11-23T10:38:32Z"
     },
     "structure.md": {
       "sha256": "dd2cb33ab3098149eae53a08417d91d4d691c62983661b4ef0fbbaf3d5478aed",
