@@ -212,7 +212,7 @@ In both cases, builds that ran on the failed node fail and must be run again. So
 | devops, 4 nodes | 56.5 cores, 89.5 GiB, with light builds | 4 × 24 cores / 48 GiB | 69.6 cores, 125.7 GiB | Fits: 81% / 71% |
 | devops, 3 nodes | 56.5 cores, 89.5 GiB, with light builds | 3 × 24 cores / 48 GiB | 46.4 cores, 83.8 GiB | Degraded: builds pause; tools 101% / 95% |
 
-- harbor: the remaining capacity is given before system reservations, while the devops rows use the capacity available to Pods; after reservations, the harbor margin is about 1 core and 3 GiB per node smaller.
+- harbor: the remaining capacity is given before system reservations, while the devops rows use the capacity available to Pods; after reservations, the harbor margin is smaller than shown, and the 3 × 12 cores / 24 GiB option still fits.
 - harbor workload: the Harbor rows of the DevOps Pool table (10.9 cores, 21.4 GiB), plus Envoy Gateway: the controller at its default limit of 1 core and 1 GiB, and 2 `envoy-proxy` replicas at 2 cores and 1 GiB each, the 4,000 QPS tier of the Envoy Gateway sizing.
 - storage: one OSD and the block and object services per node, within the small three-node Ceph baseline of about 20 CPUs and 40 GiB in total.
 - control-plane: the 24-worker tier, because the DevOps cluster has fewer than 24 worker nodes.
