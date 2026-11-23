@@ -110,7 +110,7 @@ Sizes are per node, in GB.
 
 A pipeline pool is needed only when 3 or more PipelineRuns run at the same time at peak. Plan it by resources: the number and size of the nodes are up to you, as long as the nodes that remain after one node fails still provide the resources in this table.
 
-| Peak concurrent PipelineRuns | Resources available to builds, excluding one spare node |
+| Peak concurrent PipelineRuns | Node capacity needed, excluding one spare node |
 | --- | --- |
 | 3 to 5 | 31.3 cores, 31.6 GiB |
 | 6 to 10 | 62.7 cores, 63.2 GiB |
@@ -130,8 +130,8 @@ Use at least 2 nodes, so that builds continue when one node fails. Examples:
 
 | Tool | What this plan supports | When it grows |
 | --- | --- | --- |
-| GitLab | About 10 requests per second, or about 500 users | For about 20 requests per second (about 1,000 users), add 1 webservice replica (2 cores, 4 GiB) |
-| Harbor | The memory of the Harbor components does not grow with the number of projects or images, only with concurrent requests | With many concurrent pulls from builds, raise the CPU limit of core to 1 core first, then raise registry. As the data grows, scale PostgreSQL and the object storage, not the Harbor components |
+| GitLab | About 10 requests per second, or about 500 users | For about 20 requests per second (about 1,000 users), add 1 webservice replica (2.5 cores, 4.5 GiB, with workhorse) |
+| Harbor | By design, the memory of the Harbor components does not grow with the number of projects or images, only with concurrent requests: metadata is in PostgreSQL, image layers are in object storage, and caches are in Redis. This was not load-tested | With many concurrent pulls from builds, raise the CPU limit of core to 1 core first, then raise registry. As the data grows, scale PostgreSQL and the object storage, not the Harbor components |
 | SonarQube | Up to 1 million lines of code | Scale up following the SonarQube host requirements |
 | Nexus | With the embedded H2 database: up to about 100,000 components, or about 200,000 requests per day | Larger scale is outside this plan |
 | Tekton | The components that are deployed by default | Tekton Results adds 3 cores and 6 GiB; the Pruner adds 2 cores and 1.5 GiB; Chains adds 0.5 cores and 0.5 GiB; the Scheduler adds 1 core and 0.25 GiB |
@@ -177,7 +177,7 @@ The table lists every component in Case 2 with its resources per replica and an 
 Sources of the values:
 
 - **Harbor**: the high availability template of the Harbor operator.
-- **GitLab**: the values verified at about 10 requests per second, or about 500 users.
+- **GitLab**: derived from the peaks measured with GitLab Performance Tool at 10 and 20 requests per second on the high availability template; the plan supports about 10 requests per second, or about 500 users.
 - **Tekton**: the components that the product deploys by default, with 2 replicas of the Pipelines controller for high availability.
 - **Builds**: the peak limit of one `python-image-build-scan-deploy` PipelineRun of the Alauda catalog, while the pre-build and the SonarQube scan run in parallel.
 - **SonarQube**: the small tier of the SonarQube host requirements. **Nexus**: the 8 GB minimum of the Nexus Repository system requirements.
@@ -190,10 +190,10 @@ Sources of the values:
 
 | Failed node | Unavailable until restarted on another node | Degraded but available |
 | --- | --- | --- |
-| Node 1 | Nexus | Harbor and GitLab, until their replicas start again |
-| Node 2 | — | Harbor, GitLab, and Tekton Triggers, until they start again |
+| Node 1 | Nexus; the Tekton Artifact Hub shim, until it starts again | Harbor and GitLab, until their replicas start again |
+| Node 2 | Tekton Triggers, until it starts again | Harbor and GitLab, until their replicas start again |
 | Node 3 | SonarQube, whose PostgreSQL is on this node | Harbor and GitLab, until their replicas start again |
-| Node 4 | SonarQube; the Tekton webhook, until it starts again | Harbor and GitLab, until their replicas start again |
+| Node 4 | SonarQube; the Tekton webhook, remote resolvers, events, operator, and enhancement controller, until they start again | Harbor and GitLab, until their replicas start again |
 
 **With 3 devops nodes**, the remaining 2 nodes provide about 46 cores and 84 GiB. The tools alone need 47.1 cores and 80 GiB, and with light builds 56.5 cores and 89.5 GiB:
 
@@ -212,7 +212,8 @@ In both cases, builds that ran on the failed node fail and must be run again. So
 | devops, 4 nodes | 56.5 cores, 89.5 GiB, with light builds | 4 × 24 cores / 48 GiB | 69.6 cores, 125.7 GiB | Fits: 81% / 71% |
 | devops, 3 nodes | 56.5 cores, 89.5 GiB, with light builds | 3 × 24 cores / 48 GiB | 46.4 cores, 83.8 GiB | Degraded: builds pause; tools 101% / 95% |
 
-- harbor: the Harbor rows of the DevOps Pool table (10.9 cores, 21.4 GiB), plus Envoy Gateway: the controller at its default limit of 1 core and 1 GiB, and 2 `envoy-proxy` replicas at 2 cores and 1 GiB each, the 4,000 QPS tier of the Envoy Gateway sizing.
+- harbor: the remaining capacity is given before system reservations, while the devops rows use the capacity available to Pods; after reservations, the harbor margin is about 1 core and 3 GiB per node smaller.
+- harbor workload: the Harbor rows of the DevOps Pool table (10.9 cores, 21.4 GiB), plus Envoy Gateway: the controller at its default limit of 1 core and 1 GiB, and 2 `envoy-proxy` replicas at 2 cores and 1 GiB each, the 4,000 QPS tier of the Envoy Gateway sizing.
 - storage: one OSD and the block and object services per node, within the small three-node Ceph baseline of about 20 CPUs and 40 GiB in total.
 - control-plane: the 24-worker tier, because the DevOps cluster has fewer than 24 worker nodes.
 - infra: the same as the infra nodes of a workload cluster with about 20 worker nodes.
@@ -305,7 +306,7 @@ Deploy each tool in the form of [Deployment Form](#tools), following its install
 | Tool | Requirement | Installation guide |
 | --- | --- | --- |
 | Harbor | Image layers on object storage, job logs in the database, exposed through Envoy Gateway. The built-in templates do not combine these, so deploy from YAML | <ExternalSiteLink name="alauda-build-of-harbor" href="/install/03_harbor_deploy.html" children="Harbor Instance Deployment" /> |
-| GitLab | Gitaly Cluster with object storage, which is required for uploads and CI artifacts; deploy from YAML with the resources of this plan | <ExternalSiteLink name="alauda-build-of-gitlab" href="/install/03_gitlab_deploy.html" children="GitLab Instance Deployment" /> |
+| GitLab | Gitaly Cluster with object storage, which is required for uploads and CI artifacts; deploy from YAML with the resources of this plan. Set the Praefect resources under `gitlab.praefect.resources`, not under `global.praefect`; otherwise the chart defaults of 2 cores and 2 GiB per replica apply | <ExternalSiteLink name="alauda-build-of-gitlab" href="/install/03_gitlab_deploy.html" children="GitLab Instance Deployment" /> |
 | SonarQube | 2 cores and 8 GiB, with the JVM heaps fitted to the limit | <ExternalSiteLink name="alauda-build-of-sonarqube" href="/install/03_sonarqube_deploy.html" children="SonarQube Instance Deployment" /> |
 | Nexus | Main container at 4 cores and 8 GiB, with the JVM memory fitted to the limit | <ExternalSiteLink name="alauda-build-of-nexus" href="/install/03_nexus_deploy.html" children="Nexus Instance Deployment" /> |
 | Tekton | 2 replicas of the Pipelines controller; builds placed with the default Pod template | <ExternalSiteLink name="alauda-devops-pipelines" href="/install.html" children="Installing Alauda DevOps Pipelines" />, <ExternalSiteLink name="alauda-devops-pipelines" href="/configure/pod_template_guide.html" children="Pod Template Configuration Guide" /> |
