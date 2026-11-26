@@ -10,7 +10,7 @@ A multi-cluster platform uses one central image registry for application images.
 
 | Case | When | What to add |
 | --- | --- | --- |
-| [Case 1: Harbor on the global Cluster](#harbor-on-global) | Only a central registry is needed | A harbor pool and a storage pool on the `global` cluster |
+| [Case 1: Harbor on the `global` Cluster](#harbor-on-global) | Only a central registry is needed | A harbor pool and a storage pool on the `global` cluster |
 | [Case 2: Dedicated DevOps Cluster](#devops-cluster) | GitLab, pipelines, SonarQube, or Nexus are also needed | A new workload cluster that runs all the tools, including Harbor |
 
 ## Resource Requirements
@@ -19,7 +19,7 @@ The tables give the **minimum recommended size of each node**. Physical servers 
 
 In both cases, the tools keep their data on Ceph, on dedicated storage nodes in the same cluster. Ceph needs at least 3 storage nodes, each with a dedicated raw disk. Without them, this plan cannot be delivered.
 
-### Case 1: Harbor on the global Cluster \{#harbor-on-global}
+### Case 1: Harbor on the `global` Cluster \{#harbor-on-global}
 
 ACP recommends running only platform components on the `global` cluster of a multi-cluster platform. A central Harbor is an exception: it serves every cluster of the platform, and running it on the `global` cluster avoids a separate cluster for the registry alone. It runs on its own node pools.
 
@@ -287,7 +287,7 @@ Block data is on Ceph block storage (RBD). Object data is on Ceph object storage
 ### Network and Node Pools
 
 - **Case 1**: install Envoy Gateway on the `global` cluster and place `envoy-proxy` on the harbor nodes. Reserve one VIP for the Harbor gateway.
-- **Case 2**: reserve two VIPs, one for the control plane endpoint and one for the gateway that serves Harbor and GitLab.
+- **Case 2**: reserve two VIPs, one for the Cluster Endpoint and one for the gateway that serves Harbor and GitLab.
 - The gateway VIP can come from the enterprise load balancer, or from MetalLB. On Huawei Cloud Stack, run `envoy-proxy` with the host network behind the HCS ELB.
 - **Case 1**: give each pool a role label, and schedule Harbor and its PostgreSQL and Redis to the harbor nodes with node selectors. Taint the storage pool.
 - **Case 2**: taint the infra, storage, and pipeline pools, and leave the devops pool untainted, so that the tools run on the devops nodes. Send builds to the pipeline pool with the default Pod template of Tekton.
