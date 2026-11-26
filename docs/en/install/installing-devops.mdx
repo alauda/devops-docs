@@ -36,13 +36,13 @@ Click `Install` to install the operator.
 
 ## Deployment location
 
-Deploy Katanomi instances in the Global cluster. The business cluster can deploy instances as needed for CI/CD.
+Deploy Katanomi instances in the `global` cluster. The workload cluster can deploy instances as needed for CI/CD.
 
 <table>
   <tr>
     <th style={{ whiteSpace: 'nowrap' }}>Component</th>
-    <th style={{ whiteSpace: 'nowrap' }}>Global Cluster</th>
-    <th style={{ whiteSpace: 'nowrap' }}>Business Cluster</th>
+    <th style={{ whiteSpace: 'nowrap' }}><code>global</code> Cluster</th>
+    <th style={{ whiteSpace: 'nowrap' }}>Workload Cluster</th>
   </tr>
   <tr>
     <td>Katanomi</td>
@@ -60,8 +60,8 @@ Deploy Katanomi instances in the Global cluster. The business cluster can deploy
 :::warning
 Only one Katanomi instance is supported.
 
-- **Global cluster**: Deploy within the `cpaas-system` namespace. Set `ExternalURL` to the `Platform URL` of the `global` cluster and `Service.Type` to `Ingress`.
-- **Business cluster**: Can be deployed in any namespace other than `cpaas-system`.
+- **`global` cluster**: Deploy within the `cpaas-system` namespace. Set `ExternalURL` to the Platform Access Address of the `global` cluster and `Service.Type` to `Ingress`.
+- **Workload cluster**: Can be deployed in any namespace other than `cpaas-system`.
 :::
 
 - Login to the `Alauda Container Platform`  platform.
@@ -69,7 +69,7 @@ Only one Katanomi instance is supported.
 - Select the deployed cluster and click **CLI Tools**.
 - Create the Katanomi Instance (adjust parameters as needed)
 
-global cluster
+`global` cluster
 ```shell
 export NAMESPACE=cpaas-system
 export EXTERNAL_URL=$(kubectl get prdb -n cpaas-system base -o jsonpath='{.spec.platformURL}')
@@ -96,7 +96,7 @@ spec:
 EOF
 ```
 
-business cluster
+workload cluster
 ```shell
 export NAMESPACE=katanomi-operator
 export NODE_IP=$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}' | awk -F" " '{print $1}')
@@ -160,7 +160,7 @@ Refer to the documentation inside the platform after deploying Alauda DevOps v3:
     <td><b>Namespaces</b></td>
 
     <td>
-      For `business clusters`, the Katanomi instance can be deployed to any namespace provided there are sufficient resources available. For `global cluster`, the Katanomi instance must be deployed exclusively in the `cpaas-system` namespace.
+      For workload clusters, the Katanomi instance can be deployed to any namespace provided there are sufficient resources available. For the `global` cluster, the Katanomi instance must be deployed exclusively in the `cpaas-system` namespace.
     </td>
   </tr>
 
