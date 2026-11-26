@@ -138,11 +138,11 @@
       "updated_at": "2026-05-16T10:39:31Z"
     },
     "docs/en/overview/intro.mdx": {
-      "sha256": "6bd39f0bd49d33558fdbc4d3007bac0cf13dfa28649bb5e536e3cf757ec5ab82",
-      "size": 3033,
+      "sha256": "9bd5638fa03ea1597ce0e6a02482e0dba4fa3934dbc2b8ec8fbe781eb16c45fd",
+      "size": 3036,
       "description": "Introduces Alauda DevOps as a Kubernetes-based cloud-native DevOps platform delivering an end-to-end toolchain (source management, artifact/dependency management, CI/CD, code quality), then enumerates its core advantages (efficiency, security-first design, extensibility via Tekton plus Connectors, unified workflows, faster time-to-market, modern practices like pipeline-as-code), target scenarios (platform building, golden-path CI/CD, reusable automation), and current limitations (cloud-native focus and limited Connector protocol/auth coverage).",
       "generation_method": "ai_agent_reading",
-      "updated_at": "2026-05-16T10:39:31Z"
+      "updated_at": "2026-11-26T17:48:14Z"
     },
     "docs/en/overview/lifecycle_policy.mdx": {
       "sha256": "0acff0a9d4e2001f569a1e0751b546efe8f5a2073c6f30ec1ebc39bfd25a1afc",
